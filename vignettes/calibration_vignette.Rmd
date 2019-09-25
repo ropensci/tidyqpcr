@@ -42,150 +42,18 @@ These probes have sensible standard curves, amplification curves, melt curves. I
 
 
 ```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
-
 ## knitr options for report generation
 knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
                       results="show")
-
-
-## data processing options, packages, functions
-options(stringsAsFactors=FALSE)  # load character strings as strings
-
-library(reshape2) # data manipulation
 library(tidyverse)
-# 
-library(readxl) # read excel spreadsheets
-
-library(ggplot2) # plot graphs
-library(cowplot) # extensions and nice defaults
+library(cowplot)
+library(tidyqpcr)
 
  # set default theme for graphics
 theme_set(theme_cowplot(font_size=11) %+replace% 
               theme(panel.border=element_rect(colour = "grey50",
                                             linetype = "solid",size=0.5),
                     strip.background = element_blank()))
-
-
-scale_y_log2nice <- function(name=waiver(),omag=seq(-6,6),scilabels=FALSE,...) {
-    # plot y axis on log2-scale with nice defaults
-    breaks2 <- 2^omag
-    if (scilabels) {
-        labels2 <- paste("2^{",omag,"}",sep="")
-    } else {
-        labels2 <- breaks2
-    }
-    scale_y_log10(name,breaks=breaks2,labels=parse(text=labels2),...)
-}
-
-scale_y_log10nice <- function(name=waiver(),omag=seq(-6,6),scilabels=FALSE,...) {
-    # plot y axis on log10-scale with nice defaults
-    breaks10 <- 10^omag
-    if (scilabels) {
-        labels10 <- paste("10^{",omag,"}",sep="")
-    } else {
-        labels10 <- breaks10
-    }
-    scale_y_log10(name,breaks=breaks10,labels=parse(text=labels10),...)
-}
-```
-
-
-
-
-```{r plate_functions}
-
-create.blank.plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
-    ## create blank plate data frame
-    plate <- expand.grid(WellR=WellR,WellC=WellC)
-    plate$Well   <- with(plate,paste0(WellR,WellC))
-    # plate$Sample <- NA
-    # plate$Probe  <- NA
-    return(plate)
-}
-
-label.plate.rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
-    ## label a plate by row and column keys
-    if (!is.null(colkey)) {
-        plate <- merge(plate,colkey,by="WellC")
-    }
-    if (!is.null(rowkey)) {
-        plate <- merge(plate,rowkey,by="WellR")
-    }
-    return(plate[order(plate$WellR,plate$WellC),])
-}
-
-display_plate <- function(plate) {
-    ggplot(data=plate,aes(x=factor(WellC),
-                          y=factor(WellR,levels=rev(LETTERS)))) +
-        geom_tile(aes(fill=Probe),alpha=0.3) +
-        geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),size=2.5,lineheight=1) +
-        scale_x_discrete(expand=c(0,0)) +
-        scale_y_discrete(expand=c(0,0)) +
-        coord_equal() +
-        theme_void() + 
-        theme(axis.text=element_text(angle=0),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.margin=unit(rep(0.01,4),"npc"),
-              panel.border = element_blank())
-}
-
-
-getNormCt <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    ### function to take data frame and attach a column to normalize things by.
-    
-    # make subset of df where gene is one of normGenes
-    subdf <- df[df[[probename]] %in% normProbes,]
-    
-    # assign median of mycolumn to df$normct
-    # note this is the same value for every row, a waste of space technically
-    df$norm.by <- median(subdf[[mycolumn]],na.rm=TRUE)
-    return(df)
-}
-
-
-normalizeqPCR <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    # make normed count, grouped by Sample (biological rep)
-    dfout <- 
-        group_by(df,Sample) %>% # group by Sample
-        do(getNormCt(.,mycolumn,normProbes,probename)) %>%      # get norm value for each Sample
-        ungroup()                 # combine/ungroup again
-    
-    # Assign normalized values by dividing by normby
-    dfout$Value.norm <- dfout[[mycolumn]] - dfout$norm.by
-    dfout$Value.normexp <- 2^-dfout$Value.norm
-                             
-    return(dfout)
-}
-
-debaseline <- function(plateamp,maxcycle=10) {
-    baseline <- 
-        plateamp %>%
-        group_by(Well) %>%
-        filter(Program == 2, Cycle <= maxcycle) %>%
-        summarize(Base = median(Fluor))
-    plateamp %>% 
-        left_join(baseline) %>%
-        mutate(Signal=Fluor-Base)
-        
-}
-
-getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
-    if (method == "diff") {
-       return( -c(diff(RR)/diff(TT),NA) )
-    } else if (method == "spline") {
-        fit <- smooth.spline(x = TT, y=RR,...)
-        return(-1 * predict(object = fit, x = TT, deriv = 1)$y )
-    }
-}
-
-demelt <- function(platemelt) {
-    platemelt %>%
-        arrange(Well,Temperature) %>%
-        group_by(Well) %>%
-        mutate(dRdT=getdRdT(Temperature,Signal)) %>%
-        ungroup()
-}
 
 ```
 
@@ -220,8 +88,8 @@ colkey <- data.frame(WellC=1:24,
                      RT="SSIV")
 
 plate1plan <- 
-    label.plate.rowcol(
-        create.blank.plate(),
+    label_plate_rowcol(
+        create_blank_plate(),
         rowkey,colkey) %>%
     mutate(Sample=paste(BioRep,str_sub(RT,end=1L),DilutionNice,sep="_"))
 
@@ -242,7 +110,7 @@ display_plate(plate1plan)
 
 # read my plates
 
-plates <- read_tsv("../data/Edward qPCR Nrd1 calibration 2019-02-02 Ct.txt",
+plates <- read_tsv("../inst/extdata/Edward qPCR Nrd1 calibration 2019-02-02 Ct.txt",
                        skip=1) %>%
     mutate(Well=Pos,Ct=Cp) %>%
     right_join(plate1plan)
@@ -321,7 +189,7 @@ ggplot(data=filter(plates,Type=="+RT",Probe %in% Probesnice),
 
 ```{r load_amp,dependson="label_plates",results="show"}
 
-plate1curve <- read_tsv("../data/Edward qPCR Nrd1 calibration 2019-02-02.txt",
+plate1curve <- read_tsv("../inst/extdata/Edward qPCR Nrd1 calibration 2019-02-02.txt",
                        skip=2,
                         col_names=c("Well","SID","Program","Segment",
                                     "Cycle","Time","Temperature","Fluor") 

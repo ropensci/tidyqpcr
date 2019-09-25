@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Multifactorial multi-plate qPCR analysis"
 author: "Edward Wallace"
 date: "June 2018"
 output:
@@ -41,146 +41,18 @@ knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
 ## data processing options, packages, functions
 options(stringsAsFactors=FALSE)  # load character strings as strings
 
-library(stringr) # string manipulation
-library(reshape2) # data manipulation
-library(dplyr) # more data manipulation
-library(tidyr) # more data manipulation
-library(readr) # read files
-# 
-# library(readxl) # read excel spreadsheets
-library(pheatmap) # nice heatmaps
+knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
+                      results="show")
+library(tidyverse)
+library(cowplot)
+library(tidyqpcr)
 
-library(ggplot2) # plot graphs
-library(cowplot) # extensions and nice defaults
  # set default theme for graphics
-# theme_set(theme_bw() %+replace% theme(panel.grid.minor=element_blank())) 
 theme_set(theme_cowplot(font_size=11) %+replace% 
-              theme(panel.grid.major=element_line(size=0.15,colour="grey50"),
+              theme(panel.border=element_rect(colour = "grey50",
+                                            linetype = "solid",size=0.5),
                     strip.background = element_blank()))
-
-scale_y_log2nice <- function(name=waiver(),omag=seq(-6,6),scilabels=FALSE,...) {
-    # plot y axis on log2-scale with nice defaults
-    breaks2 <- 2^omag
-    if (scilabels) {
-        labels2 <- paste("2^{",omag,"}",sep="")
-    } else {
-        labels2 <- breaks2
-    }
-    scale_y_log10(name,breaks=breaks2,labels=parse(text=labels2),...)
-}
-
-scale_y_log10nice <- function(name=waiver(),omag=seq(-6,6),scilabels=FALSE,...) {
-    # plot y axis on log10-scale with nice defaults
-    breaks10 <- 10^omag
-    if (scilabels) {
-        labels10 <- paste("10^{",omag,"}",sep="")
-    } else {
-        labels10 <- breaks10
-    }
-    scale_y_log10(name,breaks=breaks10,labels=parse(text=labels10),...)
-}
 ```
-
-
-
-
-```{r plate_functions}
-
-create.blank.plate <- function(WellR=LETTERS[1:8],WellC=1:12) {
-    ## create blank plate data frame
-    plate <- expand.grid(WellR=WellR,WellC=WellC)
-    plate$Well   <- with(plate,paste0(WellR,WellC))
-    # plate$Sample <- NA
-    # plate$Probe  <- NA
-    return(plate)
-}
-
-label.plate.rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
-    ## label a plate by row and column keys
-    if (!is.null(colkey)) {
-        plate <- merge(plate,colkey,by="WellC")
-    }
-    if (!is.null(rowkey)) {
-        plate <- merge(plate,rowkey,by="WellR")
-    }
-    return(plate[order(plate$WellR,plate$WellC),])
-}
-
-display_plate <- function(plate) {
-    ggplot(data=plate,aes(x=factor(WellC),
-                          y=factor(WellR,levels=rev(LETTERS)))) +
-        geom_tile(aes(fill=Probe),alpha=0.3) +
-        geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),size=2.5,lineheight=1) +
-        scale_x_discrete(expand=c(0,0)) +
-        scale_y_discrete(expand=c(0,0)) +
-        coord_equal() +
-        theme_void() + 
-        theme(axis.text=element_text(angle=0),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.margin=unit(rep(0.01,4),"npc"),
-              panel.border = element_blank())
-}
-
-
-getNormCt <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    ### function to take data frame and attach a column to normalize things by.
-    
-    # make subset of df where gene is one of normGenes
-    subdf <- df[df[[probename]] %in% normProbes,]
-    
-    # assign median of mycolumn to df$normct
-    # note this is the same value for every row, a waste of space technically
-    df$norm.by <- median(subdf[[mycolumn]],na.rm=TRUE)
-    return(df)
-}
-
-
-normalizeqPCR <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    # make normed count, grouped by Sample (biological rep)
-    dfout <- 
-        group_by(df,Sample) %>% # group by Sample
-        do(getNormCt(.,mycolumn,normProbes,probename)) %>%      # get norm value for each Sample
-        ungroup()                 # combine/ungroup again
-    
-    # Assign normalized values by diLIDing by normby
-    dfout$Value.norm <- dfout[[mycolumn]] - dfout$norm.by
-    dfout$Value.normexp <- 2^-dfout$Value.norm
-                             
-    return(dfout)
-}
-
-debaseline <- function(plateamp,maxcycle=10) {
-    baseline <- 
-        plateamp %>%
-        group_by(Well) %>%
-        filter(Program == 2, Cycle <= maxcycle) %>%
-        summarize(Base = median(Fluor))
-    plateamp %>% 
-        left_join(baseline) %>%
-        mutate(Signal=Fluor-Base)
-        
-}
-
-getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
-    if (method == "diff") {
-       return( -c(diff(RR)/diff(TT),NA) )
-    } else if (method == "spline") {
-        fit <- smooth.spline(x = TT, y=RR,...)
-        return(-1 * predict(object = fit, x = TT, deriv = 1)$y )
-    }
-}
-
-demelt <- function(platemelt) {
-    platemelt %>%
-        arrange(Well,Temperature) %>%
-        group_by(Well) %>%
-        mutate(dRdT=getdRdT(Temperature,Signal)) %>%
-        ungroup()
-}
-
-```
-
 
 
 
@@ -210,7 +82,7 @@ colkey <- data.frame(WellC=1:24,
     mutate(Condition=paste0(Drug,HS) %>% factor(levels=Conditionlevels))
 
 plateplan <-     
-    label.plate.rowcol(create.blank.plate(WellR = LETTERS[1:16],WellC=1:24),
+    label_plate_rowcol(create_blank_plate(WellR = LETTERS[1:16],WellC=1:24),
                        rowkey,colkey)
 
 ```
@@ -229,13 +101,13 @@ display_plate( plateplan %>%
 # setwd("~/Dropbox (Drummond Lab)/EdinburghLab/RT-qPCR/2018-06/")
 # read my plates
 
-plate1 <- read_tsv("../data/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt",skip=1) %>%
+plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt",skip=1) %>%
     mutate(Well=Pos,Ct=Cp) %>%
     left_join(plateplan) %>%
     mutate(BiolRep="1",Plate="1")
 
 
-plate2 <- read_tsv("../data/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt",skip=1) %>%
+plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt",skip=1) %>%
     mutate(Well=Pos,Ct=Cp) %>%
     left_join(plateplan) %>%
     mutate(BiolRep="2",Plate="2")
@@ -346,7 +218,7 @@ ggplot(data=platesmed) +
 
 ```{r load_amp,dependson="label_plates",results="show"}
 
-plate1curve <- read_tsv("../data/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1.txt",
+plate1curve <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1.txt",
                        skip=2,
                         col_names=c("Well","SID","Program","Segment",
                                     "Cycle","Time","Temperature","Fluor") 
@@ -355,7 +227,7 @@ plate1curve <- read_tsv("../data/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1.
     left_join(plateplan) %>%
     mutate(BiolRep=1,Plate=1)
 
-plate2curve <- read_tsv("../data/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt",
+plate2curve <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt",
                        skip=2,
                         col_names=c("Well","SID","Program","Segment",
                                     "Cycle","Time","Temperature","Fluor") 
