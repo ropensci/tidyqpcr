@@ -1,0 +1,465 @@
+---
+title: "Calibration vignette"
+author: "Edward Wallace"
+date: "2 Feb 2019"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+
+# Plan
+
+This vignette shows how to use tidyqpcr functions to calibrate qPCR probes
+
+This is real qPCR data by Edward Wallace in Feb 2019, testing new RT-qPCR primer sets against _S. cerevisiae_ genes. We took exponential-phase total RNA previously extracted by Jamie Auxillos.
+
+We tested 2-3 primer sets each for 7 genes with 2 Technical replicates as well:
+
+* ECM38/ YLR299W (3 primer sets)
+* FET5 / YFL041W (3 primer sets)
+* GPT2/YKR067W
+* ILV5/YLR355C
+* NRD1/YNL251C (ordered 3rd primer set not tested today)
+* RDL1/YOR285W
+* TFS1/YLR178C
+
+For each we do serial 5x dilutions down to 125x, a -RT and no template control. In duplicate.
+
+## Conclude acceptable primer sets
+
+These probes have sensible standard curves, amplification curves, melt curves. In tie-breakers we pick the more highly detected probe.
+
+* ECM38 set 3
+* FET5 set 1 or 4
+* GPT2 set 4
+* ILV5 set 4
+* NRD1 set 1 or 2
+* RDL1 set 4
+* TFS1 set 1
+
+
+
+```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
+
+## knitr options for report generation
+knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
+                      results="show")
+
+
+## data processing options, packages, functions
+options(stringsAsFactors=FALSE)  # load character strings as strings
+
+library(reshape2) # data manipulation
+library(tidyverse)
+# 
+library(readxl) # read excel spreadsheets
+
+library(ggplot2) # plot graphs
+library(cowplot) # extensions and nice defaults
+
+ # set default theme for graphics
+theme_set(theme_cowplot(font_size=11) %+replace% 
+              theme(panel.border=element_rect(colour = "grey50",
+                                            linetype = "solid",size=0.5),
+                    strip.background = element_blank()))
+
+
+scale_y_log2nice <- function(name=waiver(),omag=seq(-6,6),scilabels=FALSE,...) {
+    # plot y axis on log2-scale with nice defaults
+    breaks2 <- 2^omag
+    if (scilabels) {
+        labels2 <- paste("2^{",omag,"}",sep="")
+    } else {
+        labels2 <- breaks2
+    }
+    scale_y_log10(name,breaks=breaks2,labels=parse(text=labels2),...)
+}
+
+scale_y_log10nice <- function(name=waiver(),omag=seq(-6,6),scilabels=FALSE,...) {
+    # plot y axis on log10-scale with nice defaults
+    breaks10 <- 10^omag
+    if (scilabels) {
+        labels10 <- paste("10^{",omag,"}",sep="")
+    } else {
+        labels10 <- breaks10
+    }
+    scale_y_log10(name,breaks=breaks10,labels=parse(text=labels10),...)
+}
+```
+
+
+
+
+```{r plate_functions}
+
+create.blank.plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
+    ## create blank plate data frame
+    plate <- expand.grid(WellR=WellR,WellC=WellC)
+    plate$Well   <- with(plate,paste0(WellR,WellC))
+    # plate$Sample <- NA
+    # plate$Probe  <- NA
+    return(plate)
+}
+
+label.plate.rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
+    ## label a plate by row and column keys
+    if (!is.null(colkey)) {
+        plate <- merge(plate,colkey,by="WellC")
+    }
+    if (!is.null(rowkey)) {
+        plate <- merge(plate,rowkey,by="WellR")
+    }
+    return(plate[order(plate$WellR,plate$WellC),])
+}
+
+display_plate <- function(plate) {
+    ggplot(data=plate,aes(x=factor(WellC),
+                          y=factor(WellR,levels=rev(LETTERS)))) +
+        geom_tile(aes(fill=Probe),alpha=0.3) +
+        geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),size=2.5,lineheight=1) +
+        scale_x_discrete(expand=c(0,0)) +
+        scale_y_discrete(expand=c(0,0)) +
+        coord_equal() +
+        theme_void() + 
+        theme(axis.text=element_text(angle=0),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.margin=unit(rep(0.01,4),"npc"),
+              panel.border = element_blank())
+}
+
+
+getNormCt <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
+    ### function to take data frame and attach a column to normalize things by.
+    
+    # make subset of df where gene is one of normGenes
+    subdf <- df[df[[probename]] %in% normProbes,]
+    
+    # assign median of mycolumn to df$normct
+    # note this is the same value for every row, a waste of space technically
+    df$norm.by <- median(subdf[[mycolumn]],na.rm=TRUE)
+    return(df)
+}
+
+
+normalizeqPCR <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
+    # make normed count, grouped by Sample (biological rep)
+    dfout <- 
+        group_by(df,Sample) %>% # group by Sample
+        do(getNormCt(.,mycolumn,normProbes,probename)) %>%      # get norm value for each Sample
+        ungroup()                 # combine/ungroup again
+    
+    # Assign normalized values by dividing by normby
+    dfout$Value.norm <- dfout[[mycolumn]] - dfout$norm.by
+    dfout$Value.normexp <- 2^-dfout$Value.norm
+                             
+    return(dfout)
+}
+
+debaseline <- function(plateamp,maxcycle=10) {
+    baseline <- 
+        plateamp %>%
+        group_by(Well) %>%
+        filter(Program == 2, Cycle <= maxcycle) %>%
+        summarize(Base = median(Fluor))
+    plateamp %>% 
+        left_join(baseline) %>%
+        mutate(Signal=Fluor-Base)
+        
+}
+
+getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
+    if (method == "diff") {
+       return( -c(diff(RR)/diff(TT),NA) )
+    } else if (method == "spline") {
+        fit <- smooth.spline(x = TT, y=RR,...)
+        return(-1 * predict(object = fit, x = TT, deriv = 1)$y )
+    }
+}
+
+demelt <- function(platemelt) {
+    platemelt %>%
+        arrange(Well,Temperature) %>%
+        group_by(Well) %>%
+        mutate(dRdT=getdRdT(Temperature,Signal)) %>%
+        ungroup()
+}
+
+```
+
+
+
+## Label and plan plates
+
+
+
+```{r label_plates,dependson="plate_functions"}
+Names <- c("ECM38","FET5","GPT2","ILV5","NRD1","RDL1","TFS1")
+Targets  <- c("YLR299W","YFL041W","YKR067W","YLR355C","YNL251C","YOR285W","YLR178C")
+Namesrep <- c(rep(Names[1:2],each=3),rep(Names[3:7],each=2))
+Probes <- paste(Namesrep,
+                c(1,2,3,1,3,4,1,4,1,4,1,2,4,5,1,5),sep="_")
+
+Probelevels <- Probes
+
+
+rowkey <- data.frame(WellR=LETTERS[1:16],
+                     Names=Namesrep,
+                     # Targets=rep(Targets,each=2),
+                     Probe=Probes
+)
+
+colkey <- data.frame(WellC=1:24,
+                     Dilution=rep(c(1,1/5,1/25,1/125,1,1)),
+                     DilutionNice=rep(c("1x","5x","25x","125x","-RT","NT")),
+                     Type=c(rep("+RT",4),"-RT","NT"),
+                     BioRep=rep(c("A","B"),each=12),
+                     TechRep = rep(c("A","B"),each=6),
+                     RT="SSIV")
+
+plate1plan <- 
+    label.plate.rowcol(
+        create.blank.plate(),
+        rowkey,colkey) %>%
+    mutate(Sample=paste(BioRep,str_sub(RT,end=1L),DilutionNice,sep="_"))
+
+
+```
+
+
+
+```{r display_plates,fig.height=8,fig.width=12,dependson="label_plates"}
+display_plate(plate1plan) 
+
+```
+
+
+## Load and summarize data
+
+```{r load_plates,dependson="label_plates",results="show"}
+
+# read my plates
+
+plates <- read_tsv("../data/Edward qPCR Nrd1 calibration 2019-02-02 Ct.txt",
+                       skip=1) %>%
+    mutate(Well=Pos,Ct=Cp) %>%
+    right_join(plate1plan)
+
+```
+
+
+```{r show_plates,dependson="load_plates",results="show"}
+plates
+
+summary(plates)
+```
+
+# Plot unnormalized data
+
+## -RT and NT controls are low
+
+
+```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
+
+ggplot(data=plates) +
+    geom_point(aes(x=Probe,y=Ct,colour=DilutionNice,shape=Type),
+               position=position_jitter(width = 0.2,height=0)) +
+    labs(y="Cycle count to threshold",
+         title="All reps, unnormalized") +
+    facet_grid(RT~BioRep) +
+    panel_border() +
+    theme(axis.text.x=element_text(angle=90,vjust=0.5))
+```
+
+
+
+## Dilution series is linear - only used Superscript IV.
+
+
+```{r plot_dilutions,dependson="load_plates",fig.height=11,fig.width=6}
+ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
+    geom_point() +
+    stat_smooth(formula=y~x,method="lm",se=FALSE,
+                aes(colour="fit",linetype="fit")) + 
+    stat_smooth(formula=y~1+offset(-x*log(10)/log(2)),method="lm",se=FALSE,
+                aes(colour="theory",linetype="theory")) + 
+    scale_x_log10(breaks=10^-(0:3)) +
+    scale_y_continuous(breaks=seq(0,30,2)) + 
+    labs(y="Cycle count to threshold",
+         title="All reps, unnormalized",
+         colour="Dilution") +
+    facet_grid(Probe~BioRep,scales="free_y") + 
+    theme(axis.text.x=element_text(angle=90,vjust=0.5))
+```
+
+## Dilution series for nice probes only
+
+```{r plot_dilutions_nice,dependson="load_plates",fig.height=6,fig.width=4}
+Probesnice <- c("ECM38_3","FET5_1","GPT2_4","ILV5_4","NRD1_1","RDL1_4","TFS1_1")
+
+ggplot(data=filter(plates,Type=="+RT",Probe %in% Probesnice),
+       aes(x=Dilution,y=Ct)) +
+    geom_point() +
+    stat_smooth(formula=y~x,method="lm",se=FALSE,
+                aes(colour="fit",linetype="fit")) + 
+    stat_smooth(formula=y~1+offset(-x*log(10)/log(2)),method="lm",se=FALSE,
+                aes(colour="theory",linetype="theory")) + 
+    scale_x_log10(breaks=10^-(0:3)) +
+    scale_y_continuous(breaks=seq(0,30,2)) + 
+    labs(y="Cycle count to threshold",
+         title="All reps, unnormalized",
+         colour="Dilution") +
+    facet_grid(Probe~BioRep,scales="free_y") + 
+    theme(axis.text.x=element_text(angle=90,vjust=0.5))
+```
+
+
+## Load raw data for amplification and curves.
+
+
+```{r load_amp,dependson="label_plates",results="show"}
+
+plate1curve <- read_tsv("../data/Edward qPCR Nrd1 calibration 2019-02-02.txt",
+                       skip=2,
+                        col_names=c("Well","SID","Program","Segment",
+                                    "Cycle","Time","Temperature","Fluor") 
+                      ) %>%
+    debaseline() %>%
+    left_join(plate1plan) 
+
+
+platesamp  <- plate1curve %>% filter(Program == 2)
+
+platesmelt <- plate1curve %>% filter(Program > 2) %>% demelt() %>% filter(Temperature >= 61)
+
+```
+
+
+### Plot de-baseline'd raw data for single well
+
+```{r testplottraj,dependson="load_amp",fig.width=4,fig.height=3}
+ggplot(data=platesamp %>% filter(Well=="A1"),
+       aes(x=Cycle,y=Signal)) + 
+    geom_line() + 
+    scale_y_log10()
+```
+
+### Plot all amplification curves
+
+```{r print_techreps,results="show",echo=TRUE,cache=FALSE,eval="FALSE"}
+plate1plan %>% 
+           filter(TechRep=="A",Probe==Probes[1],DilutionNice=="1x")
+
+plate1plan %>% 
+           filter(TechRep=="B",Probe==Probes[1],DilutionNice=="1x")
+```
+
+
+```{r plotamp_all,dependson="load_amp",fig.height=11,fig.width=7}
+ggplot(data=platesamp %>% 
+           filter(TechRep=="A"),
+       aes(x=Cycle,y=Signal,colour=factor(Dilution),linetype=Type)) + 
+    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
+    labs(title="All Amp Curves, TechRep A") 
+
+ggplot(data=platesamp %>% 
+           filter(TechRep=="B"),
+       aes(x=Cycle,y=Signal,colour=factor(Dilution),linetype=Type)) + 
+    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
+    labs(title="All Amp Curves, TechRep B") 
+
+```
+
+Here it would be sensible to also estimate the probe efficiency.
+
+## Plot melt curve
+
+### Plot melt curve for single well
+
+```{r plotmelt_A1,dependson="load_amp",fig.width=4,fig.height=1.5,eval=FALSE}
+ggplot(data=platesmelt %>% 
+           filter(Well=="A1"),
+       aes(x=Temperature,y=dRdT)) + 
+    facet_wrap(~Probe) + 
+    geom_line() 
+
+```
+
+
+### Plot all melt curves
+
+```{r plotmelt_all,dependson="load_amp",fig.height=11,fig.width=7}
+ggplot(data=platesmelt %>% 
+           filter(TechRep=="A"),
+       aes(x=Temperature,y=dRdT,colour=factor(Dilution),linetype=Type)) + 
+    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
+    labs(title="All Melt Curves, TechRep A") 
+
+ggplot(data=platesmelt %>% 
+           filter(TechRep=="B"),
+       aes(x=Temperature,y=dRdT,colour=factor(Dilution),linetype=Type)) + 
+    facet_grid(Probe~BioRep,scales="free_y") + 
+    scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
+    labs(title="All Melt Curves, TechRep B") 
+
+```
+
+
+### Plot only zoomed melt curves for Superscript
+
+```{r plotmelt_SS_zoomed,dependson="load_amp",fig.height=11,fig.width=7}
+ggplot(data=platesmelt %>% 
+           filter(TechRep=="A",Type=="+RT"),
+       aes(x=Temperature,y=dRdT,colour=factor(Dilution))) + 
+    facet_grid(Probe~BioRep,scales="free_y") + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
+                       limits=c(73,87)) + 
+    labs(title="Melt curves, zoomed, Superscript, TechRep A") +
+    theme(panel.grid.major.x=element_line(colour="grey50",size=0.4),
+          panel.grid.minor.x=element_line(colour="grey70",size=0.1))
+
+ggplot(data=platesmelt %>% 
+           filter(TechRep=="B",Type=="+RT",RT=="SSIV"),
+       aes(x=Temperature,y=dRdT,colour=factor(Dilution))) + 
+    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
+                       limits=c(73,87)) + 
+    labs(title="Melt curves, zoomed, Superscript, TechRep B") +
+    theme(panel.grid.major.x=element_line(colour="grey50",size=0.4),
+          panel.grid.minor.x=element_line(colour="grey70",size=0.1))
+
+```
+
+
+### Plot only zoomed melt curves for nice probes
+
+```{r plotmelt_SS_zoomed_nice,dependson="load_amp",fig.height=6,fig.width=4}
+Probesnice <- c("ECM38_3","FET5_1","GPT2_4","ILV5_4","NRD1_1","RDL1_4","TFS1_1")
+ggplot(data=platesmelt %>% 
+           filter(TechRep=="A",Type=="+RT",DilutionNice=="1x",
+                  Probe %in% Probesnice),
+       aes(x=Temperature,y=dRdT,colour=BioRep)) + 
+    facet_grid(Probe~.,scales="free_y") + 
+    geom_line() +
+    scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
+                       limits=c(73,87)) + 
+    labs(title="Melt curves, zoomed, Nice probes, TechRep A") +
+    theme(panel.grid.major.x=element_line(colour="grey50",size=0.4),
+          panel.grid.minor.x=element_line(colour="grey70",size=0.1))
+```
+

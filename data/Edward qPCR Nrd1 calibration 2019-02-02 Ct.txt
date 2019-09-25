@@ -1,0 +1,386 @@
+Experiment: Edward qPCR Nrd1 calibration 2019-02-02  Selected Filter: SYBR Green I / HRM Dye (483-533)
+Include	Color	Pos	Name	Cp	Concentration	Standard	Status
+True	255	A1	Sample 1	22.78		0	
+True	255	A2	Sample 2	24.71		0	
+True	255	A3	Sample 3	26.78		0	
+True	255	A4	Sample 4	28.64		0	
+True	65280	A5	Sample 5			0	
+True	65280	A6	Sample 6			0	
+True	255	A7	Sample 7	23.22		0	
+True	255	A8	Sample 8	24.81		0	
+True	255	A9	Sample 9	26.91		0	
+True	65280	A10	Sample 10			0	
+True	65280	A11	Sample 11			0	
+True	65280	A12	Sample 12			0	
+True	255	A13	Sample 13	23.33		0	
+True	255	A14	Sample 14	25.64		0	
+True	255	A15	Sample 15	26.72		0	
+True	255	A16	Sample 16	29.71		0	
+True	65280	A17	Sample 17			0	
+True	65280	A18	Sample 18			0	
+True	255	A19	Sample 19	22.47		0	
+True	255	A20	Sample 20	24.76		0	
+True	255	A21	Sample 21	27.26		0	
+True	255	A22	Sample 22	30.37		0	
+True	255	A23	Sample 23	32.26		0	
+True	65280	A24	Sample 24			0	
+True	255	B1	Sample 25	21.78		0	
+True	255	B2	Sample 26	24.71		0	
+True	255	B3	Sample 27	26.89		0	
+True	255	B4	Sample 28	29.28		0	
+True	65280	B5	Sample 29			0	
+True	65280	B6	Sample 30			0	
+True	255	B7	Sample 31	21.71		0	
+True	255	B8	Sample 32	24.43		0	
+True	255	B9	Sample 33	26.51		0	
+True	255	B10	Sample 34	28.72		0	
+True	65280	B11	Sample 35			0	
+True	65280	B12	Sample 36			0	
+True	255	B13	Sample 37	21.81		0	
+True	255	B14	Sample 38	24.56		0	
+True	255	B15	Sample 39	26.45		0	
+True	255	B16	Sample 40	28.75		0	
+True	65280	B17	Sample 41			0	
+True	65280	B18	Sample 42			0	
+True	255	B19	Sample 43	21.87		0	
+True	255	B20	Sample 44	24.55		0	
+True	255	B21	Sample 45	25.49		0	
+True	255	B22	Sample 46	27.72		0	
+True	65280	B23	Sample 47			0	
+True	65280	B24	Sample 48			0	
+True	255	C1	Sample 49	21.56		0	
+True	255	C2	Sample 50	24.74		0	
+True	255	C3	Sample 51	27.44		0	
+True	255	C4	Sample 52	30.35		0	
+True	65280	C5	Sample 53			0	
+True	65280	C6	Sample 54			0	
+True	255	C7	Sample 55	22.37		0	
+True	255	C8	Sample 56	24.80		0	
+True	255	C9	Sample 57	27.65		0	
+True	255	C10	Sample 58	29.91		0	
+True	255	C11	Sample 59	31.36		0	
+True	65280	C12	Sample 60			0	
+True	255	C13	Sample 61	20.80		0	
+True	255	C14	Sample 62	24.84		0	
+True	255	C15	Sample 63	26.67		0	
+True	255	C16	Sample 64	29.22		0	
+True	255	C17	Sample 65	29.99		0	
+True	65280	C18	Sample 66			0	
+True	255	C19	Sample 67	20.89		0	
+True	255	C20	Sample 68	24.64		0	
+True	255	C21	Sample 69	27.57		0	
+True	255	C22	Sample 70	28.37		0	
+True	255	C23	Sample 71	29.38		0	
+True	65280	C24	Sample 72			0	
+True	255	D1	Sample 73	18.70		0	
+True	255	D2	Sample 74	20.60		0	
+True	255	D3	Sample 75	23.84		0	
+True	255	D4	Sample 76	26.34		0	
+True	65280	D5	Sample 77			0	
+True	65280	D6	Sample 78			0	
+True	255	D7	Sample 79	18.56		0	
+True	255	D8	Sample 80	20.89		0	
+True	255	D9	Sample 81	23.77		0	
+True	255	D10	Sample 82	25.58		0	
+True	65280	D11	Sample 83			0	
+True	65280	D12	Sample 84			0	
+True	255	D13	Sample 85	18.48		0	
+True	255	D14	Sample 86	20.68		0	
+True	255	D15	Sample 87	22.64		0	
+True	255	D16	Sample 88	25.90		0	
+True	255	D17	Sample 89	31.43		0	
+True	65280	D18	Sample 90			0	
+True	255	D19	Sample 91	18.75		0	
+True	255	D20	Sample 92	20.89		0	
+True	255	D21	Sample 93	23.46		0	
+True	255	D22	Sample 94	25.49		0	
+True	65280	D23	Sample 95			0	
+True	65280	D24	Sample 96			0	
+True	255	E1	Sample 97	20.50		0	
+True	255	E2	Sample 98	23.54		0	
+True	255	E3	Sample 99	25.52		0	
+True	255	E4	Sample 100	28.54		0	
+True	65280	E5	Sample 101			0	
+True	65280	E6	Sample 102			0	
+True	255	E7	Sample 103	19.60		0	
+True	255	E8	Sample 104	23.44		0	
+True	255	E9	Sample 105	25.49		0	
+True	255	E10	Sample 106	28.55		0	
+True	65280	E11	Sample 107			0	
+True	65280	E12	Sample 108			0	
+True	255	E13	Sample 109	19.87		0	
+True	255	E14	Sample 110	23.38		0	
+True	255	E15	Sample 111	24.91		0	
+True	255	E16	Sample 112	27.61		0	
+True	65280	E17	Sample 113			0	
+True	65280	E18	Sample 114			0	
+True	255	E19	Sample 115	20.82		0	
+True	255	E20	Sample 116	23.79		0	
+True	255	E21	Sample 117	25.50		0	
+True	255	E22	Sample 118	27.56		0	
+True	65280	E23	Sample 119			0	
+True	65280	E24	Sample 120			0	
+True	255	F1	Sample 121	19.44		0	
+True	255	F2	Sample 122	22.24		0	
+True	255	F3	Sample 123	24.75		0	
+True	255	F4	Sample 124	26.85		0	
+True	65280	F5	Sample 125			0	
+True	65280	F6	Sample 126			0	
+True	255	F7	Sample 127	18.94		0	
+True	255	F8	Sample 128	21.88		0	
+True	255	F9	Sample 129	24.48		0	
+True	255	F10	Sample 130	26.45		0	
+True	65280	F11	Sample 131			0	
+True	65280	F12	Sample 132			0	
+True	255	F13	Sample 133	18.91		0	
+True	255	F14	Sample 134	22.34		0	
+True	255	F15	Sample 135	24.48		0	
+True	255	F16	Sample 136	26.78		0	
+True	255	F17	Sample 137	31.82		0	
+True	65280	F18	Sample 138			0	
+True	255	F19	Sample 139	18.61		0	
+True	255	F20	Sample 140	22.66		0	
+True	255	F21	Sample 141	24.54		0	
+True	255	F22	Sample 142	26.59		0	
+True	65280	F23	Sample 143			0	
+True	65280	F24	Sample 144			0	
+True	255	G1	Sample 145	20.95		0	
+True	255	G2	Sample 146	24.65		0	
+True	255	G3	Sample 147	26.66		0	
+True	255	G4	Sample 148	30.43		0	
+True	65280	G5	Sample 149			0	
+True	65280	G6	Sample 150			0	
+True	255	G7	Sample 151	21.47		0	
+True	255	G8	Sample 152	24.54		0	
+True	255	G9	Sample 153	26.88		0	
+True	255	G10	Sample 154	30.62		0	
+True	255	G11	Sample 155	32.58		0	
+True	65280	G12	Sample 156			0	
+True	255	G13	Sample 157	21.41		0	
+True	255	G14	Sample 158	24.52		0	
+True	255	G15	Sample 159	25.96		0	
+True	255	G16	Sample 160	28.37		0	
+True	255	G17	Sample 161	34.34		0	
+True	65280	G18	Sample 162			0	
+True	255	G19	Sample 163	21.89		0	
+True	255	G20	Sample 164	24.70		0	
+True	255	G21	Sample 165	26.96		0	
+True	255	G22	Sample 166	28.82		0	
+True	255	G23	Sample 167	32.85		0	
+True	65280	G24	Sample 168			0	
+True	255	H1	Sample 169	18.28		0	
+True	255	H2	Sample 170	20.87		0	
+True	255	H3	Sample 171	23.28		0	
+True	255	H4	Sample 172	25.79		0	
+True	65280	H5	Sample 173			0	
+True	65280	H6	Sample 174			0	
+True	255	H7	Sample 175	17.78		0	
+True	255	H8	Sample 176	20.67		0	
+True	255	H9	Sample 177	23.39		0	
+True	255	H10	Sample 178	26.40		0	
+True	65280	H11	Sample 179			0	
+True	65280	H12	Sample 180			0	
+True	255	H13	Sample 181	17.89		0	
+True	255	H14	Sample 182	20.77		0	
+True	255	H15	Sample 183	22.63		0	
+True	255	H16	Sample 184	24.91		0	
+True	255	H17	Sample 185	30.42		0	
+True	65280	H18	Sample 186			0	
+True	255	H19	Sample 187	17.80		0	
+True	255	H20	Sample 188	20.87		0	
+True	255	H21	Sample 189	23.28		0	
+True	255	H22	Sample 190	24.97		0	
+True	255	H23	Sample 191	31.71		0	
+True	65280	H24	Sample 192			0	
+True	255	I1	Sample 193	15.57		0	
+True	255	I2	Sample 194	18.47		0	
+True	255	I3	Sample 195	20.60		0	
+True	255	I4	Sample 196	22.95		0	
+True	65280	I5	Sample 197			0	
+True	65280	I6	Sample 198			0	
+True	255	I7	Sample 199	15.50		0	
+True	255	I8	Sample 200	18.31		0	
+True	255	I9	Sample 201	20.58		0	
+True	255	I10	Sample 202	22.83		0	
+True	255	I11	Sample 203	31.38		0	
+True	65280	I12	Sample 204			0	
+True	255	I13	Sample 205	15.94		0	
+True	255	I14	Sample 206	18.92		0	
+True	255	I15	Sample 207	20.84		0	
+True	255	I16	Sample 208	23.37		0	
+True	65280	I17	Sample 209			0	
+True	65280	I18	Sample 210			0	
+True	255	I19	Sample 211	16.31		0	
+True	255	I20	Sample 212	18.90		0	
+True	255	I21	Sample 213	21.49		0	
+True	255	I22	Sample 214	23.46		0	
+True	255	I23	Sample 215	29.78		0	
+True	65280	I24	Sample 216			0	
+True	255	J1	Sample 217	14.75		0	
+True	255	J2	Sample 218	17.78		0	
+True	255	J3	Sample 219	19.73		0	
+True	255	J4	Sample 220	22.33		0	
+True	255	J5	Sample 221	32.48		0	
+True	65280	J6	Sample 222			0	
+True	255	J7	Sample 223	14.74		0	
+True	255	J8	Sample 224	17.54		0	
+True	255	J9	Sample 225	19.69		0	
+True	255	J10	Sample 226	22.65		0	
+True	65280	J11	Sample 227			0	
+True	65280	J12	Sample 228			0	
+True	255	J13	Sample 229	14.93		0	
+True	255	J14	Sample 230	17.73		0	
+True	255	J15	Sample 231	19.88		0	
+True	255	J16	Sample 232	22.30		0	
+True	255	J17	Sample 233	31.56		0	
+True	65280	J18	Sample 234			0	
+True	255	J19	Sample 235	14.37		0	
+True	255	J20	Sample 236	17.62		0	
+True	255	J21	Sample 237	19.76		0	
+True	255	J22	Sample 238	22.41		0	
+True	65280	J23	Sample 239			0	
+True	65280	J24	Sample 240			0	
+True	255	K1	Sample 241	20.48		0	
+True	255	K2	Sample 242	22.52		0	
+True	255	K3	Sample 243	25.74		0	
+True	255	K4	Sample 244	26.66		0	
+True	65280	K5	Sample 245			0	
+True	65280	K6	Sample 246			0	
+True	255	K7	Sample 247	20.56		0	
+True	255	K8	Sample 248	23.34		0	
+True	255	K9	Sample 249	24.96		0	
+True	255	K10	Sample 250	28.54		0	
+True	65280	K11	Sample 251			0	
+True	65280	K12	Sample 252			0	
+True	255	K13	Sample 253	20.55		0	
+True	255	K14	Sample 254	23.57		0	
+True	255	K15	Sample 255	25.40		0	
+True	255	K16	Sample 256	27.54		0	
+True	65280	K17	Sample 257			0	
+True	65280	K18	Sample 258			0	
+True	255	K19	Sample 259	20.79		0	
+True	255	K20	Sample 260	23.51		0	
+True	255	K21	Sample 261	24.70		0	
+True	255	K22	Sample 262	27.92		0	
+True	65280	K23	Sample 263			0	
+True	65280	K24	Sample 264			0	
+True	255	L1	Sample 265	21.39		0	
+True	255	L2	Sample 266	23.67		0	
+True	255	L3	Sample 267	25.75		0	
+True	255	L4	Sample 268	27.70		0	
+True	65280	L5	Sample 269			0	
+True	65280	L6	Sample 270			0	
+True	255	L7	Sample 271	20.96		0	
+True	255	L8	Sample 272	23.76		0	
+True	255	L9	Sample 273	26.54		0	
+True	255	L10	Sample 274	28.53		0	
+True	65280	L11	Sample 275			0	
+True	65280	L12	Sample 276			0	
+True	255	L13	Sample 277	20.41		0	
+True	255	L14	Sample 278	23.97		0	
+True	255	L15	Sample 279	25.97		0	
+True	255	L16	Sample 280	28.64		0	
+True	65280	L17	Sample 281			0	
+True	65280	L18	Sample 282			0	
+True	255	L19	Sample 283	20.60		0	
+True	255	L20	Sample 284	23.75		0	
+True	255	L21	Sample 285	26.70		0	
+True	255	L22	Sample 286	28.72		0	
+True	65280	L23	Sample 287			0	
+True	65280	L24	Sample 288			0	
+True	255	M1	Sample 289	14.50		0	
+True	255	M2	Sample 290	16.96		0	
+True	255	M3	Sample 291	19.64		0	
+True	255	M4	Sample 292	22.35		0	
+True	65280	M5	Sample 293			0	
+True	65280	M6	Sample 294			0	
+True	255	M7	Sample 295	13.96		0	
+True	255	M8	Sample 296	17.45		0	
+True	255	M9	Sample 297	19.64		0	
+True	255	M10	Sample 298	21.63		0	
+True	255	M11	Sample 299	32.53		0	
+True	255	M12	Sample 300	35.65		0	
+True	255	M13	Sample 301	13.96		0	
+True	255	M14	Sample 302	16.94		0	
+True	255	M15	Sample 303	18.92		0	
+True	255	M16	Sample 304	21.35		0	
+True	255	M17	Sample 305	32.28		0	
+True	65280	M18	Sample 306			0	
+True	255	M19	Sample 307	13.89		0	
+True	255	M20	Sample 308	17.33		0	
+True	255	M21	Sample 309	19.33		0	
+True	255	M22	Sample 310	20.92		0	
+True	255	M23	Sample 311	32.94		0	
+True	65280	M24	Sample 312			0	
+True	255	N1	Sample 313	15.41		0	
+True	255	N2	Sample 314	17.68		0	
+True	255	N3	Sample 315	20.40		0	
+True	255	N4	Sample 316	22.47		0	
+True	65280	N5	Sample 317			0	
+True	65280	N6	Sample 318			0	
+True	255	N7	Sample 319	15.66		0	
+True	255	N8	Sample 320	17.62		0	
+True	255	N9	Sample 321	20.29		0	
+True	255	N10	Sample 322	22.43		0	
+True	255	N11	Sample 323	36.77		0	
+True	65280	N12	Sample 324			0	
+True	255	N13	Sample 325	14.59		0	
+True	255	N14	Sample 326	17.73		0	
+True	255	N15	Sample 327	18.94		0	
+True	255	N16	Sample 328	21.71		0	
+True	255	N17	Sample 329	30.00		0	
+True	65280	N18	Sample 330			0	
+True	255	N19	Sample 331	14.42		0	
+True	255	N20	Sample 332	17.63		0	
+True	255	N21	Sample 333	19.74		0	
+True	255	N22	Sample 334	22.33		0	
+True	255	N23	Sample 335	32.55		0	
+True	65280	N24	Sample 336			0	
+True	255	O1	Sample 337	19.44		0	
+True	255	O2	Sample 338	21.91		0	
+True	255	O3	Sample 339	23.93		0	
+True	255	O4	Sample 340	26.69		0	
+True	65280	O5	Sample 341			0	
+True	65280	O6	Sample 342			0	
+True	255	O7	Sample 343	20.24		0	
+True	255	O8	Sample 344	21.99		0	
+True	255	O9	Sample 345	24.89		0	
+True	255	O10	Sample 346	28.44		0	
+True	65280	O11	Sample 347			0	
+True	65280	O12	Sample 348			0	
+True	255	O13	Sample 349	19.68		0	
+True	255	O14	Sample 350	22.67		0	
+True	255	O15	Sample 351	24.64		0	
+True	255	O16	Sample 352	26.44		0	
+True	255	O17	Sample 353	32.97		0	
+True	65280	O18	Sample 354			0	
+True	255	O19	Sample 355	19.98		0	
+True	255	O20	Sample 356	22.94		0	
+True	255	O21	Sample 357	24.65		0	
+True	255	O22	Sample 358	26.83		0	
+True	65280	O23	Sample 359			0	
+True	65280	O24	Sample 360			0	
+True	255	P1	Sample 361	20.44		0	
+True	255	P2	Sample 362	22.91		0	
+True	255	P3	Sample 363	26.28		0	
+True	255	P4	Sample 364	28.58		0	
+True	65280	P5	Sample 365			0	
+True	65280	P6	Sample 366			0	
+True	255	P7	Sample 367	19.92		0	
+True	255	P8	Sample 368	21.72		0	
+True	255	P9	Sample 369	25.59		0	
+True	255	P10	Sample 370	28.26		0	
+True	65280	P11	Sample 371			0	
+True	65280	P12	Sample 372			0	
+True	255	P13	Sample 373	19.34		0	
+True	255	P14	Sample 374	22.65		0	
+True	255	P15	Sample 375	25.78		0	
+True	255	P16	Sample 376	26.68		0	
+True	65280	P17	Sample 377			0	
+True	65280	P18	Sample 378			0	
+True	255	P19	Sample 379	19.79		0	
+True	255	P20	Sample 380	21.93		0	
+True	255	P21	Sample 381	25.25		0	
+True	255	P22	Sample 382	27.91		0	
+True	255	P23	Sample 383	33.71		0	
+True	65280	P24	Sample 384			0	
