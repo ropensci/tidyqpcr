@@ -8,8 +8,11 @@ Depends: R (>= 3.1.0)
 Imports:
     dplyr,
     reshape2,
+    readr,
     readxl,
     ggplot2,
     cowplot
+Suggests: knitr
+VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true
