@@ -8,6 +8,56 @@ create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
     return(plate)
 }
 
+create_colkey_6in24 <- function(...) {
+    ## creates a 24-column key with 3+RT Techreps and 1-RT
+    ## suitable for 6 pieces (samples or target/probe sets)
+    ## example: create_colkey_6in24(Sample=LETTERS[1:6])
+    
+    colkey <- tibble(WellC=1:24,
+                          Type=c(rep("+RT",18),rep("-RT",6)) %>% 
+                              factor(levels=c("+RT","-RT")),
+                          TechRep=rep(c(1,2,3,1),each=6) %>% 
+                              factor(levels=1:3) )
+    if( !missing(...) ) {
+        pieces6 <- list(...) %>% as_tibble()
+        stopifnot(nrow(pieces6) == 6)
+        pieces24 <- bind_rows(pieces6,pieces6,pieces6,pieces6)
+        colkey <- bind_cols(colkey, pieces24)
+    }
+    return(colkey)
+}
+
+create_rowkey_4in16 <- function(...) {
+    ## creates a 16-row key suitable for 4 pieces (samples or target/probe sets)
+    ## example: create_rowkey_4in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))
+    rowkey <- tibble(WellR=LETTERS[1:16],
+                     Type=c(rep("+RT",12),rep("-RT",4)) %>% 
+                         factor(levels=c("+RT","-RT")),
+                     TechRep=rep(c(1,2,3,1),each=4) %>% 
+                         factor(levels=1:3) )
+    if( !missing(...) ) {
+        pieces4 <- list(...) %>% as_tibble()
+        stopifnot(nrow(pieces4) == 4)
+        pieces16 <- bind_rows(pieces4,pieces4)
+        rowkey <- bind_cols(rowkey, pieces16)
+    }
+    return(rowkey)
+}
+
+create_rowkey_8in16_plain <- function(...) {
+    ## creates a 16-row key suitable for 8 pieces (samples or target/probe sets)
+    ## example: create_rowkey_8in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))
+    rowkey <- tibble(WellR=LETTERS[1:16])
+    if( !missing(...) ) {
+        pieces8 <- list(...) %>% as_tibble()
+        stopifnot(nrow(pieces8) == 8)
+        pieces16 <- bind_rows(pieces8,pieces8)
+        rowkey <- bind_cols(rowkey, pieces16)
+    }
+    return(rowkey)
+}
+
+
 label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
     ## label a plate by row and column keys
     if (!is.null(colkey)) {

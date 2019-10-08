@@ -56,23 +56,28 @@ Reverse transcription by random primers (mixed with oligo-dT??)
 
 
 ```{r label_plates,dependson="plate_functions"}
-Probes <- c("HOR7", "HSP12", "HSP26", "HSP78", "HSP104", "RTC3", "SSA4", "PGK1", "ALG9", " HHT2", "HTB2", "RPS3", "RPS13", "RPS15", "RPS30A", "RPL39")
 
-HSlevels=c("-","+")
-Druglevels=c("C","P","T")
-Conditionlevels=paste0(Druglevels,rep(HSlevels,each=3))
+# list Targets /Probes
+Probes <- c("HOR7", "HSP12", "HSP26", "HSP78", 
+            "HSP104", "RTC3", "SSA4", "PGK1", 
+            "ALG9", " HHT2", "HTB2", "RPS3", 
+            "RPS13", "RPS15", "RPS30A", "RPL39")
 
-rowkey <- data.frame(WellR=LETTERS[1:16],
-                     Probe=factor(Probes,levels=Probes)
-                     ) 
+rowkey <- tibble(WellR=LETTERS[1:16],
+                 Probe=factor(Probes,levels=Probes) 
+                 ) 
 
-colkey <- data.frame(WellC=1:24,
-                     Type=c(rep("+RT",18),rep("-RT",6)),
-                     TechRep=rep(c(1,2,3,1),each=6) %>% factor(),
-                     HS=factor(rep(HSlevels,each=3),levels=HSlevels),
-                     Drug=factor(Druglevels,levels=Druglevels)
-                     ) %>%
-    mutate(Condition=paste0(Drug,HS) %>% factor(levels=Conditionlevels))
+# Set up experimental samples
+HSlevels <- c("-","+")
+HSvalues <- factor(rep(HSlevels,each=3),levels=HSlevels)
+Druglevels <- c("C","P","T")
+Drugvalues <- factor(rep(Druglevels,times=2),levels=Druglevels)
+Conditionlevels <- paste0(Druglevels,rep(HSlevels,each=3))
+Conditionvalues <- factor(Conditionlevels,levels=Conditionlevels)
+
+colkey <- create_colkey_6in24(HS=HSvalues,
+                              Drug=Drugvalues,
+                              Condition=Conditionvalues)
 
 plateplan <-     
     label_plate_rowcol(create_blank_plate(WellR = LETTERS[1:16],WellC=1:24),
@@ -84,7 +89,7 @@ plateplan <-
 
 ```{r display_plates,fig.height=9,fig.width=10,dependson="label_plates"}
 display_plate( plateplan %>%
-    mutate(Sample=paste0(Drug,HS)) )
+    mutate(Sample=Condition) )
 ```
 
 ## Load and summarize data
