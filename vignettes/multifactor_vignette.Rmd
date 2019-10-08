@@ -36,13 +36,6 @@ Test 6 conditions. That's 3 transcriptional inhibitors (no drug control, 150ug/m
 ## knitr options for report generation
 knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
                       results="show")
-
-
-## data processing options, packages, functions
-options(stringsAsFactors=FALSE)  # load character strings as strings
-
-knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
-                      results="show")
 library(tidyverse)
 library(cowplot)
 library(tidyqpcr)
