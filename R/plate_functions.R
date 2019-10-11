@@ -27,6 +27,43 @@ create_colkey_6in24 <- function(...) {
     return(colkey)
 }
 
+create_colkey_4dilutions_mRTNT_in24 <- function(
+                     Dilution=c(1,1/5,1/25,1/125,1,1),
+                     DilutionNice=c("1x","5x","25x","125x","-RT","NT"),
+                     Type=c(rep("+RT",4),"-RT","NT"),
+                     BioRep=rep(c("A","B"),each=12,length.out=24),
+                     TechRep = rep(1:2,each=6,length.out=24)) {
+    ## creates a 24-column key for primer calibration
+    ## With 2x BioReps and 2x TechReps
+    ## 5-fold dilution until 5^4 of +RT; then -RT, NT controls
+    colkey <- tibble(WellC=1:24,
+                     Dilution=rep(Dilution,4),
+                     DilutionNice=rep(DilutionNice,4),
+                     Type=rep(Type,4) %>%
+                         factor(levels=c("+RT","-RT","NT")),
+                     BioRep=factor(BioRep),
+                     TechRep=factor(TechRep))
+    return(colkey)
+}
+
+create_colkey_6dilutions_mRTNT_in24 <- function(
+                     Dilution=c(5^{0:-5},1,1),
+                     DilutionNice=c("1x","5x","25x","125x",
+                                    "625x","3125x","-RT","NT"),
+                     Type=c(rep("+RT",6),"-RT","NT"),
+                     TechRep = rep(1:3,each=8,length.out=24)) {
+    ## creates a 24-column key for primer calibration
+    ## With 3x TechReps
+    ## 5-fold dilution until 5^6 of +RT; then -RT, NT controls
+    colkey <- tibble(WellC=1:24,
+                     Dilution=rep(Dilution,3),
+                     DilutionNice=rep(DilutionNice,3),
+                     Type=rep(Type,3) %>%
+                         factor(levels=c("+RT","-RT","NT")),
+                     TechRep=factor(TechRep))
+    return(colkey)
+}
+
 create_rowkey_4in16 <- function(...) {
     ## creates a 16-row key suitable for 4 pieces (samples or target/probe sets)
     ## example: create_rowkey_4in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))

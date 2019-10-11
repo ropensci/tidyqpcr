@@ -64,34 +64,30 @@ theme_set(theme_cowplot(font_size=11) %+replace%
 
 
 ```{r label_plates,dependson="plate_functions"}
-Names <- c("ECM38","FET5","GPT2","ILV5","NRD1","RDL1","TFS1")
+# Names of target genes
+Names <- c("ECM38","FET5","GPT2","ILV5","NRD1","RDL1","TFS1") 
+# ORF ids of target genes
 Targets  <- c("YLR299W","YFL041W","YKR067W","YLR355C","YNL251C","YOR285W","YLR178C")
+# Repeats of gene names to account for resting multiple probesets
 Namesrep <- c(rep(Names[1:2],each=3),rep(Names[3:7],each=2))
+# id numbers of multiple probesets (reflecting IDs as ordered)
 Probes <- paste(Namesrep,
                 c(1,2,3,1,3,4,1,4,1,4,1,2,4,5,1,5),sep="_")
-
-Probelevels <- Probes
 
 
 rowkey <- data.frame(WellR=LETTERS[1:16],
                      Names=Namesrep,
                      # Targets=rep(Targets,each=2),
-                     Probe=Probes
+                     Probe=factor(Probes, levels=Probes)
 )
 
-colkey <- data.frame(WellC=1:24,
-                     Dilution=rep(c(1,1/5,1/25,1/125,1,1)),
-                     DilutionNice=rep(c("1x","5x","25x","125x","-RT","NT")),
-                     Type=c(rep("+RT",4),"-RT","NT"),
-                     BioRep=rep(c("A","B"),each=12),
-                     TechRep = rep(c("A","B"),each=6),
-                     RT="SSIV")
 
 plate1plan <- 
     label_plate_rowcol(
         create_blank_plate(),
-        rowkey,colkey) %>%
-    mutate(Sample=paste(BioRep,str_sub(RT,end=1L),DilutionNice,sep="_"))
+        rowkey,
+        create_colkey_4dilutions_mRTNT_in24()) %>%
+    mutate(Sample=paste(BioRep,DilutionNice,sep="_"))
 
 
 ```
@@ -110,7 +106,7 @@ display_plate(plate1plan)
 
 # read my plates
 
-plates <- read_tsv("../inst/extdata/Edward qPCR Nrd1 calibration 2019-02-02 Ct.txt",
+plates <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt",
                        skip=1) %>%
     mutate(Well=Pos,Ct=Cp) %>%
     right_join(plate1plan)
@@ -136,7 +132,7 @@ ggplot(data=plates) +
                position=position_jitter(width = 0.2,height=0)) +
     labs(y="Cycle count to threshold",
          title="All reps, unnormalized") +
-    facet_grid(RT~BioRep) +
+    facet_wrap(~BioRep) +
     panel_border() +
     theme(axis.text.x=element_text(angle=90,vjust=0.5))
 ```
@@ -189,7 +185,7 @@ ggplot(data=filter(plates,Type=="+RT",Probe %in% Probesnice),
 
 ```{r load_amp,dependson="label_plates",results="show"}
 
-plate1curve <- read_tsv("../inst/extdata/Edward qPCR Nrd1 calibration 2019-02-02.txt",
+plate1curve <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt",
                        skip=2,
                         col_names=c("Well","SID","Program","Segment",
                                     "Cycle","Time","Temperature","Fluor") 
@@ -197,10 +193,15 @@ plate1curve <- read_tsv("../inst/extdata/Edward qPCR Nrd1 calibration 2019-02-02
     debaseline() %>%
     left_join(plate1plan) 
 
+# amplification curve is program 2
+platesamp  <- plate1curve %>% 
+  filter(Program == 2)
 
-platesamp  <- plate1curve %>% filter(Program == 2)
-
-platesmelt <- plate1curve %>% filter(Program > 2) %>% demelt() %>% filter(Temperature >= 61)
+# melt curve is program 3 or 4, depending on cycle
+platesmelt <- plate1curve %>% 
+  filter(Program > 2) %>% 
+  demelt() %>% 
+  filter(Temperature >= 61)
 
 ```
 
@@ -218,27 +219,27 @@ ggplot(data=platesamp %>% filter(Well=="A1"),
 
 ```{r print_techreps,results="show",echo=TRUE,cache=FALSE,eval="FALSE"}
 plate1plan %>% 
-           filter(TechRep=="A",Probe==Probes[1],DilutionNice=="1x")
+           filter(TechRep=="1",Probe==Probes[1],DilutionNice=="1x")
 
 plate1plan %>% 
-           filter(TechRep=="B",Probe==Probes[1],DilutionNice=="1x")
+           filter(TechRep=="2",Probe==Probes[1],DilutionNice=="1x")
 ```
 
 
 ```{r plotamp_all,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(data=platesamp %>% 
-           filter(TechRep=="A"),
+           filter(TechRep=="1"),
        aes(x=Cycle,y=Signal,colour=factor(Dilution),linetype=Type)) + 
-    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    facet_grid(Probe~BioRep,scales="free_y") + 
     scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
     labs(title="All Amp Curves, TechRep A") 
 
 ggplot(data=platesamp %>% 
-           filter(TechRep=="B"),
+           filter(TechRep=="2"),
        aes(x=Cycle,y=Signal,colour=factor(Dilution),linetype=Type)) + 
-    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    facet_grid(Probe~BioRep,scales="free_y") + 
     scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
@@ -266,16 +267,16 @@ ggplot(data=platesmelt %>%
 
 ```{r plotmelt_all,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(data=platesmelt %>% 
-           filter(TechRep=="A"),
+           filter(TechRep=="1"),
        aes(x=Temperature,y=dRdT,colour=factor(Dilution),linetype=Type)) + 
-    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    facet_grid(Probe~BioRep,scales="free_y") + 
     scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
     labs(title="All Melt Curves, TechRep A") 
 
 ggplot(data=platesmelt %>% 
-           filter(TechRep=="B"),
+           filter(TechRep=="2"),
        aes(x=Temperature,y=dRdT,colour=factor(Dilution),linetype=Type)) + 
     facet_grid(Probe~BioRep,scales="free_y") + 
     scale_linetype_manual(values=c("+RT"="solid","-RT"="dashed","NT"="dotted")) + 
@@ -290,7 +291,7 @@ ggplot(data=platesmelt %>%
 
 ```{r plotmelt_SS_zoomed,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(data=platesmelt %>% 
-           filter(TechRep=="A",Type=="+RT"),
+           filter(TechRep=="1",Type=="+RT"),
        aes(x=Temperature,y=dRdT,colour=factor(Dilution))) + 
     facet_grid(Probe~BioRep,scales="free_y") + 
     geom_line() +
@@ -301,9 +302,9 @@ ggplot(data=platesmelt %>%
           panel.grid.minor.x=element_line(colour="grey70",size=0.1))
 
 ggplot(data=platesmelt %>% 
-           filter(TechRep=="B",Type=="+RT",RT=="SSIV"),
+           filter(TechRep=="2",Type=="+RT"),
        aes(x=Temperature,y=dRdT,colour=factor(Dilution))) + 
-    facet_grid(Probe~RT+BioRep,scales="free_y") + 
+    facet_grid(Probe~BioRep,scales="free_y") + 
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
                        limits=c(73,87)) + 
@@ -319,14 +320,14 @@ ggplot(data=platesmelt %>%
 ```{r plotmelt_SS_zoomed_nice,dependson="load_amp",fig.height=6,fig.width=4}
 Probesnice <- c("ECM38_3","FET5_1","GPT2_4","ILV5_4","NRD1_1","RDL1_4","TFS1_1")
 ggplot(data=platesmelt %>% 
-           filter(TechRep=="A",Type=="+RT",DilutionNice=="1x",
+           filter(TechRep=="1",Type=="+RT",DilutionNice=="1x",
                   Probe %in% Probesnice),
        aes(x=Temperature,y=dRdT,colour=BioRep)) + 
     facet_grid(Probe~.,scales="free_y") + 
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
                        limits=c(73,87)) + 
-    labs(title="Melt curves, zoomed, Nice probes, TechRep A") +
+    labs(title="Nice probes, TechRep A") +
     theme(panel.grid.major.x=element_line(colour="grey50",size=0.4),
           panel.grid.minor.x=element_line(colour="grey70",size=0.1))
 ```
