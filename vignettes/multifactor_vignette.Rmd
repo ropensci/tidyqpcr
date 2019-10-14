@@ -2,11 +2,10 @@
 title: "Multifactorial multi-plate qPCR analysis"
 author: "Edward Wallace"
 date: "June 2018"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Multifactorial}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
 ---
 
 # Plan
@@ -35,7 +34,7 @@ Test 6 conditions. That's 3 transcriptional inhibitors (no drug control, 150ug/m
 ```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
 
 ## knitr options for report generation
-knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=TRUE,cache=FALSE,
+knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=FALSE,cache=FALSE,
                       results="show")
 library(tidyverse)
 library(cowplot)
