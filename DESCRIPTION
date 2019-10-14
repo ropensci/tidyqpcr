@@ -11,7 +11,8 @@ Imports:
     readr,
     readxl,
     ggplot2,
-    cowplot
+    cowplot,
+    tidyverse
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 License: Apache License 2.0
