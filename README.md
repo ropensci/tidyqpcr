@@ -5,11 +5,11 @@ qPCR analysis with the tidyverse
 
 ```
 library(devtools)
-devtools::install_github("ewallace/tidyqpcr")
+devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE)
 ```
 
 ## Use
-run the vignettes
+Run the vignettes, see `vignette(package="tidyqpcr")` from your R session.
 
 * calibration_vignette.Rmd - qPCR primer calibration
 * multifactor_vignette.Rmd - RT-qPCR of gene expression in multifactorial design
