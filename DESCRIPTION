@@ -11,8 +11,9 @@ Imports:
     readr,
     readxl,
     ggplot2,
-    cowplot
-Suggests: knitr
+    cowplot,
+    tidyverse
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true
