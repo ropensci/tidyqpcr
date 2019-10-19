@@ -1,10 +1,17 @@
 
+#' Create a blank plate template as a tibble
+#' 
+#' @param WellR Vector of Row descriptors, usually LETTERS
+#' @param WellC Vector of Column descriptors, usually numbers
+#' @return tibble (data frame) containing all pairwise combinations of WellR and WellC, as well as individual Well names in its own columns. Both WellR and WellC are coerced to character vectors, even if WellC is supplied as numbers. Default value is a 384-well plate.
+#' @examples
+#' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
+#' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
-    ## create blank plate data frame
-    plate <- expand.grid(WellR=WellR,WellC=WellC)
-    plate$Well   <- with(plate,paste0(WellR,WellC))
-    # plate$Sample <- NA
-    # plate$Probe  <- NA
+    plate <- tidyr::crossing(WellR=as.character(WellR),
+                         WellC=as.character(WellC)) %>%
+        tibble::as_tibble() %>%
+        tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
 }
 
