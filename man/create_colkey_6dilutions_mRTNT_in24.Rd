@@ -21,7 +21,7 @@ NT)}
 \item{TechRep}{Character vector of length 8 describing technical replicates}
 }
 \value{
-tibble (data frame) with 24 rows, and columns WellC, Dilution,
+tibble (data frame) with 24 rows, and variables WellC, Dilution,
   DilutionNice, Type, BioRep, TechRep.
 }
 \description{
@@ -37,6 +37,7 @@ Other plate creation functions: \code{\link{create_blank_plate}},
   \code{\link{create_colkey_4dilutions_mRTNT_in24}},
   \code{\link{create_colkey_6in24}},
   \code{\link{create_rowkey_4in16}},
-  \code{\link{create_rowkey_8in16_plain}}
+  \code{\link{create_rowkey_8in16_plain}},
+  \code{\link{label_plate_rowcol}}
 }
 \concept{plate creation functions}

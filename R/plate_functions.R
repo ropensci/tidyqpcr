@@ -13,8 +13,8 @@
 #' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
 #' @family plate creation functions
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
-    plate <- tidyr::crossing(WellR=as.character(WellR),
-                         WellC=as.character(WellC)) %>%
+    plate <- tidyr::crossing(WellR=factor(WellR),
+                         WellC=factor(WellC)) %>%
         tibble::as_tibble() %>%
         tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
@@ -31,7 +31,7 @@ create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
 #' create_colkey_6in24(Sample=LETTERS[1:6])
 #' @family plate creation functions
 create_colkey_6in24 <- function(...) {
-    colkey <- tibble(WellC=as.character(1:24),
+    colkey <- tibble(WellC=factor(1:24),
                      Type=c(rep("+RT",18),rep("-RT",6)) %>% 
                          factor(levels=c("+RT","-RT")),
                      TechRep=rep(c(1,2,3,1),each=6) %>% 
@@ -69,7 +69,7 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
                      Type=c(rep("+RT",4),"-RT","NT"),
                      BioRep=rep(c("A","B"),each=12,length.out=24),
                      TechRep = rep(1:2,each=6,length.out=24)) {
-    colkey <- tibble(WellC=as.character(1:24),
+    colkey <- tibble(WellC=factor(1:24),
                      Dilution=rep(Dilution,4),
                      DilutionNice=rep(DilutionNice,4),
                      Type=rep(Type,4) %>%
@@ -91,7 +91,7 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
 #' @param Type Character vector of length 8 describing type of sample (+RT, -RT,
 #'   NT)
 #' @param TechRep Character vector of length 8 describing technical replicates
-#' @return tibble (data frame) with 24 rows, and columns WellC, Dilution,
+#' @return tibble (data frame) with 24 rows, and variables WellC, Dilution,
 #'   DilutionNice, Type, BioRep, TechRep.
 #' @examples
 #' create_colkey_6dilutions_mRTNT_in24()
@@ -102,10 +102,7 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
                                     "625x","3125x","-RT","NT"),
                      Type=c(rep("+RT",6),"-RT","NT"),
                      TechRep = rep(1:3,each=8,length.out=24)) {
-    ## creates a 24-column key for primer calibration
-    ## With 3x TechReps
-    ## 5-fold dilution until 5^6 of +RT; then -RT, NT controls
-    colkey <- tibble(WellC=as.character(1:24),
+    colkey <- tibble(WellC=factor(1:24),
                      Dilution=rep(Dilution,3),
                      DilutionNice=rep(DilutionNice,3),
                      Type=rep(Type,3) %>%
@@ -121,7 +118,7 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
 #'
 #' @param ... Vectors of length 4 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and columns WellR, Type, TechRep,
+#' @return tibble (data frame) with 16 rows, and variables WellR, Type, TechRep,
 #'   and supplied values.
 #' @examples
 #' create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
@@ -148,7 +145,7 @@ create_rowkey_4in16 <- function(...) {
 #'
 #' @param ... Vectors of length 8 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and columns WellC, and supplied
+#' @return tibble (data frame) with 16 rows, and variables WellC, and supplied
 #'   values.
 #' @examples
 #' create_rowkey_8in16_plain(Sample=c("me","you","them","him",
@@ -165,17 +162,36 @@ create_rowkey_8in16_plain <- function(...) {
     return(rowkey)
 }
 
-
+#' Label a plate with sample and probe information
+#'
+#' See vignettes for further examples
+#'
+#' @param plate tibble (data frame) with variables WellR, WellC, Well. This
+#'   would usually be produced by create_blank_plate(). It is possible to
+#'   include other information in additional variables
+#' @param rowkey tibble (data frame) describing plate rows, with variables WellR
+#'   and others.
+#' @param colkey tibble (data frame) describing plate columns, with variables
+#'   WellC and others.
+#' @return tibble (data frame) with variables WellR, WellC, Well. This contains
+#'   all combinations of WellR and WellC found in the input plate, and all
+#'   information supplied in rowkey and colkey distributed across every well as
+#'   well of the plate. Return plate is ordered by row WellR then column WellC. 
+#'   Note this may cause a problem if WellC is a character (1,10,11,...), 
+#'   instead of a factor or integer (1,2,3,...)
+#' @examples
+#' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
+#' @family plate creation functions
 label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
-    ## label a plate by row and column keys
     if (!is.null(colkey)) {
-        plate <- merge(plate,colkey,by="WellC")
+        plate <- dplyr::left_join(plate,colkey,by="WellC")
     }
     if (!is.null(rowkey)) {
-        plate <- merge(plate,rowkey,by="WellR")
+        plate <- dplyr::left_join(plate,rowkey,by="WellR")
     }
-    return(plate[order(plate$WellR,plate$WellC),])
+    return( dplyr::arrange( plate, WellR, WellC ) )
 }
+
 
 display_plate <- function(plate) {
     ggplot(data=plate,aes(x=factor(WellC),

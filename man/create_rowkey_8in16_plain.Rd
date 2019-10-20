@@ -11,7 +11,7 @@ create_rowkey_8in16_plain(...)
 probe.}
 }
 \value{
-tibble (data frame) with 16 rows, and columns WellC, and supplied
+tibble (data frame) with 16 rows, and variables WellC, and supplied
   values.
 }
 \description{
@@ -27,6 +27,7 @@ Other plate creation functions: \code{\link{create_blank_plate}},
   \code{\link{create_colkey_4dilutions_mRTNT_in24}},
   \code{\link{create_colkey_6dilutions_mRTNT_in24}},
   \code{\link{create_colkey_6in24}},
-  \code{\link{create_rowkey_4in16}}
+  \code{\link{create_rowkey_4in16}},
+  \code{\link{label_plate_rowcol}}
 }
 \concept{plate creation functions}
