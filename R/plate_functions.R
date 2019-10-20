@@ -1,12 +1,17 @@
 
 #' Create a blank plate template as a tibble
 #' 
-#' @param WellR Vector of Row descriptors, usually LETTERS
-#' @param WellC Vector of Column descriptors, usually numbers
-#' @return tibble (data frame) containing all pairwise combinations of WellR and WellC, as well as individual Well names in its own columns. Both WellR and WellC are coerced to character vectors, even if WellC is supplied as numbers. Default value is a 384-well plate.
+#' @param WellR Vector of Row labels, usually LETTERS
+#' @param WellC Vector of Column labels, usually numbers
+#' @return tibble (data frame) with columns WellR, WellC, Well. This contains
+#'   all pairwise combinations of WellR and WellC, as well as individual Well
+#'   names. Both WellR and WellC are coerced to character vectors, even if WellC
+#'   is supplied as numbers.
+#'   Default value describes a full 384-well plate.
 #' @examples
 #' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
 #' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
+#' @family plate creation functions
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
     plate <- tidyr::crossing(WellR=as.character(WellR),
                          WellC=as.character(WellC)) %>%
@@ -15,16 +20,22 @@ create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
     return(plate)
 }
 
+#' Create a 6-value, 24-column key for plates
+#' 
+#' Create a 24-column key with 6 values repeated over 24 plate columns. 
+#' Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
+#' 
+#' @param ... Vectors of length 6 describing well contents, e.g. sample or probe. 
+#' @return tibble (data frame) with 24 rows, and columns WellC, Type, TechRep, and supplied values. 
+#' @examples
+#' create_colkey_6in24(Sample=LETTERS[1:6])
+#' @family plate creation functions
 create_colkey_6in24 <- function(...) {
-    ## creates a 24-column key with 3+RT Techreps and 1-RT
-    ## suitable for 6 pieces (samples or target/probe sets)
-    ## example: create_colkey_6in24(Sample=LETTERS[1:6])
-    
-    colkey <- tibble(WellC=1:24,
-                          Type=c(rep("+RT",18),rep("-RT",6)) %>% 
-                              factor(levels=c("+RT","-RT")),
-                          TechRep=rep(c(1,2,3,1),each=6) %>% 
-                              factor(levels=1:3) )
+    colkey <- tibble(WellC=as.character(1:24),
+                     Type=c(rep("+RT",18),rep("-RT",6)) %>% 
+                         factor(levels=c("+RT","-RT")),
+                     TechRep=rep(c(1,2,3,1),each=6) %>% 
+                         factor(levels=1:3) )
     if( !missing(...) ) {
         pieces6 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces6) == 6)
@@ -34,16 +45,31 @@ create_colkey_6in24 <- function(...) {
     return(colkey)
 }
 
+#' Create a 4-dilution column key for primer calibration
+#'
+#' Creates a 24-column key for primer calibration, with 2x BioReps and 2x
+#' TechReps, and 5-fold dilution until 5^4 of +RT; then -RT, NT controls. That
+#' is a total of 6 versions of each sample replicate.
+#'
+#' @param Dilution Numeric vector of length 6 describing sample dilutions
+#' @param DilutionNice Character vector of length 6 with nice labels for sample
+#'   dilutions
+#' @param Type Character vector of length 6 describing type of sample (+RT, -RT,
+#'   NT)
+#' @param BioRep Character vector of length 6 describing biological replicates
+#' @param TechRep Character vector of length 6 describing technical replicates
+#' @return tibble (data frame) with 24 rows, and columns WellC, Dilution,
+#'   DilutionNice, Type, BioRep, TechRep.
+#' @examples
+#' create_colkey_4dilutions_mRTNT_in24()
+#' @family plate creation functions
 create_colkey_4dilutions_mRTNT_in24 <- function(
                      Dilution=c(1,1/5,1/25,1/125,1,1),
                      DilutionNice=c("1x","5x","25x","125x","-RT","NT"),
                      Type=c(rep("+RT",4),"-RT","NT"),
                      BioRep=rep(c("A","B"),each=12,length.out=24),
                      TechRep = rep(1:2,each=6,length.out=24)) {
-    ## creates a 24-column key for primer calibration
-    ## With 2x BioReps and 2x TechReps
-    ## 5-fold dilution until 5^4 of +RT; then -RT, NT controls
-    colkey <- tibble(WellC=1:24,
+    colkey <- tibble(WellC=as.character(1:24),
                      Dilution=rep(Dilution,4),
                      DilutionNice=rep(DilutionNice,4),
                      Type=rep(Type,4) %>%
@@ -53,6 +79,23 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
     return(colkey)
 }
 
+#' Create a 6-dilution column key for primer calibration
+#'
+#' Creates a 24-column key for primer calibration, with 1x BioReps and 3x
+#' TechReps, and 5-fold dilution until 5^6 of +RT; then -RT, NT controls. That
+#' is a total of 8 versions of each replicate.
+#'
+#' @param Dilution Numeric vector of length 8 describing sample dilutions
+#' @param DilutionNice Character vector of length 8 with nice labels for sample
+#'   dilutions
+#' @param Type Character vector of length 8 describing type of sample (+RT, -RT,
+#'   NT)
+#' @param TechRep Character vector of length 8 describing technical replicates
+#' @return tibble (data frame) with 24 rows, and columns WellC, Dilution,
+#'   DilutionNice, Type, BioRep, TechRep.
+#' @examples
+#' create_colkey_6dilutions_mRTNT_in24()
+#' @family plate creation functions
 create_colkey_6dilutions_mRTNT_in24 <- function(
                      Dilution=c(5^{0:-5},1,1),
                      DilutionNice=c("1x","5x","25x","125x",
@@ -62,7 +105,7 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
     ## creates a 24-column key for primer calibration
     ## With 3x TechReps
     ## 5-fold dilution until 5^6 of +RT; then -RT, NT controls
-    colkey <- tibble(WellC=1:24,
+    colkey <- tibble(WellC=as.character(1:24),
                      Dilution=rep(Dilution,3),
                      DilutionNice=rep(DilutionNice,3),
                      Type=rep(Type,3) %>%
@@ -71,9 +114,19 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
     return(colkey)
 }
 
+#' Create a 4-value, 16-row key for plates
+#'
+#' Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4
+#' values is repeated over 3x +RT Techreps and 1x -RT.
+#'
+#' @param ... Vectors of length 4 describing well contents, e.g. sample or
+#'   probe.
+#' @return tibble (data frame) with 16 rows, and columns WellR, Type, TechRep,
+#'   and supplied values.
+#' @examples
+#' create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
+#' @family plate creation functions
 create_rowkey_4in16 <- function(...) {
-    ## creates a 16-row key suitable for 4 pieces (samples or target/probe sets)
-    ## example: create_rowkey_4in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))
     rowkey <- tibble(WellR=LETTERS[1:16],
                      Type=c(rep("+RT",12),rep("-RT",4)) %>% 
                          factor(levels=c("+RT","-RT")),
@@ -82,15 +135,26 @@ create_rowkey_4in16 <- function(...) {
     if( !missing(...) ) {
         pieces4 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces4) == 4)
-        pieces16 <- bind_rows(pieces4,pieces4)
+        pieces16 <- bind_rows(pieces4,pieces4,pieces4,pieces4)
         rowkey <- bind_cols(rowkey, pieces16)
     }
     return(rowkey)
 }
 
+#' Create a plain 8-value, 16-row key for plates
+#'
+#' Create a 16-row key with 8 values repeated over 16 plate rows. No other
+#' information is included by default, hence "plain".
+#'
+#' @param ... Vectors of length 8 describing well contents, e.g. sample or
+#'   probe.
+#' @return tibble (data frame) with 16 rows, and columns WellC, and supplied
+#'   values.
+#' @examples
+#' create_rowkey_8in16_plain(Sample=c("me","you","them","him",
+#'                                    "her","dog","cat","monkey"))
+#' @family plate creation functions
 create_rowkey_8in16_plain <- function(...) {
-    ## creates a 16-row key suitable for 8 pieces (samples or target/probe sets)
-    ## example: create_rowkey_8in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))
     rowkey <- tibble(WellR=LETTERS[1:16])
     if( !missing(...) ) {
         pieces8 <- list(...) %>% as_tibble()

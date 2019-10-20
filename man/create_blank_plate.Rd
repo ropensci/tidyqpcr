@@ -7,12 +7,16 @@
 create_blank_plate(WellR = LETTERS[1:16], WellC = 1:24)
 }
 \arguments{
-\item{WellR}{Vector of Row descriptors, usually LETTERS}
+\item{WellR}{Vector of Row labels, usually LETTERS}
 
-\item{WellC}{Vector of Column descriptors, usually numbers}
+\item{WellC}{Vector of Column labels, usually numbers}
 }
 \value{
-tibble (data frame) containing all pairwise combinations of WellR and WellC, as well as individual Well names in its own columns. Both WellR and WellC are coerced to character vectors, even if WellC is supplied as numbers. Default value is a 384-well plate.
+tibble (data frame) with columns WellR, WellC, Well. This contains
+  all pairwise combinations of WellR and WellC, as well as individual Well
+  names. Both WellR and WellC are coerced to character vectors, even if WellC
+  is supplied as numbers.
+  Default value describes a full 384-well plate.
 }
 \description{
 Create a blank plate template as a tibble
@@ -21,3 +25,11 @@ Create a blank plate template as a tibble
 create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
 create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
 }
+\seealso{
+Other plate creation functions: \code{\link{create_colkey_4dilutions_mRTNT_in24}},
+  \code{\link{create_colkey_6dilutions_mRTNT_in24}},
+  \code{\link{create_colkey_6in24}},
+  \code{\link{create_rowkey_4in16}},
+  \code{\link{create_rowkey_8in16_plain}}
+}
+\concept{plate creation functions}
