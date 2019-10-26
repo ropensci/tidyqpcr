@@ -222,15 +222,17 @@ display_plate <- function(plate) {
 #' @describeIn normalizeqPCR get the median value of a set of normalization
 #'   (reference) probes, for each sample.
 getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
-    ### function to take data frame and attach a column to normalize things by.
+    # make subset of ct_df where gene is one of normProbes
+    norm.by <- dplyr::filter(ct_df, 
+                             !!sym(probename) %in% normProbes) %>%
+        .[[value]] %>%
+        median(na.rm=TRUE)
     
-    # make subset of df where gene is one of normGenes
-    subdf <- ct_df[ct_df[[probename]] %in% normProbes,]
-    
-    # assign median of value to df$normct
+    # assign median of value to ct_df$norm.by
     # note this is the same value for every row, a waste of space technically
-    ct_df$norm.by <- median(subdf[[value]],na.rm=TRUE)
-    return(ct_df)
+    ct_df %>%
+        dplyr::mutate(norm.by = norm.by) %>%
+        return()
 }
 
 #' Normalize cycle count (log2-fold) data within Sample
