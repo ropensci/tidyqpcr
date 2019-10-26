@@ -1,23 +1,41 @@
 
+#' Create a blank plate template as a tibble
+#' 
+#' @param WellR Vector of Row labels, usually LETTERS
+#' @param WellC Vector of Column labels, usually numbers
+#' @return tibble (data frame) with columns WellR, WellC, Well. This contains
+#'   all pairwise combinations of WellR and WellC, as well as individual Well
+#'   names. Both WellR and WellC are coerced to character vectors, even if WellC
+#'   is supplied as numbers.
+#'   Default value describes a full 384-well plate.
+#' @examples
+#' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
+#' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
+#' @family plate creation functions
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
-    ## create blank plate data frame
-    plate <- expand.grid(WellR=WellR,WellC=WellC)
-    plate$Well   <- with(plate,paste0(WellR,WellC))
-    # plate$Sample <- NA
-    # plate$Probe  <- NA
+    plate <- tidyr::crossing(WellR=factor(WellR),
+                         WellC=factor(WellC)) %>%
+        tibble::as_tibble() %>%
+        tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
 }
 
+#' Create a 6-value, 24-column key for plates
+#' 
+#' Create a 24-column key with 6 values repeated over 24 plate columns. 
+#' Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
+#' 
+#' @param ... Vectors of length 6 describing well contents, e.g. sample or probe. 
+#' @return tibble (data frame) with 24 rows, and columns WellC, Type, TechRep, and supplied values. 
+#' @examples
+#' create_colkey_6in24(Sample=LETTERS[1:6])
+#' @family plate creation functions
 create_colkey_6in24 <- function(...) {
-    ## creates a 24-column key with 3+RT Techreps and 1-RT
-    ## suitable for 6 pieces (samples or target/probe sets)
-    ## example: create_colkey_6in24(Sample=LETTERS[1:6])
-    
-    colkey <- tibble(WellC=1:24,
-                          Type=c(rep("+RT",18),rep("-RT",6)) %>% 
-                              factor(levels=c("+RT","-RT")),
-                          TechRep=rep(c(1,2,3,1),each=6) %>% 
-                              factor(levels=1:3) )
+    colkey <- tibble(WellC=factor(1:24),
+                     Type=c(rep("+RT",18),rep("-RT",6)) %>% 
+                         factor(levels=c("+RT","-RT")),
+                     TechRep=rep(c(1,2,3,1),each=6) %>% 
+                         factor(levels=1:3) )
     if( !missing(...) ) {
         pieces6 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces6) == 6)
@@ -27,16 +45,31 @@ create_colkey_6in24 <- function(...) {
     return(colkey)
 }
 
+#' Create a 4-dilution column key for primer calibration
+#'
+#' Creates a 24-column key for primer calibration, with 2x BioReps and 2x
+#' TechReps, and 5-fold dilution until 5^4 of +RT; then -RT, NT controls. That
+#' is a total of 6 versions of each sample replicate.
+#'
+#' @param Dilution Numeric vector of length 6 describing sample dilutions
+#' @param DilutionNice Character vector of length 6 with nice labels for sample
+#'   dilutions
+#' @param Type Character vector of length 6 describing type of sample (+RT, -RT,
+#'   NT)
+#' @param BioRep Character vector of length 6 describing biological replicates
+#' @param TechRep Character vector of length 6 describing technical replicates
+#' @return tibble (data frame) with 24 rows, and columns WellC, Dilution,
+#'   DilutionNice, Type, BioRep, TechRep.
+#' @examples
+#' create_colkey_4dilutions_mRTNT_in24()
+#' @family plate creation functions
 create_colkey_4dilutions_mRTNT_in24 <- function(
                      Dilution=c(1,1/5,1/25,1/125,1,1),
                      DilutionNice=c("1x","5x","25x","125x","-RT","NT"),
                      Type=c(rep("+RT",4),"-RT","NT"),
                      BioRep=rep(c("A","B"),each=12,length.out=24),
                      TechRep = rep(1:2,each=6,length.out=24)) {
-    ## creates a 24-column key for primer calibration
-    ## With 2x BioReps and 2x TechReps
-    ## 5-fold dilution until 5^4 of +RT; then -RT, NT controls
-    colkey <- tibble(WellC=1:24,
+    colkey <- tibble(WellC=factor(1:24),
                      Dilution=rep(Dilution,4),
                      DilutionNice=rep(DilutionNice,4),
                      Type=rep(Type,4) %>%
@@ -46,16 +79,30 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
     return(colkey)
 }
 
+#' Create a 6-dilution column key for primer calibration
+#'
+#' Creates a 24-column key for primer calibration, with 1x BioReps and 3x
+#' TechReps, and 5-fold dilution until 5^6 of +RT; then -RT, NT controls. That
+#' is a total of 8 versions of each replicate.
+#'
+#' @param Dilution Numeric vector of length 8 describing sample dilutions
+#' @param DilutionNice Character vector of length 8 with nice labels for sample
+#'   dilutions
+#' @param Type Character vector of length 8 describing type of sample (+RT, -RT,
+#'   NT)
+#' @param TechRep Character vector of length 8 describing technical replicates
+#' @return tibble (data frame) with 24 rows, and variables WellC, Dilution,
+#'   DilutionNice, Type, BioRep, TechRep.
+#' @examples
+#' create_colkey_6dilutions_mRTNT_in24()
+#' @family plate creation functions
 create_colkey_6dilutions_mRTNT_in24 <- function(
                      Dilution=c(5^{0:-5},1,1),
                      DilutionNice=c("1x","5x","25x","125x",
                                     "625x","3125x","-RT","NT"),
                      Type=c(rep("+RT",6),"-RT","NT"),
                      TechRep = rep(1:3,each=8,length.out=24)) {
-    ## creates a 24-column key for primer calibration
-    ## With 3x TechReps
-    ## 5-fold dilution until 5^6 of +RT; then -RT, NT controls
-    colkey <- tibble(WellC=1:24,
+    colkey <- tibble(WellC=factor(1:24),
                      Dilution=rep(Dilution,3),
                      DilutionNice=rep(DilutionNice,3),
                      Type=rep(Type,3) %>%
@@ -64,9 +111,19 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
     return(colkey)
 }
 
+#' Create a 4-value, 16-row key for plates
+#'
+#' Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4
+#' values is repeated over 3x +RT Techreps and 1x -RT.
+#'
+#' @param ... Vectors of length 4 describing well contents, e.g. sample or
+#'   probe.
+#' @return tibble (data frame) with 16 rows, and variables WellR, Type, TechRep,
+#'   and supplied values.
+#' @examples
+#' create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
+#' @family plate creation functions
 create_rowkey_4in16 <- function(...) {
-    ## creates a 16-row key suitable for 4 pieces (samples or target/probe sets)
-    ## example: create_rowkey_4in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))
     rowkey <- tibble(WellR=LETTERS[1:16],
                      Type=c(rep("+RT",12),rep("-RT",4)) %>% 
                          factor(levels=c("+RT","-RT")),
@@ -75,15 +132,26 @@ create_rowkey_4in16 <- function(...) {
     if( !missing(...) ) {
         pieces4 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces4) == 4)
-        pieces16 <- bind_rows(pieces4,pieces4)
+        pieces16 <- bind_rows(pieces4,pieces4,pieces4,pieces4)
         rowkey <- bind_cols(rowkey, pieces16)
     }
     return(rowkey)
 }
 
+#' Create a plain 8-value, 16-row key for plates
+#'
+#' Create a 16-row key with 8 values repeated over 16 plate rows. No other
+#' information is included by default, hence "plain".
+#'
+#' @param ... Vectors of length 8 describing well contents, e.g. sample or
+#'   probe.
+#' @return tibble (data frame) with 16 rows, and variables WellC, and supplied
+#'   values.
+#' @examples
+#' create_rowkey_8in16_plain(Sample=c("me","you","them","him",
+#'                                    "her","dog","cat","monkey"))
+#' @family plate creation functions
 create_rowkey_8in16_plain <- function(...) {
-    ## creates a 16-row key suitable for 8 pieces (samples or target/probe sets)
-    ## example: create_rowkey_8in16(Sample=c("me","you","them","him","her","dog","cat","monkey"))
     rowkey <- tibble(WellR=LETTERS[1:16])
     if( !missing(...) ) {
         pieces8 <- list(...) %>% as_tibble()
@@ -94,18 +162,46 @@ create_rowkey_8in16_plain <- function(...) {
     return(rowkey)
 }
 
-
+#' Label a plate with sample and probe information
+#'
+#' See vignettes for further examples
+#'
+#' @param plate tibble (data frame) with variables WellR, WellC, Well. This
+#'   would usually be produced by create_blank_plate(). It is possible to
+#'   include other information in additional variables
+#' @param rowkey tibble (data frame) describing plate rows, with variables WellR
+#'   and others.
+#' @param colkey tibble (data frame) describing plate columns, with variables
+#'   WellC and others.
+#' @return tibble (data frame) with variables WellR, WellC, Well. This contains
+#'   all combinations of WellR and WellC found in the input plate, and all
+#'   information supplied in rowkey and colkey distributed across every 
+#'   well of the plate. Return plate is ordered by row WellR then column WellC. 
+#'   Note this may cause a problem if WellC is a character (1,10,11,...), 
+#'   instead of a factor or integer (1,2,3,...)
+#' @examples
+#' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
+#' @family plate creation functions
 label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
-    ## label a plate by row and column keys
     if (!is.null(colkey)) {
-        plate <- merge(plate,colkey,by="WellC")
+        plate <- dplyr::left_join(plate,colkey,by="WellC")
     }
     if (!is.null(rowkey)) {
-        plate <- merge(plate,rowkey,by="WellR")
+        plate <- dplyr::left_join(plate,rowkey,by="WellR")
     }
-    return(plate[order(plate$WellR,plate$WellC),])
+    return( dplyr::arrange( plate, WellR, WellC ) )
 }
 
+
+#' Display plate plan with Sample and Probe names
+#'
+#' @param plate tibble with variables WellC, WellR, Sample, Probe, Type. 
+#'   Output from label_plate_rowcol. 
+#'
+#' @return ggplot object; major output is to plot it
+#'
+#' @examples TBD
+#' @family plate creation functions
 display_plate <- function(plate) {
     ggplot(data=plate,aes(x=factor(WellC),
                           y=factor(WellR,levels=rev(LETTERS)))) +
@@ -123,29 +219,49 @@ display_plate <- function(plate) {
 }
 
 
-getNormCt <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    ### function to take data frame and attach a column to normalize things by.
+#' @describeIn normalizeqPCR get the median value of a set of normalization
+#'   (reference) probes, for each sample.
+getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+    # make subset of ct_df where gene is one of normProbes
+    norm.by <- dplyr::filter(ct_df, 
+                             !!sym(probename) %in% normProbes) %>%
+        .[[value]] %>%
+        median(na.rm=TRUE)
     
-    # make subset of df where gene is one of normGenes
-    subdf <- df[df[[probename]] %in% normProbes,]
-    
-    # assign median of mycolumn to df$normct
+    # assign median of value to ct_df$norm.by
     # note this is the same value for every row, a waste of space technically
-    df$norm.by <- median(subdf[[mycolumn]],na.rm=TRUE)
-    return(df)
+    ct_df %>%
+        dplyr::mutate(norm.by = norm.by) %>%
+        return()
 }
 
-
-normalizeqPCR <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    # make normed count, grouped by Sample (biological rep)
-    dfout <- 
-        group_by(df,Sample) %>% # group by Sample
-        do(getNormCt(.,mycolumn,normProbes,probename)) %>%      # get norm value for each Sample
-        ungroup()                 # combine/ungroup again
-    
-    # Assign normalized values by dividing by normby
-    dfout$Value.norm <- dfout[[mycolumn]] - dfout$norm.by
-    dfout$Value.normexp <- 2^-dfout$Value.norm
-                             
-    return(dfout)
+#' Normalize cycle count (log2-fold) data within Sample
+#'
+#' @param ct_df a data frame containing columns "Sample", value (default Ct) and
+#'   probe (default Probe). Crucially, Sample name should be the same for
+#'   different technical replicates measuring identical reactions in different
+#'   wells of the plate, but differ for different biological replicates.
+#' @param value the column name of the value that will be normalized
+#' @param normProbes names of PCR probes (or primer sets) to normalize by, i.e.
+#'   reference genes
+#' @param probename the column name for probe sets
+#'   
+#' @return data frame like ct_df with three additional columns:
+#' 
+#' \tabular{ll}{
+#'   norm.by       \tab the median value of the reference probes  \cr
+#'   Value.norm    \tab the normalized value, \eqn{\Delta Ct} \cr
+#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Ct)}
+#'   }
+#' 
+normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+    ct_df %>%
+        group_by(Sample) %>%
+        do(getNormCt(.,value,normProbes,probename)) %>%
+        ungroup() %>%
+        mutate(.Value = !!sym(value), # a tidyeval trick
+               Value.norm = .Value - norm.by, 
+               Value.normexp =2^-Value.norm ) %>%
+        select(-.Value) %>%
+        return()
 }
