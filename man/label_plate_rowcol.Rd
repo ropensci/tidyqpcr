@@ -20,7 +20,7 @@ WellC and others.}
 \value{
 tibble (data frame) with variables WellR, WellC, Well. This contains
   all combinations of WellR and WellC found in the input plate, and all
-  information supplied in rowkey and colkey distributed across every well as
+  information supplied in rowkey and colkey distributed across every 
   well of the plate. Return plate is ordered by row WellR then column WellC. 
   Note this may cause a problem if WellC is a character (1,10,11,...), 
   instead of a factor or integer (1,2,3,...)

@@ -219,29 +219,47 @@ display_plate <- function(plate) {
 }
 
 
-getNormCt <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
+#' @describeIn normalizeqPCR get the median value of a set of normalization
+#'   (reference) probes, for each sample.
+getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
     ### function to take data frame and attach a column to normalize things by.
     
     # make subset of df where gene is one of normGenes
-    subdf <- df[df[[probename]] %in% normProbes,]
+    subdf <- ct_df[ct_df[[probename]] %in% normProbes,]
     
-    # assign median of mycolumn to df$normct
+    # assign median of value to df$normct
     # note this is the same value for every row, a waste of space technically
-    df$norm.by <- median(subdf[[mycolumn]],na.rm=TRUE)
-    return(df)
+    ct_df$norm.by <- median(subdf[[value]],na.rm=TRUE)
+    return(ct_df)
 }
 
-
-normalizeqPCR <- function(df,mycolumn="Ct",normProbes="ALG9",probename="Probe") {
-    # make normed count, grouped by Sample (biological rep)
-    dfout <- 
-        group_by(df,Sample) %>% # group by Sample
-        do(getNormCt(.,mycolumn,normProbes,probename)) %>%      # get norm value for each Sample
-        ungroup()                 # combine/ungroup again
-    
-    # Assign normalized values by dividing by normby
-    dfout$Value.norm <- dfout[[mycolumn]] - dfout$norm.by
-    dfout$Value.normexp <- 2^-dfout$Value.norm
-                             
-    return(dfout)
+#' Normalize cycle count (log2-fold) data within Sample
+#'
+#' @param ct_df a data frame containing columns "Sample", value (default Ct) and
+#'   probe (default Probe). Crucially, Sample name should be the same for
+#'   different technical replicates measuring identical reactions in different
+#'   wells of the plate, but differ for different biological replicates.
+#' @param value the column name of the value that will be normalized
+#' @param normProbes names of PCR probes (or primer sets) to normalize by, i.e.
+#'   reference genes
+#' @param probename the column name for probe sets
+#'   
+#' @return data frame like ct_df with three additional columns:
+#' 
+#' \tabular{ll}{
+#'   norm.by       \tab the median value of the reference probes  \cr
+#'   Value.norm    \tab the normalized value, \eqn{\Delta Ct} \cr
+#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Ct)}
+#'   }
+#' 
+normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+    ct_df %>%
+        group_by(Sample) %>%
+        do(getNormCt(.,value,normProbes,probename)) %>%
+        ungroup() %>%
+        mutate(.Value = !!sym(value), # a tidyeval trick
+               Value.norm = .Value - norm.by, 
+               Value.normexp =2^-Value.norm ) %>%
+        select(-.Value) %>%
+        return()
 }
