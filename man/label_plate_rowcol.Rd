@@ -21,7 +21,9 @@ WellC and others.}
 tibble (data frame) with variables WellR, WellC, Well. This contains
   all combinations of WellR and WellC found in the input plate, and all
   information supplied in rowkey and colkey distributed across every well as
-  well of the plate. Return plate is ordered by row WellR then column WellC.
+  well of the plate. Return plate is ordered by row WellR then column WellC. 
+  Note this may cause a problem if WellC is a character (1,10,11,...), 
+  instead of a factor or integer (1,2,3,...)
 }
 \description{
 See vignettes for further examples
@@ -35,6 +37,7 @@ Other plate creation functions: \code{\link{create_blank_plate}},
   \code{\link{create_colkey_6dilutions_mRTNT_in24}},
   \code{\link{create_colkey_6in24}},
   \code{\link{create_rowkey_4in16}},
-  \code{\link{create_rowkey_8in16_plain}}
+  \code{\link{create_rowkey_8in16_plain}},
+  \code{\link{display_plate}}
 }
 \concept{plate creation functions}

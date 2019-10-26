@@ -40,6 +40,7 @@ Other plate creation functions: \code{\link{create_blank_plate}},
   \code{\link{create_colkey_6in24}},
   \code{\link{create_rowkey_4in16}},
   \code{\link{create_rowkey_8in16_plain}},
+  \code{\link{display_plate}},
   \code{\link{label_plate_rowcol}}
 }
 \concept{plate creation functions}
