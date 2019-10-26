@@ -193,29 +193,31 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
 }
 
 
-#' Display plate plan with Sample and Probe names
+#' Display plate plan with Sample, Probe, Type per Well
 #'
 #' @param plate tibble with variables WellC, WellR, Sample, Probe, Type. 
 #'   Output from label_plate_rowcol. 
 #'
 #' @return ggplot object; major output is to plot it
 #'
-#' @examples TBD
+#' @examples # !Needs a labeled example from label_plate_rowcol...
 #' @family plate creation functions
 display_plate <- function(plate) {
-    ggplot(data=plate,aes(x=factor(WellC),
-                          y=factor(WellR,levels=rev(LETTERS)))) +
-        geom_tile(aes(fill=Probe),alpha=0.3) +
-        geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),size=2.5,lineheight=1) +
-        scale_x_discrete(expand=c(0,0)) +
-        scale_y_discrete(expand=c(0,0)) +
-        coord_equal() +
-        theme_void() + 
-        theme(axis.text=element_text(angle=0),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.margin=unit(rep(0.01,4),"npc"),
-              panel.border = element_blank())
+    ggplot2::ggplot(data=plate,
+                    aes(x=factor(WellC),
+                        y=factor(WellR,levels=rev(LETTERS)))) +
+        ggplot2::geom_tile(aes(fill=Probe),alpha=0.3) +
+        ggplot2::geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),
+                           size=2.5,lineheight=1) +
+        ggplot2::scale_x_discrete(expand=c(0,0)) +
+        ggplot2::scale_y_discrete(expand=c(0,0)) +
+        ggplot2::coord_equal() +
+        ggplot2::theme_void() + 
+        ggplot2::theme(axis.text=ggplot2::element_text(angle=0),
+                       panel.grid.major=ggplot2::element_blank(),
+                       legend.position="none",
+                       plot.margin=grid::unit(rep(0.01,4),"npc"),
+                       panel.border=ggplot2::element_blank())
 }
 
 
