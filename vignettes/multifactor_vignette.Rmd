@@ -291,7 +291,7 @@ ggplot(data=platesmelt %>%
 ```{r plotamp_Rep1,dependson="load_amp",fig.width=12,fig.height=6}
 ggplot(data=platesamp %>% 
            filter(TechRep==1,BiolRep==1),
-       aes(x=Cycle,y=Fluor,linetype=Type)) + 
+       aes(x=Cycle,y=Signal,linetype=Type)) + 
     facet_grid(Condition~Probe) + 
     geom_line() +
     scale_linetype_manual(values=c("-RT"="dashed","+RT"="solid")) +
@@ -302,7 +302,7 @@ ggplot(data=platesamp %>%
 ```{r plotamp_Rep2,dependson="load_amp",fig.width=12,fig.height=6}
 ggplot(data=platesamp %>% 
            filter(TechRep==1,BiolRep==2),
-       aes(x=Cycle,y=Fluor,linetype=Type)) + 
+       aes(x=Cycle,y=Signal,linetype=Type)) + 
     facet_grid(Condition~Probe) + 
     geom_line() +
     scale_linetype_manual(values=c("-RT"="dashed","+RT"="solid")) +
