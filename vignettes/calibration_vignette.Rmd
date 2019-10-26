@@ -200,7 +200,7 @@ platesamp  <- plate1curve %>%
 # melt curve is program 3 or 4, depending on cycle
 platesmelt <- plate1curve %>% 
   filter(Program > 2) %>% 
-  demelt() %>% 
+  getdRdTall() %>% 
   filter(Temperature >= 61)
 
 ```

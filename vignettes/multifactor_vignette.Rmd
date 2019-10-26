@@ -189,7 +189,7 @@ ggplot(data=platesmed) +
 
 ### Faceted by drug treatment
 
-This plot shows all the summarized data "faceted" on different axes for different drug treatments. It is easy to see that, for example, SSA4 detection increases in response to heat in all drug treatments.
+This plot shows all the summarized data "faceted" on different axes for different drug treatments. It highlights that, for example, SSA4 detection increases in response to heat in all drug treatments.
 
 ```{r plot_normalizedsummarizedbyHS,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data=platesmed) +
@@ -254,7 +254,7 @@ platesamp <- bind_rows(plate1curve,plate2curve) %>%
 
 platesmelt <- bind_rows(plate1curve,plate2curve) %>% 
     filter(Program != 2) %>% 
-    demelt() %>% 
+    getdRdTall() %>% 
     filter(Temperature >= 61)  
 
 ```

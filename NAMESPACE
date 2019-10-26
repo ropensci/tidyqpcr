@@ -20,4 +20,4 @@ export(normalizeqPCR)
 
 export(debaseline)
 export(getdRdT)
-export(demelt)
+export(getdRdTall)
