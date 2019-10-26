@@ -9,16 +9,16 @@
 \alias{scale_loglog10}
 \title{Nice tick labels for logarithmic axes in ggplot2.}
 \usage{
-scale_x_log2nice(name = waiver(), omag = seq(-10, 10),
+scale_x_log2nice(name = ggplot2::waiver(), omag = seq(-10, 10),
   scilabels = FALSE, ...)
 
-scale_x_log10nice(name = waiver(), omag = seq(-10, 10),
+scale_x_log10nice(name = ggplot2::waiver(), omag = seq(-10, 10),
   scilabels = FALSE, ...)
 
-scale_y_log2nice(name = waiver(), omag = seq(-10, 10),
+scale_y_log2nice(name = ggplot2::waiver(), omag = seq(-10, 10),
   scilabels = FALSE, ...)
 
-scale_y_log10nice(name = waiver(), omag = seq(-10, 10),
+scale_y_log10nice(name = ggplot2::waiver(), omag = seq(-10, 10),
   scilabels = FALSE, ...)
 
 scale_loglog10(...)
@@ -30,9 +30,11 @@ scale_loglog10(...)
 usually an integer sequence.}
 
 \item{scilabels}{display labels in scientific format, e.g. \eqn{10^2} vs 100.}
+
+\item{...}{other arguments to continuous_scale().}
 }
 \value{
-a ggproto object as output by continuous_scale.
+a ggproto object as output by continuous_scale().
 }
 \description{
 These functions are wrappers for scale_x_log10, etc., that specify

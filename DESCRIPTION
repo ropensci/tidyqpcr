@@ -10,12 +10,12 @@ Imports:
     tibble,
     tidyr,
     dplyr,
-    reshape2,
     readr,
-    readxl,
-    ggplot2,
+    ggplot2
+Suggests: knitr, 
+    rmarkdown, 
+    tidyverse,
     cowplot
-Suggests: knitr, rmarkdown, tidyverse
 VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true

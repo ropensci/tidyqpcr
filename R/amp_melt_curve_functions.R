@@ -28,12 +28,12 @@
 debaseline <- function(plateamp,maxcycle=10) {
     baseline <- 
         plateamp %>%
-        group_by(Well) %>%
-        filter(Program == 2, Cycle <= maxcycle) %>%
-        summarize(Base = median(Fluor))
+        dplyr::group_by(Well) %>%
+        dplyr::filter(Program == 2, Cycle <= maxcycle) %>%
+        dplyr::summarize(Base = median(Fluor))
     plateamp %>% 
-        left_join(baseline) %>%
-        mutate(Signal=Fluor-Base)
+        dplyr::left_join(baseline) %>%
+        dplyr::mutate(Signal=Fluor-Base)
         
 }
 
@@ -69,10 +69,11 @@ getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
 #' @family melt_curve_functions
 getdRdTall <- function(platemelt) {
     platemelt %>%
-        arrange(Well,Temperature) %>%
+        dplyr::arrange(Well,Temperature) %>%
         # @ewallace: doesn't group by plate, only by well,
         # so will fail strangely if used on data from multiple plates
-        group_by(Well) %>% 
-        mutate(dRdT=getdRdT(Temperature,Fluor)) %>%
-        ungroup()
+        dplyr::group_by(Well) %>% 
+        dplyr::mutate(dRdT=getdRdT(Temperature,Fluor)) %>%
+        dplyr::ungroup() %>%
+        return()
 }

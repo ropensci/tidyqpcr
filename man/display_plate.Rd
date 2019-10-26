@@ -2,7 +2,7 @@
 % Please edit documentation in R/plate_functions.R
 \name{display_plate}
 \alias{display_plate}
-\title{Display plate plan with Sample and Probe names}
+\title{Display plate plan with Sample, Probe, Type per Well}
 \usage{
 display_plate(plate)
 }
@@ -14,10 +14,10 @@ Output from label_plate_rowcol.}
 ggplot object; major output is to plot it
 }
 \description{
-Display plate plan with Sample and Probe names
+Display plate plan with Sample, Probe, Type per Well
 }
 \examples{
-TBD
+# !Needs a labeled example from label_plate_rowcol...
 }
 \seealso{
 Other plate creation functions: \code{\link{create_blank_plate}},

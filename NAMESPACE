@@ -1,6 +1,11 @@
 # basic NAMESPACE that exports everything
 # Ideally would be replaced by roxygen2
 
+importFrom("stats", "median", "predict", "smooth.spline")
+importFrom("magrittr", "%>%")
+importFrom("tibble", "tibble", "as_tibble")
+importFrom("dplyr", "sym")
+
 export(scale_x_log2nice)
 export(scale_x_log10nice)
 export(scale_y_log2nice)
