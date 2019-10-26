@@ -15,7 +15,7 @@
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
     plate <- tidyr::crossing(WellR=factor(WellR),
                          WellC=factor(WellC)) %>%
-        tibble::as_tibble() %>%
+        as_tibble() %>%
         tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
 }
@@ -39,8 +39,8 @@ create_colkey_6in24 <- function(...) {
     if( !missing(...) ) {
         pieces6 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces6) == 6)
-        pieces24 <- bind_rows(pieces6,pieces6,pieces6,pieces6)
-        colkey <- bind_cols(colkey, pieces24)
+        pieces24 <- dplyr::bind_rows(pieces6,pieces6,pieces6,pieces6)
+        colkey <- dplyr::bind_cols(colkey, pieces24)
     }
     return(colkey)
 }
@@ -132,8 +132,8 @@ create_rowkey_4in16 <- function(...) {
     if( !missing(...) ) {
         pieces4 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces4) == 4)
-        pieces16 <- bind_rows(pieces4,pieces4,pieces4,pieces4)
-        rowkey <- bind_cols(rowkey, pieces16)
+        pieces16 <- dplyr::bind_rows(pieces4,pieces4,pieces4,pieces4)
+        rowkey <- dplyr::bind_cols(rowkey, pieces16)
     }
     return(rowkey)
 }
@@ -156,8 +156,8 @@ create_rowkey_8in16_plain <- function(...) {
     if( !missing(...) ) {
         pieces8 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces8) == 8)
-        pieces16 <- bind_rows(pieces8,pieces8)
-        rowkey <- bind_cols(rowkey, pieces16)
+        pieces16 <- dplyr::bind_rows(pieces8,pieces8)
+        rowkey <- dplyr::bind_cols(rowkey, pieces16)
     }
     return(rowkey)
 }
@@ -256,12 +256,12 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
 #' 
 normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
     ct_df %>%
-        group_by(Sample) %>%
-        do(getNormCt(.,value,normProbes,probename)) %>%
-        ungroup() %>%
-        mutate(.Value = !!sym(value), # a tidyeval trick
+        dplyr::group_by(Sample) %>%
+        dplyr::do(getNormCt(.,value,normProbes,probename)) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(.Value = !!sym(value), # a tidyeval trick
                Value.norm = .Value - norm.by, 
                Value.normexp =2^-Value.norm ) %>%
-        select(-.Value) %>%
+        dplyr::select(-.Value) %>%
         return()
 }
