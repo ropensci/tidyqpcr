@@ -95,8 +95,6 @@ display_plate( plateplan %>%
 ## Load and summarize data
 
 ```{r load_plates,dependson="label_plates",results="show"}
-# set working directory, if needed
-# setwd("~/Dropbox (Drummond Lab)/EdinburghLab/RT-qPCR/2018-06/")
 # read my plates
 
 plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt",skip=1) %>%
@@ -173,6 +171,10 @@ ggplot(data=platesnorm) +
 
 ## Plot normalized data, summarized vs Probe
 
+### All on same axes
+
+This plot shows all the summarized data on the same axes, but it is hard to pick out the different conditions by eye.
+
 ```{r plot_normalizedsummarized1,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data=platesmed) +
     geom_point(aes(x=Probe,y=Abund,shape=BiolRep,colour=Condition),
@@ -184,6 +186,10 @@ ggplot(data=platesmed) +
                                     colour = "grey50",size=0.5))
 
 ```
+
+### Faceted by drug treatment
+
+This plot shows all the summarized data "faceted" on different axes for different drug treatments. It is easy to see that, for example, SSA4 detection increases in response to heat in all drug treatments.
 
 ```{r plot_normalizedsummarizedbyHS,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data=platesmed) +
@@ -197,6 +203,10 @@ ggplot(data=platesmed) +
                                     colour = "grey50",size=0.5))
 
 ```
+
+### Faceted by heat shock condition
+
+By contrast, this plot shows all the summarized data "faceted" on different axes for different conditions. This shows that there is no clear response to the drug treatments in either condition.
 
 ```{r plot_normalizedsummarizedbyDrug,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data=platesmed) +
