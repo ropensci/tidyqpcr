@@ -2,7 +2,10 @@
 title: "Calibration vignette"
 author: "Edward Wallace"
 date: "Feb 2019"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{Calibration}
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,13 +13,13 @@ vignette: >
 ---
 
 
-# Plan
+# Summary: calibrating primers from a real experimental test
 
-This vignette shows how to use tidyqpcr functions to calibrate qPCR probes
+This vignette shows how to use tidyqpcr functions to calibrate qPCR probes.
 
 This is real qPCR data by Edward Wallace in Feb 2019, testing new RT-qPCR primer sets against _S. cerevisiae_ genes. We took exponential-phase total RNA previously extracted by Jamie Auxillos.
 
-We tested 2-3 primer sets each for 7 genes with 2 Technical replicates as well:
+We tested 2-3 primer sets each for 7 genes:
 
 * ECM38/ YLR299W (3 primer sets)
 * FET5 / YFL041W (3 primer sets)
@@ -26,20 +29,9 @@ We tested 2-3 primer sets each for 7 genes with 2 Technical replicates as well:
 * RDL1/YOR285W
 * TFS1/YLR178C
 
-For each we do serial 5x dilutions down to 125x, a -RT and no template control. In duplicate.
+We started with two biological replicate RNA samples, treated with DNase and then split for a test sample with reverse transcriptase (RT) and negative control without reverse transcriptase (-RT). We also took a no template (NT) negative control. For each RT reaction we do serial 5x dilutions down to 125x to form a quantitative calibration curve.
 
-## Conclude acceptable primer sets
-
-These probes have sensible standard curves, amplification curves, melt curves. In tie-breakers we pick the more highly detected probe.
-
-* ECM38 set 3
-* FET5 set 1 or 4
-* GPT2 set 4
-* ILV5 set 4
-* NRD1 set 1 or 2
-* RDL1 set 4
-* TFS1 set 1
-
+The data were measured on a Roche LC480 instrument in a single 384-well plate. Quantification was performed in the Roche LightCycler software prior to using this program.
 
 
 ```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
@@ -58,7 +50,7 @@ theme_set(theme_cowplot(font_size=11) %+replace%
 
 ```
 
-
+# Set up experiment
 
 ## Label and plan plates
 
@@ -93,13 +85,29 @@ plate1plan <-
 
 ```
 
+## Spot-check the plate plan 
 
+Checks that for selected techrep/probe/dilution combinations, the plate contains the right number of replicates.
+
+```{r print_techreps,results="show",echo=TRUE,cache=FALSE}
+plate1plan %>% 
+           filter(TechRep=="1",Probe==Probes[1],DilutionNice=="1x")
+
+plate1plan %>% 
+           filter(TechRep=="2",Probe==Probes[4])
+```
+
+## Display the plate plan
+
+This can be printed out to facilitate loading the plate correctly.
 
 ```{r display_plates,fig.height=8,fig.width=12,dependson="label_plates"}
 display_plate(plate1plan) 
 
 ```
 
+
+# Analyze Ct (quantification cycle count) data
 
 ## Load and summarize data
 
@@ -121,10 +129,9 @@ plates
 summary(plates)
 ```
 
-# Plot unnormalized data
+## Plot unnormalized data shows that -RT and NT controls are low
 
-## -RT and NT controls are low
-
+We detect no signal in NT (no template) negative control, and very weak signal in -RT (no reverse transcriptase) negative controls.
 
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
 
@@ -140,8 +147,7 @@ ggplot(data=plates) +
 
 
 
-## Dilution series is linear - only used Superscript IV.
-
+## Dilution series is linear for all probes
 
 ```{r plot_dilutions,dependson="load_plates",fig.height=11,fig.width=6}
 ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
@@ -154,12 +160,12 @@ ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
     scale_y_continuous(breaks=seq(0,30,2)) + 
     labs(y="Cycle count to threshold",
          title="All reps, unnormalized",
-         colour="Dilution") +
+         colour="Dilution",linetype="Dilution") +
     facet_grid(Probe~BioRep,scales="free_y") + 
     theme(axis.text.x=element_text(angle=90,vjust=0.5))
 ```
 
-## Dilution series for nice probes only
+## Dilution series for nice probes only shows linearity clearly
 
 ```{r plot_dilutions_nice,dependson="load_plates",fig.height=6,fig.width=4}
 Probesnice <- c("ECM38_3","FET5_1","GPT2_4","ILV5_4","NRD1_1","RDL1_4","TFS1_1")
@@ -175,13 +181,15 @@ ggplot(data=filter(plates,Type=="+RT",Probe %in% Probesnice),
     scale_y_continuous(breaks=seq(0,30,2)) + 
     labs(y="Cycle count to threshold",
          title="All reps, unnormalized",
-         colour="Dilution") +
+         colour="Dilution",linetype="Dilution") +
     facet_grid(Probe~BioRep,scales="free_y") + 
     theme(axis.text.x=element_text(angle=90,vjust=0.5))
 ```
 
 
-## Load raw data for amplification and curves.
+# Analyze amplification and melt curve data
+
+## Load raw data for amplification and melt curves.
 
 
 ```{r load_amp,dependson="label_plates",results="show"}
@@ -207,25 +215,18 @@ platesmelt <- plate1curve %>%
 ```
 
 
-### Plot de-baseline'd raw data for single well
+## Plot de-baseline'd raw data for single well
 
-```{r testplottraj,dependson="load_amp",fig.width=4,fig.height=3}
+```{r plotamp_A1,dependson="load_amp",fig.width=4,fig.height=3}
 ggplot(data=platesamp %>% filter(Well=="A1"),
        aes(x=Cycle,y=Signal)) + 
-    geom_line() + 
-    scale_y_log10()
+    geom_line() +
+    scale_y_continuous(expand=c(0.01,0.01))
 ```
 
-### Plot all amplification curves
+## Plot all amplification curves
 
-```{r print_techreps,results="show",echo=TRUE,cache=FALSE,eval="FALSE"}
-plate1plan %>% 
-           filter(TechRep=="1",Probe==Probes[1],DilutionNice=="1x")
-
-plate1plan %>% 
-           filter(TechRep=="2",Probe==Probes[1],DilutionNice=="1x")
-```
-
+Broken up by technical replicate here, to avoid overplotting.
 
 ```{r plotamp_all,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(data=platesamp %>% 
@@ -248,23 +249,21 @@ ggplot(data=platesamp %>%
 
 ```
 
-Here it would be sensible to also estimate the probe efficiency.
+## Plot melt curve for single well
 
-## Plot melt curve
-
-### Plot melt curve for single well
-
-```{r plotmelt_A1,dependson="load_amp",fig.width=4,fig.height=1.5,eval=FALSE}
+```{r plotmelt_A1,dependson="load_amp",fig.width=4,fig.height=1.5}
 ggplot(data=platesmelt %>% 
            filter(Well=="A1"),
        aes(x=Temperature,y=dRdT)) + 
     facet_wrap(~Probe) + 
-    geom_line() 
-
+    geom_line() +
+    scale_y_continuous(expand=c(0.02,0.02))
 ```
 
 
-### Plot all melt curves
+## Plot all melt curves
+
+Again broken up by technical replicate.
 
 ```{r plotmelt_all,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(data=platesmelt %>% 
@@ -288,9 +287,9 @@ ggplot(data=platesmelt %>%
 ```
 
 
-### Plot only zoomed melt curves for Superscript
+## Plot zoomed melt curves
 
-```{r plotmelt_SS_zoomed,dependson="load_amp",fig.height=11,fig.width=7}
+```{r plotmelt_zoomed,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(data=platesmelt %>% 
            filter(TechRep=="1",Type=="+RT"),
        aes(x=Temperature,y=dRdT,colour=factor(Dilution))) + 
@@ -298,7 +297,7 @@ ggplot(data=platesmelt %>%
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
                        limits=c(73,87)) + 
-    labs(title="Melt curves, zoomed, Superscript, TechRep A") +
+    labs(title="Melt curves, zoomed, TechRep A") +
     theme(panel.grid.major.x=element_line(colour="grey50",size=0.4),
           panel.grid.minor.x=element_line(colour="grey70",size=0.1))
 
@@ -309,16 +308,16 @@ ggplot(data=platesmelt %>%
     geom_line() +
     scale_x_continuous(breaks=seq(60,100,5),minor_breaks=seq(60,100,1),
                        limits=c(73,87)) + 
-    labs(title="Melt curves, zoomed, Superscript, TechRep B") +
+    labs(title="Melt curves, zoomed, TechRep B") +
     theme(panel.grid.major.x=element_line(colour="grey50",size=0.4),
           panel.grid.minor.x=element_line(colour="grey70",size=0.1))
 
 ```
 
 
-### Plot only zoomed melt curves for nice probes
+## Plot only zoomed melt curves for nice probes
 
-```{r plotmelt_SS_zoomed_nice,dependson="load_amp",fig.height=6,fig.width=4}
+```{r plotmelt_zoomed_nice,dependson="load_amp",fig.height=6,fig.width=4}
 Probesnice <- c("ECM38_3","FET5_1","GPT2_4","ILV5_4","NRD1_1","RDL1_4","TFS1_1")
 ggplot(data=platesmelt %>% 
            filter(TechRep=="1",Type=="+RT",DilutionNice=="1x",
@@ -333,3 +332,15 @@ ggplot(data=platesmelt %>%
           panel.grid.minor.x=element_line(colour="grey70",size=0.1))
 ```
 
+
+# Conclude acceptable primer sets
+
+These probes have sensible standard curves, amplification curves, melt curves. In tie-breakers we pick the more highly detected probe.
+
+* ECM38 set 3
+* FET5 set 1 or 4
+* GPT2 set 4
+* ILV5 set 4
+* NRD1 set 1 or 2
+* RDL1 set 4
+* TFS1 set 1
