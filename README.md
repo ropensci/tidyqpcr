@@ -1,8 +1,9 @@
 # tidyqpcr - Quantitative PCR analysis with the tidyverse.
 
-tidyqpcr is an R package for quantitative PCR analysis that aims to:
+tidyqpcr is an R package for quantitative PCR (qPCR) analysis that aims to:
 * be FAIR - [Findable, Accessible, Interoperable, and Reusable](https://www.force11.org/group/fairgroup/fairprinciples)
-* use modern data science tools from [the tidyverse](https://www.tidyverse.org/)
+* enable completely scripted reproducible qPCR analysis, from instrument data to figures
+* use modern data science tools from [the tidyverse](https://www.tidyverse.org/), allowing user flexibility to extend analyses with generic tools
 * be accessible to novice programmers, e.g. those who have taken [data carpentry in R](https://datacarpentry.org/R-ecology-lesson/) 
 * be compliant with [MIQE guidelines](1373/clinchem.2008.112797)
 
