@@ -10,16 +10,16 @@ Current capabilities include:
 
 * lay out and display 96/384-well plates for easy experimental setup
 * read-in Ct and raw data from Roche LightCycler machines with single-channel fluorescence
-* visual calibration of primer sets
+* calibration of primer sets including estimating efficiencies and visualization of curves
 * visualization of amplification and melt curves
-* normalization of Ct data by delta delta count method
+* normalization of Ct data to one or more reference probe sets by delta delta count method
 * flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/)
 
 Future priorities include:
 
-* explicitly calculating primer efficiencies
-* an open-source and tested Ct/Cq quantification algorithm
-* extend to 1536-well plates including 
+* including primer efficiencies in quantification
+* an open-source and tested Ct/Cq calculation algorithm
+* extend to 1536-well plates 
 * files for automatic plate loading with [Opentrons](https://opentrons.com/) and [Labcyte Echo](https://www.labcyte.com/products/liquid-handling/echo-liquid-handlers) liquid handlers.
 
 As of Dec 2019, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
