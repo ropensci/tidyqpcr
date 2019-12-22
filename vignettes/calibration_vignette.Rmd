@@ -149,6 +149,8 @@ ggplot(data=plates) +
 
 ## Dilution series is linear for all probes
 
+Visual display of linearity of Ct with log(Dilution).
+
 ```{r plot_dilutions,dependson="load_plates",fig.height=11,fig.width=6}
 ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
     geom_point() +
@@ -164,6 +166,15 @@ ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
     facet_grid(Probe~BioRep,scales="free_y") + 
     theme(axis.text.x=element_text(angle=90,vjust=0.5))
 ```
+
+## Calculate primer efficiencies for all probes
+
+Use regression to estimate linearity of Ct with log(Dilution), including the slope or efficiency.
+
+```{r calibrate_dilutions,dependson="load_plates",results="show",echo=TRUE}
+est_efficiency(plates)
+```
+
 
 ## Dilution series for nice probes only shows linearity clearly
 
