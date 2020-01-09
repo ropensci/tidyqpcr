@@ -4,9 +4,10 @@ Version: 0.1
 Authors@R: person("Edward", "Wallace", email = "Edward.Wallace@ed.ac.uk",
                   role = c("aut", "cre"))
 Description: This package is for reproducible quantitative PCR (qPCR) analysis using packages from the tidyverse, notably dplyr and ggplot2. It normalizes (by ddCt), summarizes, and plots pre-calculated Ct data, and plots raw amplification and melt curves from Roche lightcycler machines. It does NOT (yet) calculate Ct data from amplification curves.
-Depends: R (>= 3.1.0)
+Depends: 
+    R (>= 3.1.0),
+    magrittr (>= 1.5)
 Imports:
-    magrittr,
     tibble,
     tidyr,
     dplyr,
