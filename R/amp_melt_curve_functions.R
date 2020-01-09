@@ -25,12 +25,16 @@
 #'   Signal    \tab normalized fluorescence signal, i.e. Fluor - Base
 #'   }
 #'
+#' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
 debaseline <- function(plateamp,maxcycle=10) {
     baseline <- 
         plateamp %>%
         dplyr::group_by(Well) %>%
         dplyr::filter(Program == 2, Cycle <= maxcycle) %>%
-        dplyr::summarize(Base = median(Fluor))
+        dplyr::summarize(Base = stats::median(Fluor))
     plateamp %>% 
         dplyr::left_join(baseline) %>%
         dplyr::mutate(Signal=Fluor-Base)
@@ -49,12 +53,15 @@ debaseline <- function(plateamp,maxcycle=10) {
 #' numeric vector of same length as RR.
 #'
 #' @family melt_curve_functions
+#' 
+#' @export
+#' 
 getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
     if (method == "diff") {
        return( -c(diff(RR)/diff(TT),NA) )
     } else if (method == "spline") {
-        fit <- smooth.spline(x = TT, y=RR,...)
-        return(-1 * predict(object = fit, x = TT, deriv = 1)$y )
+        fit <- stats::smooth.spline(x = TT, y=RR,...)
+        return(-1 * stats::predict(object = fit, x = TT, deriv = 1)$y )
     }
 }
 
@@ -67,6 +74,10 @@ getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
 #' @return platemelt with additional column dRdT.
 #'
 #' @family melt_curve_functions
+#' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
 getdRdTall <- function(platemelt) {
     platemelt %>%
         dplyr::arrange(Well,Temperature) %>%

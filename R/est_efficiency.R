@@ -17,6 +17,10 @@
 #' @return data frame with 1 single row, and columns: efficiency, efficiency.sd, r.squared
 #'
 #' @seealso est_efficiency
+#' 
+#' @export
+#' @importFrom tibble tibble
+#' 
 est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
     slopefit <-  stats::lm(formula = formula,
                     data    = ct_df_1)
@@ -40,10 +44,15 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' 
 #' Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
 #' If only a single Biological Replicate, change to Ct ~ log2(Dilution).
+#' If multiple Samples, change to Ct ~ log2(Dilution) + Sample. See ?formula for background
 #'
 #' @return data frame with columns: Probe, efficiency, efficiency.sd, r.squared
 #' 
 #' @seealso est_efficiency_1
+#' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
 est_efficiency <- function(ct_df,formula = Ct ~ log2(Dilution) + BioRep) {
     ct_df %>%
         dplyr::filter(Type=="+RT") %>%

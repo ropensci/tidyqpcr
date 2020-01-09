@@ -14,6 +14,8 @@
 NULL
 
 #' @describeIn log_plot_helpers plot x axis on log2-scale with nice defaults
+#' @export
+#' 
 scale_x_log2nice <- function(name=ggplot2::waiver(),
                              omag=seq(-10,10),
                              scilabels=FALSE,
@@ -28,6 +30,8 @@ scale_x_log2nice <- function(name=ggplot2::waiver(),
 }
 
 #' @describeIn log_plot_helpers plot x axis on log10-scale with nice defaults
+#' @export
+#' 
 scale_x_log10nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=FALSE,...) {
     # @ewallace: ideally would also create minor breaks from 2:9.
     breaks10 <- 10^omag
@@ -40,6 +44,8 @@ scale_x_log10nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=
 }
 
 #' @describeIn log_plot_helpers plot y axis on log2-scale with nice defaults
+#' @export
+#' 
 scale_y_log2nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=FALSE,...) {
     breaks2 <- 2^omag
     if (scilabels) {
@@ -51,6 +57,8 @@ scale_y_log2nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=F
 }
 
 #' @describeIn log_plot_helpers plot y axis on log10-scale with nice defaults
+#' @export
+#' 
 scale_y_log10nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=FALSE,...) {
     # @ewallace: ideally would also create minor breaks from 2:9.
     breaks10 <- 10^omag
@@ -63,6 +71,8 @@ scale_y_log10nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=
 }
 
 #' @describeIn log_plot_helpers plot x AND y axes on log10-scale with nice defaults
+#' @export
+#' 
 scale_loglog10 <- function(...) {
     list(scale_x_log10nice(...),scale_y_log10nice(...))
 }
