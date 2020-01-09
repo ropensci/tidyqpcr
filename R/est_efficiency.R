@@ -18,7 +18,7 @@
 #'
 #' @seealso est_efficiency
 est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
-    slopefit <-  lm(formula = formula,
+    slopefit <-  stats::lm(formula = formula,
                     data    = ct_df_1)
     slopefitsummary <- summary(slopefit)
     tibble(efficiency = - slopefit$coefficients[2],

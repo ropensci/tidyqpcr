@@ -226,7 +226,7 @@ display_plate <- function(plate) {
 getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
     # make subset of ct_df where gene is one of normProbes
     norm.by <- dplyr::filter(ct_df, 
-                             !!sym(probename) %in% normProbes) %>%
+                             !!dplyr::sym(probename) %in% normProbes) %>%
         .[[value]] %>%
         median(na.rm=TRUE)
     
@@ -261,7 +261,7 @@ normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") 
         dplyr::group_by(Sample) %>%
         dplyr::do(getNormCt(.,value,normProbes,probename)) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(.Value = !!sym(value), # a tidyeval trick
+        dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
                Value.norm = .Value - norm.by, 
                Value.normexp =2^-Value.norm ) %>%
         dplyr::select(-.Value) %>%

@@ -4,8 +4,6 @@
 importFrom("stats", "median", "predict", "smooth.spline")
 importFrom("magrittr", "%>%")
 importFrom("tibble", "tibble", "as_tibble")
-importFrom("dplyr", "sym")
-importFrom("stats", "lm")
 
 export(scale_x_log2nice)
 export(scale_x_log10nice)
