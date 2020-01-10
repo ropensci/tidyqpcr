@@ -14,7 +14,8 @@ Must have columns Type, Probe, Ct, Dilution. Only Type=="+RT" columns are used.}
 \item{formula}{formula to use for log-log regression fit. 
 
 Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
-If only a single Biological Replicate, change to Ct ~ log2(Dilution).}
+If only a single Biological Replicate, change to Ct ~ log2(Dilution).
+If multiple Samples, change to Ct ~ log2(Dilution) + Sample. See ?formula for background}
 }
 \value{
 data frame with columns: Probe, efficiency, efficiency.sd, r.squared

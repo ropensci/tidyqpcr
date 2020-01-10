@@ -12,6 +12,11 @@
 #' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
 #' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
 #' @family plate creation functions
+#' 
+#' @export
+#' @importFrom tibble tibble as_tibble
+#' @importFrom magrittr %>%
+#' 
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
     plate <- tidyr::crossing(WellR=factor(WellR),
                          WellC=factor(WellC)) %>%
@@ -30,6 +35,11 @@ create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
 #' @examples
 #' create_colkey_6in24(Sample=LETTERS[1:6])
 #' @family plate creation functions
+#' 
+#' @export
+#' @importFrom tibble tibble as_tibble
+#' @importFrom magrittr %>%
+#' 
 create_colkey_6in24 <- function(...) {
     colkey <- tibble(WellC=factor(1:24),
                      Type=c(rep("+RT",18),rep("-RT",6)) %>% 
@@ -63,6 +73,10 @@ create_colkey_6in24 <- function(...) {
 #' @examples
 #' create_colkey_4dilutions_mRTNT_in24()
 #' @family plate creation functions
+#' 
+#' @export
+#' @importFrom tibble tibble
+#' 
 create_colkey_4dilutions_mRTNT_in24 <- function(
                      Dilution=c(1,1/5,1/25,1/125,1,1),
                      DilutionNice=c("1x","5x","25x","125x","-RT","NT"),
@@ -96,6 +110,10 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
 #' @examples
 #' create_colkey_6dilutions_mRTNT_in24()
 #' @family plate creation functions
+#' 
+#' @export
+#' @importFrom tibble tibble
+#' 
 create_colkey_6dilutions_mRTNT_in24 <- function(
                      Dilution=c(5^{0:-5},1,1),
                      DilutionNice=c("1x","5x","25x","125x",
@@ -123,6 +141,11 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
 #' @examples
 #' create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
 #' @family plate creation functions
+#' 
+#' @export
+#' @importFrom tibble tibble as_tibble
+#' @importFrom magrittr %>%
+#' 
 create_rowkey_4in16 <- function(...) {
     rowkey <- tibble(WellR=LETTERS[1:16],
                      Type=c(rep("+RT",12),rep("-RT",4)) %>% 
@@ -151,6 +174,11 @@ create_rowkey_4in16 <- function(...) {
 #' create_rowkey_8in16_plain(Sample=c("me","you","them","him",
 #'                                    "her","dog","cat","monkey"))
 #' @family plate creation functions
+#' 
+#' @export
+#' @importFrom tibble tibble
+#' @importFrom magrittr %>%
+#' 
 create_rowkey_8in16_plain <- function(...) {
     rowkey <- tibble(WellR=LETTERS[1:16])
     if( !missing(...) ) {
@@ -182,6 +210,9 @@ create_rowkey_8in16_plain <- function(...) {
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 #' @family plate creation functions
+#' 
+#' @export
+#' 
 label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
     if (!is.null(colkey)) {
         plate <- dplyr::left_join(plate,colkey,by="WellC")
@@ -202,6 +233,9 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
 #'
 #' @examples # !Needs a labeled example from label_plate_rowcol...
 #' @family plate creation functions
+#' 
+#' @export
+#' 
 display_plate <- function(plate) {
     ggplot2::ggplot(data=plate,
                     aes(x=factor(WellC),
@@ -223,12 +257,16 @@ display_plate <- function(plate) {
 
 #' @describeIn normalizeqPCR get the median value of a set of normalization
 #'   (reference) probes, for each sample.
+#' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
 getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
     # make subset of ct_df where gene is one of normProbes
     norm.by <- dplyr::filter(ct_df, 
-                             !!sym(probename) %in% normProbes) %>%
+                             !!dplyr::sym(probename) %in% normProbes) %>%
         .[[value]] %>%
-        median(na.rm=TRUE)
+        stats::median(na.rm=TRUE)
     
     # assign median of value to ct_df$norm.by
     # note this is the same value for every row, a waste of space technically
@@ -256,12 +294,15 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
 #'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Ct)}
 #'   }
 #' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
 normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
     ct_df %>%
         dplyr::group_by(Sample) %>%
         dplyr::do(getNormCt(.,value,normProbes,probename)) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(.Value = !!sym(value), # a tidyeval trick
+        dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
                Value.norm = .Value - norm.by, 
                Value.normexp =2^-Value.norm ) %>%
         dplyr::select(-.Value) %>%
