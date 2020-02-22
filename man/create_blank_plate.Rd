@@ -2,9 +2,22 @@
 % Please edit documentation in R/plate_functions.R
 \name{create_blank_plate}
 \alias{create_blank_plate}
+\alias{create_blank_plate_96well}
+\alias{make_row_names_LC_1536}
+\alias{make_row_names_Echo_1536}
+\alias{create_blank_plate_1536well}
 \title{Create a blank plate template as a tibble}
 \usage{
 create_blank_plate(WellR = LETTERS[1:16], WellC = 1:24)
+
+create_blank_plate_96well()
+
+make_row_names_LC_1536()
+
+make_row_names_Echo_1536()
+
+create_blank_plate_1536well(WellR = make_row_names_LC_1536(),
+  WellC = 1:48)
 }
 \arguments{
 \item{WellR}{Vector of Row labels, usually LETTERS}
@@ -25,9 +38,20 @@ tibble (data frame) with columns WellR, WellC, Well. This contains
 \description{
 Create a blank plate template as a tibble
 }
+\section{Functions}{
+\itemize{
+\item \code{create_blank_plate_96well}: create blank 96-well plate
+
+\item \code{make_row_names_LC_1536}: Row names for 1536-well plates on Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+
+\item \code{make_row_names_Echo_1536}: Row names for 1536-well plates on Labcyte Echo A,B,...,Z,AA,AB,...,AF.
+
+\item \code{create_blank_plate_1536well}: create blank 1536-well plate
+}}
+
 \examples{
 create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
-create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
+create_blank_plate_96well()
 }
 \seealso{
 Other plate creation functions: \code{\link{create_colkey_4dilutions_mRTNT_in24}},

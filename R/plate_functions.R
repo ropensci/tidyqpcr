@@ -15,7 +15,7 @@
 #'   
 #' @examples
 #' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
-#' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
+#' create_blank_plate_96well()
 #' @family plate creation functions
 #' 
 #' @export
@@ -29,6 +29,36 @@ create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
         as_tibble() %>%
         tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
+}
+
+#' @describeIn create_blank_plate create blank 96-well plate
+#' @export
+#' 
+create_blank_plate_96well <- function() {
+    return( create_blank_plate(WellR=LETTERS[1:8],WellC=1:12) )
+}
+
+#' @describeIn create_blank_plate Row names for 1536-well plates on Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+#' @export
+#' 
+make_row_names_LC_1536 <- function() {
+    return( paste0(rep(LETTERS[1:8],each=4),letters[1:4]) )
+}
+
+#' @describeIn create_blank_plate Row names for 1536-well plates on Labcyte Echo A,B,...,Z,AA,AB,...,AF.
+#' @export
+#' 
+make_row_names_Echo_1536 <- function() {
+    c(LETTERS[1:26],paste0("A",LETTERS[1:6]))
+}
+
+#' @describeIn create_blank_plate create blank 1536-well plate
+#' @export
+#' 
+create_blank_plate_1536well <- function(
+    WellR=make_row_names_LC_1536(),
+    WellC=1:48) {
+    return( create_blank_plate(WellR,WellC) )
 }
 
 #' Create a 6-value, 24-column key for plates
