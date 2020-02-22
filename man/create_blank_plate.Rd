@@ -14,8 +14,12 @@ create_blank_plate(WellR = LETTERS[1:16], WellC = 1:24)
 \value{
 tibble (data frame) with columns WellR, WellC, Well. This contains
   all pairwise combinations of WellR and WellC, as well as individual Well
-  names. Both WellR and WellC are coerced to character vectors, even if WellC
-  is supplied as numbers.
+  names. Both WellR and WellC are coerced to factors (even if WellC
+  is supplied as numbers), to ensure order is consistent.
+  
+  However, Well is a character vector as that is the default behaviour of 
+  "unite", and display order doesn't matter.
+  
   Default value describes a full 384-well plate.
 }
 \description{

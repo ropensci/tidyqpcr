@@ -5,9 +5,14 @@
 #' @param WellC Vector of Column labels, usually numbers
 #' @return tibble (data frame) with columns WellR, WellC, Well. This contains
 #'   all pairwise combinations of WellR and WellC, as well as individual Well
-#'   names. Both WellR and WellC are coerced to character vectors, even if WellC
-#'   is supplied as numbers.
+#'   names. Both WellR and WellC are coerced to factors (even if WellC
+#'   is supplied as numbers), to ensure order is consistent.
+#'   
+#'   However, Well is a character vector as that is the default behaviour of 
+#'   "unite", and display order doesn't matter.
+#'   
 #'   Default value describes a full 384-well plate.
+#'   
 #' @examples
 #' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
 #' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
@@ -16,10 +21,11 @@
 #' @export
 #' @importFrom tibble tibble as_tibble
 #' @importFrom magrittr %>%
+#' @importFrom forcats as_factor
 #' 
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
-    plate <- tidyr::crossing(WellR=factor(WellR),
-                         WellC=factor(WellC)) %>%
+    plate <- tidyr::crossing(WellR=as_factor(WellR),
+                             WellC=as_factor(WellC)) %>%
         as_tibble() %>%
         tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
@@ -215,9 +221,21 @@ create_rowkey_8in16_plain <- function(...) {
 #' 
 label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
     if (!is.null(colkey)) {
+        assertthat::assert_that(has_name(colkey,"WellC"))
+        # Note: should this if clause be a freestanding function?
+        # coerce_column_to_factor(df, col, warn=TRUE) ?
+        if( !is.factor(colkey$WellC) ) {
+            warning("coercing WellC to a factor")
+            colkey <- dplyr::mutate(colkey,WellC=as_factor(WellC))
+        }
         plate <- dplyr::left_join(plate,colkey,by="WellC")
     }
     if (!is.null(rowkey)) {
+        assertthat::assert_that(has_name(rowkey,"WellR"))
+        if( !is.factor(rowkey$WellR) ) {
+            warning("coercing WellR to a factor")
+            rowkey <- dplyr::mutate(rowkey,WellR=as_factor(WellR))
+        }
         plate <- dplyr::left_join(plate,rowkey,by="WellR")
     }
     return( dplyr::arrange( plate, WellR, WellC ) )
@@ -235,16 +253,23 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
 #' @family plate creation functions
 #' 
 #' @export
+#' @importFrom forcats as_factor
 #' 
 display_plate <- function(plate) {
+    rowlevels <- plate %>%
+        pull(WellR) %>%
+        as_factor %>%
+        levels
+                        
     ggplot2::ggplot(data=plate,
-                    aes(x=factor(WellC),
-                        y=factor(WellR,levels=rev(LETTERS)))) +
+                    aes(x=as_factor(WellC),
+                        y=as_factor(WellR))) +
         ggplot2::geom_tile(aes(fill=Probe),alpha=0.3) +
         ggplot2::geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),
                            size=2.5,lineheight=1) +
         ggplot2::scale_x_discrete(expand=c(0,0)) +
-        ggplot2::scale_y_discrete(expand=c(0,0)) +
+        ggplot2::scale_y_discrete(expand=c(0,0),
+                                  limits=rev(rowlevels)) +
         ggplot2::coord_equal() +
         ggplot2::theme_void() + 
         ggplot2::theme(axis.text=ggplot2::element_text(angle=0),
