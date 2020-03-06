@@ -1,24 +1,24 @@
- # tidyqpcr - tidy Quantitative PCR analysis.
+# tidyqpcr - Quantitative PCR analysis in the tidyverse.
 
-> *Empowering scientists to conduct reproducible, flexible, and MIQE best-practice compliant quantitative PCR analysis.*
+*Empowering scientists to conduct reproducible, flexible, and MIQE best-practice compliant quantitative PCR analysis.*
 
 ### Empowering
 
-tidyqpcr combines a free, open-source qPCR analysis R package with comprehensive, online teaching materials. 
+tidyqpcr combines a free, open-source qPCR analysis R package with online teaching materials. 
 
-We want our users to be able to know *and* understand *exactly* what happens at every step of their analysis. Users are able to know what occurs at each step as all developed tidyqpcr tools will follow the FAIR principles - [Findable, Accessible, Interoperable, and Reusable](https://www.force11.org/group/fairgroup/fairprinciples). Users should also find each step understandable as our educational resources are extensions of current [data carpentry] (https://datacarpentry.org/) R introductory workshops, such as [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/), and are therefore accessible to beginner programmers. 
+We want our users to be able to know and understand what happens at every step of their analysis. Users are able to know what occurs at each step as all tidyqpcr tools are open source and follow the FAIR principles - [Findable, Accessible, Interoperable, and Reusable](https://www.force11.org/group/fairgroup/fairprinciples). Users should also find each step understandable as we aim to produce educational resources as extensions of [data carpentry](https://datacarpentry.org/) workshops, such as [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/), accessible to beginner programmers. 
 
 ### Reproducible
 
-tidyqpcr scripts produce paper-ready figures straight from raw data with identical results across computers
+tidyqpcr scripts produce paper-ready figures straight from raw data with identical results across computers.
 
-We want to promote unambiguous, reproducible research so collaborators, reviewers or students can easily confirm results and conclusions. tidyqpcr will repeat the same analysis on different computers encouraging scientists to send raw data and analysis scripts rather than just ambiguously processed figures.
+We want to promote reproducible research so collaborators, reviewers or students can easily confirm and extend results and conclusions. tidyqpcr analysis will repeat exactly on different computers, enabling scientists to share raw data and analysis scripts rather than just  processed figures.
 
 ### Flexible
 
-tidyqpcr follows the 'tidy' data paradigm to ensure scalability and adaptability
+tidyqpcr follows the 'tidy' data paradigm to ensure scalability and adaptability.
 
-We want to create a tool that is flexible enough to analyse high or low throughput experimental data whilst integrating easily into multi-omic data analyses. tidyqpcr uses powerful but generic data science tools from [the tidyverse](https://www.tidyverse.org/) R package. Manipulating and plotting qPCR data without creating bespoke data structures allows tidyqpcr scripts to be easily integrated and scaled according to demands.
+We want to create a tool that is flexible enough to analyse high or low throughput experimental data whilst integrating easily into multi-omic data analyses. tidyqpcr uses powerful generic data science tools from [the tidyverse](https://www.tidyverse.org/) R package, lightly overlaid with qPCR-specific scripts. Manipulating and plotting qPCR data without creating bespoke data structures allows tidyqpcr scripts to be easily integrated and scaled according to the needs of your experiments.
 
 ### Best-practice compliant
 
@@ -53,9 +53,11 @@ As of Feb 2020, this software is in development. Edward Wallace wrote basic func
 
 ## Install instructions
 
+First install [R](https://www.r-project.org/). 
+
 #### For Windows users
 
-Before anything else, that you  need a working installation of [Rtools]().
+Next, you need a working installation of [Rtools]().
 
 Jeffrey Leek made [slides on installation and testing of Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/).
 
