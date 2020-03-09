@@ -28,7 +28,9 @@ We want to make it easier for scientists to produce reliable and interpretable r
 
 ## Status
 
-As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
+As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+
+We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
 
 # Features 
 
