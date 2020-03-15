@@ -1,0 +1,172 @@
+---
+title: "How to get information about your experiment into a tidyqpcr plate plan"
+author: "Edward Wallace"
+date: "June 2018"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multifactorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
+
+## knitr options for report generation
+knitr::opts_chunk$set(warning=FALSE,message=FALSE,echo=TRUE,cache=FALSE,
+                      results="show")
+library(tidyverse)
+library(cowplot)
+library(tidyqpcr)
+
+ # set default theme for graphics
+theme_set(theme_cowplot(font_size=11) %+replace% 
+              theme(panel.border=element_rect(colour = "grey50",
+                                            linetype = "solid",size=0.5),
+                    strip.background = element_blank()))
+```
+
+# Overview
+
+This vignette discusses how to set up plates for tidyqpcr analysis. This is partly a technical question of how to use functions in tidyqpcr and the tidyverse, but more fundamentally a question about how to design your experiment. We recommend the community-led best-practice [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762): how many replicates do you need, and what information do you need to provide to accompany your analysis?
+
+We recommended thinking through the whole experiment first, including what you will measure, how many replicates, and what figures you will want to make. If you plan all the analysis before even starting to grow your biological samples and extract RNA/DNA, then it is easier to avoid mistakes. Also, the steps from cell growth to finished figures go much quicker.
+
+This vignette focuses on one probe per well (for SYBR data), and doesn't discuss more than one probe (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
+
+## Essential information: Probe, Sample, Type
+
+Each well of your plate measures one or more probes in one DNA/RNA sample. The minimal information you need to describe your plate is to specify the probe(s) and sample for every well. Negative controls are crucial, either no template (NT) controls, or specifically for RNA-measuring RT-qPCR, the no-reverse transcriptase control that detects DNA contamination. Thus, you might have different types of preps from the same sample: +RT and -RT. So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: Sample, Probe, and Type.
+
+Technical replicates are also necessary for qPCR experiments to track the variability.
+
+## Using rows and columns to make life easier
+
+Technically, tidyqpcr can cope with any combination of probe and sample in any well. As long as the information is associated clearly, later analysis will work fine. However, good systematic designs that are interpretable both by people (you) and by the computer are less error prone.
+
+One systematic approach is to have each row measure exactly one probe and each column one sample. Or vice versa: one row per sample, one column per probe. This has the advantage of being straightforward to load with a multichannel pipette. 
+
+tidyqpcr is setup to make it easy to specify column contents with a `colkey`, and row contents with a `rowkey`, then to combine these into a plan for an entire plate or for a sub-region of a plate. 
+
+### A Minimal 48-well plate plan
+
+Let's imagine we are performing a RT-qPCR experiment measuring:
+* Probes against 4 genes: ACT1, BFG2, CDC19, and DED1. 
+* Three biological replicates: rep1, rep2, rep3
+* Three technical replicates of +RT and one of -RT
+
+We need 4 * 3 * 4 = 48 wells for this experiment. Let's put this information into 48 wells of a 96-well plate.
+
+#### Practice version, only one replicate.
+
+Here we use the function `tibble` to make the rowkey data tibble, and the function `rep` to repeat the Probe information enough times to fill the plate. These functions are imported into tidyqpcr; access their help files directly by `?tibble` and `?rep` from your R session.
+
+We use the built-in constant `LETTERS` to label the well row (`WellR`) with letters A through P, like they are labeled on a normal 96-well plate.
+
+```{r minimal_noreps_rows,results="show",echo=TRUE}
+# define the Probes
+Probes <- c("ACT1","BFG2","CDC19","DED1")
+
+rowkey4 <- tibble(WellR=LETTERS[1:4],
+                 Probe=Probes) 
+print(rowkey4)
+```
+
+Similarly, we put the sample information in a tibble for the columns, including `WellC` for the column name
+
+```{r minimal_noreps_cols,results="show",echo=TRUE}
+# define the Probes
+Samples <- c("rep1","rep2","rep3")
+Types   <- "+RT"
+
+colkey3 <- tibble(WellC=1:3,
+                 Sample=Samples,
+                 Type = Types) 
+print(colkey3)
+```
+
+To hold the information about a blank plate, with information on both the row and column for each well, tidyqpcr has the function `create_blank_plate`
+
+
+```{r create_blank_12well,results="show",echo=TRUE}
+
+create_blank_plate(WellR = LETTERS[1:4], WellC = 1:3)
+
+```
+
+Access help for this also at `?create_blank_plate`. Note that there are default functions to make 96-well, 384-well, and 1536-well blank plates, or as above you can customise it.
+
+Now we create our 12-well mini-plate, using the `label_plate_rowcol` function to combine information from the  blank plate template, the rowkey, and the column key. 
+
+```{r minimal_noreps_combine,results="show",echo=TRUE}
+
+plate_plan12 <- label_plate_rowcol(
+  plate = create_blank_plate(WellR = LETTERS[1:4], WellC = 1:3),
+  rowkey = rowkey4,
+  colkey = colkey3)
+
+print(plate_plan12)
+```
+
+We visualise this plate plan using the `display_plate` function
+
+```{r minimal_noreps_display,results="show",echo=TRUE,fig.height=3,fig.width=3}
+display_plate(plate_plan12)
+```
+
+Expanding this practice plan to incorporate replicates can be done by taking this little square and making copies across a larger plate. This strategy of making copies of a small square makes it easier to use multichannel pipettes to speed up plate loading. It also means that technical replicates of the same sample are not in adjacent wells on the plate, correcting for some  location-specific artefacts of amplification in the qPCR machine. However, if there are row- or column-specific artefacts, this approach does not allow you detect them separately.
+
+
+#### Repeat columns for the Samples and Types
+
+Here we are putting three replicates of +RT and one of -RT for each sample. This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/probe combinations. 
+
+We could achieve these replicates in the plate plan by explicitly writing out every time as in `c("+RT","+RT","+RT","-RT")`, or we can again use the `rep` function. Below, we use `rep("+RT",times=9)` to make 9 repeats, meaning that the 3 tech reps of +RT samples are next to each other. We use the concatenate function `c`, to arrange that next to the single replicates of the -RT samples. 
+
+```{r minimal_48_cols,results="show",echo=TRUE}
+# define the Probes
+Samples = c("rep1","rep2","rep3")
+Types = c( rep("+RT",times=9), rep("-RT",times=3))
+print(Types)
+
+colkey12 <- tibble(WellC=LETTERS[1:12],
+                 Sample=rep(Samples,times=4),
+                 Type=Types
+                 ) 
+print(colkey12)
+```
+
+#### Putting the 48-rep sample together
+
+```{r minimal_48_combine,results="show",echo=TRUE}
+
+plate_plan48 <- label_plate_rowcol(
+  plate = create_blank_plate(WellR = LETTERS[1:4], WellC = 1:12),
+  rowkey = rowkey4,
+  colkey = colkey12)
+
+print(plate_plan48)
+```
+
+We again visualise this plate plan using the `display_plate` function
+
+```{r minimal_48_display,results="show",echo=TRUE,fig.height=3,fig.width=10}
+display_plate(plate_plan48)
+```
+
+
+#### Repeating Probes over wells
+
+Here we use the  the function `rep` to repeat the Probe information 4 times, to fill the plate. Again, ask for help using `?rep`.
+
+We use the built-in constant `LETTERS` to label the well row (`WellR`) with letters A through P, like they are labeled on a normal 96-well plate.
+
+```{r minimal_48_rows,results="show",echo=TRUE}
+# define the Probes
+Probes <- c("ACT1","BFG2","CDC19","DED1")
+
+rowkey8 <- tibble(WellR=LETTERS[1:8],
+                 Probe=rep(Probes,times=4)
+                 ) 
+print(rowkey8)
+```
