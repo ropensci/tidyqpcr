@@ -36,7 +36,8 @@ tibble (data frame) with columns WellR, WellC, Well. This contains
   Default value describes a full 384-well plate.
 }
 \description{
-Create a blank plate template as a tibble
+For more help, examples and explanations, see the plate setup vignette:
+\code{vignette("platesetup_vignette", package = "tidyqpcr")}
 }
 \section{Functions}{
 \itemize{
@@ -52,6 +53,7 @@ Create a blank plate template as a tibble
 \examples{
 create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
 create_blank_plate_96well()
+
 }
 \seealso{
 Other plate creation functions: \code{\link{create_colkey_4dilutions_mRTNT_in24}},

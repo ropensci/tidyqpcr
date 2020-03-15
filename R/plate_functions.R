@@ -1,6 +1,9 @@
 
 #' Create a blank plate template as a tibble
 #' 
+#' For more help, examples and explanations, see the plate setup vignette:
+#' \code{vignette("platesetup_vignette", package = "tidyqpcr")}
+#'  
 #' @param WellR Vector of Row labels, usually LETTERS
 #' @param WellC Vector of Column labels, usually numbers
 #' @return tibble (data frame) with columns WellR, WellC, Well. This contains
@@ -16,6 +19,7 @@
 #' @examples
 #' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
 #' create_blank_plate_96well()
+#' 
 #' @family plate creation functions
 #' 
 #' @export
@@ -232,17 +236,19 @@ create_rowkey_8in16_plain <- function(...) {
 #'
 #' @param plate tibble (data frame) with variables WellR, WellC, Well. This
 #'   would usually be produced by create_blank_plate(). It is possible to
-#'   include other information in additional variables
+#'   include other information in additional variables.
 #' @param rowkey tibble (data frame) describing plate rows, with variables WellR
 #'   and others.
 #' @param colkey tibble (data frame) describing plate columns, with variables
 #'   WellC and others.
 #' @return tibble (data frame) with variables WellR, WellC, Well. This contains
 #'   all combinations of WellR and WellC found in the input plate, and all
-#'   information supplied in rowkey and colkey distributed across every 
-#'   well of the plate. Return plate is ordered by row WellR then column WellC. 
-#'   Note this may cause a problem if WellC is a character (1,10,11,...), 
-#'   instead of a factor or integer (1,2,3,...)
+#'   information supplied in rowkey and colkey distributed across every well of
+#'   the plate. Return plate is ordered by row WellR then column WellC. Note
+#'   this may cause a problem if WellC is supplied as a character (1,10,11,...),
+#'   instead of a factor or integer (1,2,3,...). For this reason, the function
+#'   my default converts WellR in `rowkey`, and WellC in `colkey`, to factors,
+#'   taking factor levels from `plate`, and warns the user.
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 #' @family plate creation functions
@@ -255,16 +261,22 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
         # Note: should this if clause be a freestanding function?
         # coerce_column_to_factor(df, col, warn=TRUE) ?
         if( !is.factor(colkey$WellC) ) {
-            warning("coercing WellC to a factor")
-            colkey <- dplyr::mutate(colkey,WellC=as_factor(WellC))
+            warning("coercing WellC to a factor with levels from plate$WellC")
+            colkey <- dplyr::mutate(colkey,
+                                    WellC=factor(WellC,
+                                                 levels=levels(plate$WellC))
+                                    )
         }
         plate <- dplyr::left_join(plate,colkey,by="WellC")
     }
     if (!is.null(rowkey)) {
         assertthat::assert_that(has_name(rowkey,"WellR"))
         if( !is.factor(rowkey$WellR) ) {
-            warning("coercing WellR to a factor")
-            rowkey <- dplyr::mutate(rowkey,WellR=as_factor(WellR))
+            warning("coercing WellR to a factor with levels from plate$WellR")
+            rowkey <- dplyr::mutate(rowkey,
+                                    WellR=factor(WellR,
+                                                 levels=levels(plate$WellR))
+                                    )
         }
         plate <- dplyr::left_join(plate,rowkey,by="WellR")
     }
