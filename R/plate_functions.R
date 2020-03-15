@@ -1,28 +1,68 @@
 
 #' Create a blank plate template as a tibble
 #' 
+#' For more help, examples and explanations, see the plate setup vignette:
+#' \code{vignette("platesetup_vignette", package = "tidyqpcr")}
+#'  
 #' @param WellR Vector of Row labels, usually LETTERS
 #' @param WellC Vector of Column labels, usually numbers
 #' @return tibble (data frame) with columns WellR, WellC, Well. This contains
 #'   all pairwise combinations of WellR and WellC, as well as individual Well
-#'   names. Both WellR and WellC are coerced to character vectors, even if WellC
-#'   is supplied as numbers.
+#'   names. Both WellR and WellC are coerced to factors (even if WellC
+#'   is supplied as numbers), to ensure order is consistent.
+#'   
+#'   However, Well is a character vector as that is the default behaviour of 
+#'   "unite", and display order doesn't matter.
+#'   
 #'   Default value describes a full 384-well plate.
+#'   
 #' @examples
 #' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
-#' create_blank_plate(WellR=LETTERS[1:8],WellC=1:12)
+#' create_blank_plate_96well()
+#' 
 #' @family plate creation functions
 #' 
 #' @export
 #' @importFrom tibble tibble as_tibble
 #' @importFrom magrittr %>%
+#' @importFrom forcats as_factor
 #' 
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
-    plate <- tidyr::crossing(WellR=factor(WellR),
-                         WellC=factor(WellC)) %>%
+    plate <- tidyr::crossing(WellR=as_factor(WellR),
+                             WellC=as_factor(WellC)) %>%
         as_tibble() %>%
         tidyr::unite(Well,WellR,WellC,sep="",remove=FALSE)
     return(plate)
+}
+
+#' @describeIn create_blank_plate create blank 96-well plate
+#' @export
+#' 
+create_blank_plate_96well <- function() {
+    return( create_blank_plate(WellR=LETTERS[1:8],WellC=1:12) )
+}
+
+#' @describeIn create_blank_plate Row names for 1536-well plates on Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+#' @export
+#' 
+make_row_names_LC_1536 <- function() {
+    return( paste0(rep(LETTERS[1:8],each=4),letters[1:4]) )
+}
+
+#' @describeIn create_blank_plate Row names for 1536-well plates on Labcyte Echo A,B,...,Z,AA,AB,...,AF.
+#' @export
+#' 
+make_row_names_Echo_1536 <- function() {
+    c(LETTERS[1:26],paste0("A",LETTERS[1:6]))
+}
+
+#' @describeIn create_blank_plate create blank 1536-well plate
+#' @export
+#' 
+create_blank_plate_1536well <- function(
+    WellR=make_row_names_LC_1536(),
+    WellC=1:48) {
+    return( create_blank_plate(WellR,WellC) )
 }
 
 #' Create a 6-value, 24-column key for plates
@@ -196,17 +236,19 @@ create_rowkey_8in16_plain <- function(...) {
 #'
 #' @param plate tibble (data frame) with variables WellR, WellC, Well. This
 #'   would usually be produced by create_blank_plate(). It is possible to
-#'   include other information in additional variables
+#'   include other information in additional variables.
 #' @param rowkey tibble (data frame) describing plate rows, with variables WellR
 #'   and others.
 #' @param colkey tibble (data frame) describing plate columns, with variables
 #'   WellC and others.
 #' @return tibble (data frame) with variables WellR, WellC, Well. This contains
 #'   all combinations of WellR and WellC found in the input plate, and all
-#'   information supplied in rowkey and colkey distributed across every 
-#'   well of the plate. Return plate is ordered by row WellR then column WellC. 
-#'   Note this may cause a problem if WellC is a character (1,10,11,...), 
-#'   instead of a factor or integer (1,2,3,...)
+#'   information supplied in rowkey and colkey distributed across every well of
+#'   the plate. Return plate is ordered by row WellR then column WellC. Note
+#'   this may cause a problem if WellC is supplied as a character (1,10,11,...),
+#'   instead of a factor or integer (1,2,3,...). For this reason, the function
+#'   my default converts WellR in `rowkey`, and WellC in `colkey`, to factors,
+#'   taking factor levels from `plate`, and warns the user.
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 #' @family plate creation functions
@@ -215,9 +257,27 @@ create_rowkey_8in16_plain <- function(...) {
 #' 
 label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
     if (!is.null(colkey)) {
+        assertthat::assert_that(has_name(colkey,"WellC"))
+        # Note: should this if clause be a freestanding function?
+        # coerce_column_to_factor(df, col, warn=TRUE) ?
+        if( !is.factor(colkey$WellC) ) {
+            warning("coercing WellC to a factor with levels from plate$WellC")
+            colkey <- dplyr::mutate(colkey,
+                                    WellC=factor(WellC,
+                                                 levels=levels(plate$WellC))
+                                    )
+        }
         plate <- dplyr::left_join(plate,colkey,by="WellC")
     }
     if (!is.null(rowkey)) {
+        assertthat::assert_that(has_name(rowkey,"WellR"))
+        if( !is.factor(rowkey$WellR) ) {
+            warning("coercing WellR to a factor with levels from plate$WellR")
+            rowkey <- dplyr::mutate(rowkey,
+                                    WellR=factor(WellR,
+                                                 levels=levels(plate$WellR))
+                                    )
+        }
         plate <- dplyr::left_join(plate,rowkey,by="WellR")
     }
     return( dplyr::arrange( plate, WellR, WellC ) )
@@ -235,16 +295,23 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
 #' @family plate creation functions
 #' 
 #' @export
+#' @importFrom forcats as_factor
 #' 
 display_plate <- function(plate) {
+    rowlevels <- plate %>%
+        pull(WellR) %>%
+        as_factor %>%
+        levels
+                        
     ggplot2::ggplot(data=plate,
-                    aes(x=factor(WellC),
-                        y=factor(WellR,levels=rev(LETTERS)))) +
+                    aes(x=as_factor(WellC),
+                        y=as_factor(WellR))) +
         ggplot2::geom_tile(aes(fill=Probe),alpha=0.3) +
         ggplot2::geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),
                            size=2.5,lineheight=1) +
         ggplot2::scale_x_discrete(expand=c(0,0)) +
-        ggplot2::scale_y_discrete(expand=c(0,0)) +
+        ggplot2::scale_y_discrete(expand=c(0,0),
+                                  limits=rev(rowlevels)) +
         ggplot2::coord_equal() +
         ggplot2::theme_void() + 
         ggplot2::theme(axis.text=ggplot2::element_text(angle=0),

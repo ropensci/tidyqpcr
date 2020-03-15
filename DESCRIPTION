@@ -12,7 +12,9 @@ Imports:
     tidyr,
     dplyr,
     readr,
-    ggplot2
+    ggplot2,
+    forcats,
+    assertthat
 Suggests: knitr, 
     rmarkdown, 
     tidyverse,
