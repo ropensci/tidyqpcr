@@ -6,7 +6,13 @@
 \alias{normaliseqPCR}
 \title{Normalize cycle count (log2-fold) data within Sample}
 \usage{
-getNormCt(ct_df, value = "Ct", normProbes = "ALG9", probename = "Probe")
+getNormCt(
+  ct_df,
+  value = "Ct",
+  normProbes = "ALG9",
+  probename = "Probe",
+  normby.function = median
+)
 
 normalizeqPCR(ct_df, value = "Ct", normProbes = "ALG9", probename = "Probe")
 
@@ -25,6 +31,10 @@ replicates.}
 reference genes}
 
 \item{probename}{the column name for probe sets}
+
+\item{normby.function}{Function to use to calculate the value to 
+normalise by on log2/Ct scale. 
+Default value is median, alternatively could use mean.}
 }
 \value{
 data frame like ct_df with three additional columns:
