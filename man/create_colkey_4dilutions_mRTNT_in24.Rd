@@ -4,10 +4,13 @@
 \alias{create_colkey_4dilutions_mRTNT_in24}
 \title{Create a 4-dilution column key for primer calibration}
 \usage{
-create_colkey_4dilutions_mRTNT_in24(Dilution = c(1, 1/5, 1/25, 1/125, 1,
-  1), DilutionNice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
-  Type = c(rep("+RT", 4), "-RT", "NT"), BioRep = rep(c("A", "B"), each
-  = 12, length.out = 24), TechRep = rep(1:2, each = 6, length.out = 24))
+create_colkey_4dilutions_mRTNT_in24(
+  Dilution = c(1, 1/5, 1/25, 1/125, 1, 1),
+  DilutionNice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
+  Type = c(rep("+RT", 4), "-RT", "NT"),
+  BioRep = rep(c("A", "B"), each = 12, length.out = 24),
+  TechRep = rep(1:2, each = 6, length.out = 24)
+)
 }
 \arguments{
 \item{Dilution}{Numeric vector of length 6 describing sample dilutions}
@@ -35,12 +38,13 @@ is a total of 6 versions of each sample replicate.
 create_colkey_4dilutions_mRTNT_in24()
 }
 \seealso{
-Other plate creation functions: \code{\link{create_blank_plate}},
-  \code{\link{create_colkey_6dilutions_mRTNT_in24}},
-  \code{\link{create_colkey_6in24}},
-  \code{\link{create_rowkey_4in16}},
-  \code{\link{create_rowkey_8in16_plain}},
-  \code{\link{display_plate}},
-  \code{\link{label_plate_rowcol}}
+Other plate creation functions: 
+\code{\link{create_blank_plate}()},
+\code{\link{create_colkey_6dilutions_mRTNT_in24}()},
+\code{\link{create_colkey_6in24}()},
+\code{\link{create_rowkey_4in16}()},
+\code{\link{create_rowkey_8in16_plain}()},
+\code{\link{display_plate}()},
+\code{\link{label_plate_rowcol}()}
 }
 \concept{plate creation functions}

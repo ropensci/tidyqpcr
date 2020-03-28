@@ -347,7 +347,8 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
 #' @param ct_df a data frame containing columns "Sample", value (default Ct) and
 #'   probe (default Probe). Crucially, Sample name should be the same for
 #'   different technical replicates measuring identical reactions in different
-#'   wells of the plate, but differ for different biological replicates.
+#'   wells of the plate, but differ for different biological and experimental 
+#'   replicates.
 #' @param value the column name of the value that will be normalized
 #' @param normProbes names of PCR probes (or primer sets) to normalize by, i.e.
 #'   reference genes
@@ -375,3 +376,13 @@ normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") 
         dplyr::select(-.Value) %>%
         return()
 }
+
+#' @describeIn normalizeqPCR Normalise cycle count (log2-fold) data within Sample.
+#' Synonym for normalizeqPCR.
+#' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
+normaliseqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+    normalizeqPCR(ct_df=ct_df,value=value,normProbes=normProbes,probename=probename)
+} 
