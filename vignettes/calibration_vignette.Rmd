@@ -1,5 +1,5 @@
 ---
-title: "Calibration vignette"
+title: "Probe calibration vignette"
 author: "Edward Wallace"
 date: "Feb 2019"
 output: 
@@ -7,13 +7,13 @@ output:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Calibration}
+  %\VignetteIndexEntry{ProbeCalibration}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 
-# Summary: calibrating primers from a real experimental test
+# Summary: calibrating primer sets from a real experimental test
 
 This vignette shows how to use tidyqpcr functions to calibrate qPCR probes.
 
