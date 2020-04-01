@@ -1,10 +1,12 @@
 ---
-title: "How to get information about your experiment into a tidy plate plan"
+title: "Introduction to designing an experiment and setting up a plate plan in tidyqpcr"
 author: "Edward Wallace"
 date: "March 2020"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
-  %\VignetteIndexEntry{Platesetup}
+  %\VignetteIndexEntry{IntroDesignPlatesetup}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -28,9 +30,14 @@ theme_set(theme_cowplot(font_size=11) %+replace%
 
 # Overview
 
-This vignette discusses how to set up plates for tidyqpcr analysis. This is partly a technical question of how to use functions in tidyqpcr and the tidyverse, but more fundamentally a question about how to design your experiment. We recommend the community-led best-practice [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762): how many replicates do you need, and what information do you need to provide to accompany your analysis?
+This vignette introduces how to set up plates for tidyqpcr analysis. Start here if you are new-ish to the tidyverse or want to see explanations about how to design experiments and plate layouts. For worked examples of tidyqpcr analysis with 384-well plates, see:
 
-We recommended thinking through the whole experiment first, including what you will measure, how many replicates, and what figures you will want to make. If you plan all the analysis before even starting to grow your biological samples and extract RNA/DNA, then it is easier to avoid mistakes. Also, the steps from cell growth, through nucleic acid extraction and measurement, to finished figures, go much quicker.
+* Probe Calibration vignette, `vignette("calibration_vignette",package="tidyqpcr")`
+* Multifactorial experiment vignette, `vignette("multifactor_vignette",package="tidyqpcr")`
+
+Setting up plates is partly a technical question of how to use functions in tidyqpcr and the tidyverse, but more fundamentally a question about how to design your experiment. We recommend the community-led best-practice [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762): how many replicates do you need, and what information do you need to provide to accompany your analysis?
+
+We suggest thinking through the whole experiment first, including what you will measure, how many replicates, and what figures you will want to make. If you plan all the analysis before even starting to grow your biological samples and extract RNA/DNA, then it is easier to avoid mistakes. Also, the steps from cell growth, through nucleic acid extraction and measurement, to finished figures, go much quicker.
 
 This vignette builds from a 12-well "practice plate" up to a 96 well plate for a plausible small RT-qPCR experiment. The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.
 
@@ -38,9 +45,22 @@ This vignette focuses on one probe per well (for SYBR data), and doesn't discuss
 
 ## Essential information: Probe, Sample, Type
 
-Each well of your plate measures one or more probes in one DNA/RNA sample. The minimal information you need to describe your plate is to specify the probe(s) and sample for every well. Negative controls are crucial, either no template (NT) controls, or specifically for RNA-measuring RT-qPCR, the no-reverse transcriptase control that detects DNA contamination. Thus, you might have different types of preps from the same sample: +RT and -RT. So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: Sample, Probe, and Type.
+Each well of your plate measures one or more probes in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the probe(s), sample, and preparation type for every well.  
+So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: Probe, Sample,and Type.
 
-Technical replicates are also necessary for qPCR experiments to track the variability.
+**Probe** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
+If you are detecting multiple regions of the same gene, or trialing multiple primer sets, you have to give them different Probe names.
+Note again that the current (March 2020) version of tidyqpcr has been tested on SYBR/intercalating dye data with one probe per well only.
+
+**Sample** should uniquely identify a nucleic acid sample in your experiment. Sample can either describe all the relevant information, for example `HeatShock_10min_RepA`, `InputControl_WildType_Rep3`; or provide other unique identifying information, for example `S013`. 
+Functions including `display_plate` and `normalizeqPCR` assume that there is a column called `Sample`, and use it to decide which wells get analysed together.
+We discuss below how to add other kinds of information/metadata to help your analysis.
+
+**Type** is used for different types of nucleic acid preps from the same sample.
+Negative controls are crucial, either no template (NT) controls, or specifically for RNA-measuring RT-qPCR, the no-reverse transcriptase control that detects DNA contamination, as discussed in the MIQE guidelines.
+So for RT-qPCR experiments we expect to have Type +RT and -RT for each sample, and for primer calibration we would always have a no template control.
+
+Technical replicates are also necessary for qPCR experiments to track the variability. This occurs as multiple Wells, each of which has the same combination of Probe, Sample, and Type.
 
 ## Using rows and columns to make life easier
 
@@ -53,6 +73,7 @@ tidyqpcr is setup to make it easy to specify column contents with a `colkey`, an
 # A Minimal 48-well plate plan
 
 Let's imagine we are performing a RT-qPCR experiment measuring:
+
 * Probes against 4 genes: ACT1, BFG2, CDC19, and DED1. 
 * Three biological replicates: rep1, rep2, rep3
 * Three technical replicates of +RT and one of -RT
@@ -157,9 +178,11 @@ display_plate(plate_plan48)
 ```
 
 
-# Introducing samples and repeating probes
+# Adding more samples and repeating probes
 
 What if we want to measure more than one condition, beyond replicates? For example, a control treatment compared to a drug treatment, or a change in nutrient conditions? We can achieve this again by extending the "repeating block" approach to include the second condition. 
+
+## Adding experimental conditions
 
 In our example, let us do this explicitly. For the rowkey we can use the `rep` function to measure each probe in conditions `Ctrl` and `Drug`, repeating each 4 times. 
 
@@ -168,6 +191,9 @@ Conditions <- c("Ctrl","Drug")
 ConditionsRep <- rep(Conditions,each=4)
 print(ConditionsRep)
 ```
+
+
+## Repeating probe names without repeating yourself
 
 We also use the function `rep` to repeat the Probe information 4 times, to fill the plate. Again, ask for help using `?rep`.
 
@@ -187,7 +213,10 @@ rowkey8 <- tibble(WellR=LETTERS[1:8],
 print(rowkey8)
 ```
 
-To make this into a plate, we also need a column key. What's changed is that, each sample needs to refer both to a condition and to a biological replicate. If we kept `colkey12` from above, then the variable `Sample` would no longer point ambiguously to a single sample.
+## Recreating the column key
+
+To make this into a plate, we also need a column key. What's changed is that, each sample needs to refer both to a condition and to a biological replicate. 
+If we kept `colkey12` from above, then the variable `Sample` would no longer point uniquely to a single sample.
 
 ```{r twocondition_96_cols,results="show",echo=TRUE}
 Bioreps = c("rep1","rep2","rep3")
@@ -199,6 +228,8 @@ colkey12_twocondition <- tibble(WellC=1:12,
                  ) 
 print(colkey12_twocondition)
 ```
+
+## Combining information into a larger plate plan
 
 Now we put this together into a plan for the whole 96-well plate:
 
@@ -213,6 +244,8 @@ print(plate_plan96_take1)
 ```
 
 Here we had to change the `create_blank_plate` call to include all 8 rows.
+
+## Making sure sample names are present and unique
 
 This plate plan lacks a `Sample` column, however. In fact in this example some of the Sample information is in the rowkey (the condition) and some comes from the column key (the biological replicate). To unite this information, we will conveniently use the `unite` function from the tidyr package:
 
@@ -241,16 +274,19 @@ We could print this plate map and take it into the lab as a visual aid for plate
 
 The plate plan should contain:
 
-* All the information you need to identify the sample and probe uniquely
-* Everything you might want to plot and compare with outputs
+* All the information you need to identify the sample and probe *uniquely*.
+* Everything you might want to plot and compare with outputs.
 
-For example, suppose you are testing multiple probes against the same target, your favourite gene `YFG1`, and you have probe sets A, B, and C. Then you might want a variable called `Target` which lists `YFG1` for these, in addition to the variable `Probe` with values `YFG1_A`, and so on.
+For example, suppose you are testing multiple probes against the same target, your favourite gene `YFG1`, and you have probe sets A, B, and C. Then you might want a variable called `Target` which lists `YFG1` for these, in addition to the variable `Probe` with values `YFG1_A`, `YFG1_B`, and `YFG1_C`.
 
-This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify Sample as `WT_25C_10min_rep1`, and then use `separate(col=Sample,into=c("Strain","Temperature","Time","Biorep"),remove=FALSE)` to create individual columns with copies of that information. The key is to be consistent and to make the descriptions both human-readable (that's for your sanity) and also computer-readable, so that your analysis is correct.
+This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify Sample as `WT_25C_10min_rep1`, and then use `separate(col=Sample,into=c("Strain","Temperature","Time","Biorep"),remove=FALSE)` to create individual columns with copies of that information. 
+The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly
 
 The functions `unite` and `separate` have visual descriptions on the [RStudio data wrangling cheat sheat](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Another useful tidyr function is `crossing`, which creates a table with all combinations of the variables that you supply, say if you want to measure all strains in all conditions.
 
 ## Hints and Tips
 
 * In tidyqpcr we chose to give all variables capitalized names, such as `Sample`, because R functions are often lower-case, such as `sample`. Keeping variable names capitalized avoids some bugs and confusion.
-* If you are loading a 384-well plate with a fixed-width multichannel pipette and you want to load the same Sample/Probe in two adjacent rows, using `rep(Sample,each=2)` might help.
+* What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same Sample/Probe in two adjacent rows, using `rep(Sample,each=2)` might help.
+* If your experiment spans multiple plates, it can be helpful to re-use `colkey` and `rowkey` in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the Sample name  includes replicate information and so is unique for the analysis.
+

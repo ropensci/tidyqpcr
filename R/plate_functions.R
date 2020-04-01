@@ -324,16 +324,21 @@ display_plate <- function(plate) {
 
 #' @describeIn normalizeqPCR get the median value of a set of normalization
 #'   (reference) probes, for each sample.
+#'   
+#' @param normby.function Function to use to calculate the value to 
+#' normalise by on log2/Ct scale. 
+#' Default value is median, alternatively could use mean.
 #' 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
+                      normby.function=median) {
     # make subset of ct_df where gene is one of normProbes
     norm.by <- dplyr::filter(ct_df, 
                              !!dplyr::sym(probename) %in% normProbes) %>%
         .[[value]] %>%
-        stats::median(na.rm=TRUE)
+        normby.function(na.rm=TRUE)
     
     # assign median of value to ct_df$norm.by
     # note this is the same value for every row, a waste of space technically
@@ -347,7 +352,8 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
 #' @param ct_df a data frame containing columns "Sample", value (default Ct) and
 #'   probe (default Probe). Crucially, Sample name should be the same for
 #'   different technical replicates measuring identical reactions in different
-#'   wells of the plate, but differ for different biological replicates.
+#'   wells of the plate, but differ for different biological and experimental 
+#'   replicates.
 #' @param value the column name of the value that will be normalized
 #' @param normProbes names of PCR probes (or primer sets) to normalize by, i.e.
 #'   reference genes
@@ -375,3 +381,13 @@ normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") 
         dplyr::select(-.Value) %>%
         return()
 }
+
+#' @describeIn normalizeqPCR Normalise cycle count (log2-fold) data within Sample.
+#' Synonym for normalizeqPCR.
+#' 
+#' @export
+#' @importFrom magrittr %>%
+#' 
+normaliseqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+    normalizeqPCR(ct_df=ct_df,value=value,normProbes=normProbes,probename=probename)
+} 

@@ -9,17 +9,33 @@
 \alias{scale_loglog10}
 \title{Nice tick labels for logarithmic axes in ggplot2.}
 \usage{
-scale_x_log2nice(name = ggplot2::waiver(), omag = seq(-10, 10),
-  scilabels = FALSE, ...)
+scale_x_log2nice(
+  name = ggplot2::waiver(),
+  omag = seq(-10, 10),
+  scilabels = FALSE,
+  ...
+)
 
-scale_x_log10nice(name = ggplot2::waiver(), omag = seq(-10, 10),
-  scilabels = FALSE, ...)
+scale_x_log10nice(
+  name = ggplot2::waiver(),
+  omag = seq(-10, 10),
+  scilabels = FALSE,
+  ...
+)
 
-scale_y_log2nice(name = ggplot2::waiver(), omag = seq(-10, 10),
-  scilabels = FALSE, ...)
+scale_y_log2nice(
+  name = ggplot2::waiver(),
+  omag = seq(-10, 10),
+  scilabels = FALSE,
+  ...
+)
 
-scale_y_log10nice(name = ggplot2::waiver(), omag = seq(-10, 10),
-  scilabels = FALSE, ...)
+scale_y_log10nice(
+  name = ggplot2::waiver(),
+  omag = seq(-10, 10),
+  scilabels = FALSE,
+  ...
+)
 
 scale_loglog10(...)
 }

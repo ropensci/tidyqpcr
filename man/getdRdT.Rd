@@ -23,6 +23,7 @@ numeric vector of same length as RR.
 Calculate dR/dT for a melt curve of signal R vs temperature T
 }
 \seealso{
-Other melt_curve_functions: \code{\link{getdRdTall}}
+Other melt_curve_functions: 
+\code{\link{getdRdTall}()}
 }
 \concept{melt_curve_functions}

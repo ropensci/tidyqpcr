@@ -16,8 +16,8 @@ make_row_names_LC_1536()
 
 make_row_names_Echo_1536()
 
-create_blank_plate_1536well(WellR = make_row_names_LC_1536(),
-  WellC = 1:48)
+create_blank_plate_1536well(WellR = make_row_names_LC_1536(), WellC = 1:48)
+
 }
 \arguments{
 \item{WellR}{Vector of Row labels, usually LETTERS}
@@ -56,12 +56,13 @@ create_blank_plate_96well()
 
 }
 \seealso{
-Other plate creation functions: \code{\link{create_colkey_4dilutions_mRTNT_in24}},
-  \code{\link{create_colkey_6dilutions_mRTNT_in24}},
-  \code{\link{create_colkey_6in24}},
-  \code{\link{create_rowkey_4in16}},
-  \code{\link{create_rowkey_8in16_plain}},
-  \code{\link{display_plate}},
-  \code{\link{label_plate_rowcol}}
+Other plate creation functions: 
+\code{\link{create_colkey_4dilutions_mRTNT_in24}()},
+\code{\link{create_colkey_6dilutions_mRTNT_in24}()},
+\code{\link{create_colkey_6in24}()},
+\code{\link{create_rowkey_4in16}()},
+\code{\link{create_rowkey_8in16_plain}()},
+\code{\link{display_plate}()},
+\code{\link{label_plate_rowcol}()}
 }
 \concept{plate creation functions}

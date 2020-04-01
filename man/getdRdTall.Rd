@@ -17,6 +17,7 @@ platemelt with additional column dRdT.
 Calculate dR/dT for melt curves of every well in a plate
 }
 \seealso{
-Other melt_curve_functions: \code{\link{getdRdT}}
+Other melt_curve_functions: 
+\code{\link{getdRdT}()}
 }
 \concept{melt_curve_functions}
