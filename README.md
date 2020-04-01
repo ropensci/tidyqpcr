@@ -30,7 +30,11 @@ We want to make it easier for scientists to produce reliable and interpretable r
 
 As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
 
-We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
+## Contribute
+
+We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
+
+We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
 
 # Features 
 
