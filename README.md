@@ -2,17 +2,21 @@
 
 *Empowering scientists to conduct reproducible, flexible, and MIQE best-practice compliant quantitative PCR analysis.*
 
-## Contents
+# Contents
 
-[Motivation](#Motivation)
-
-[Status](#Status)
-
-[Features](#Features)
-
-[Getting started](#Getting-started)
-
-[Contribute](#Contribute)
+* [Motivation](#Motivation)
+	* [Empowering](#Empowering)
+	* [Reproducible](#Reproducible)
+	* [Flexible](#Flexible)
+	* [Best-practice compliant](#Best-practice-compliant)
+* [Status](#Status)
+* [Features](#Features)
+	* [Current features](#Current-features)
+	* [Future priorities](#Future-priorities)
+* [Getting started](#Getting-started)
+	* [Installing tidyqpcr](#Installing-tidyqpcr)
+	* [Using tidyqpcr](#Using-tidyqpcr)
+* [Contribute](#Contribute)
 
 # Motivation
 
@@ -48,7 +52,7 @@ As of Feb 2020, this software is in development. Edward Wallace wrote basic func
 
 # Features 
 
-## Current features include:
+## Current features
 
 * lay out and display 96/384-well plates for easy experimental setup
 * read-in Ct and raw data from Roche LightCycler machines with single-channel fluorescence
@@ -57,7 +61,7 @@ As of Feb 2020, this software is in development. Edward Wallace wrote basic func
 * normalization of Ct data to one or more reference probe sets by delta delta count method
 * flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/)
 
-## Future priorities include:
+## Future priorities
 
 * including primer efficiencies in quantification
 * an open-source and tested Ct/Cq calculation algorithm
