@@ -2,6 +2,20 @@
 
 *Empowering scientists to conduct reproducible, flexible, and MIQE best-practice compliant quantitative PCR analysis.*
 
+## Contents
+
+[Motivation](#Motivation)
+
+[Status](#Status)
+
+[Features](#Features)
+
+[Getting started](#Getting started)
+
+[Contribute](#Contribute)
+
+# Motivation
+
 ### Empowering
 
 tidyqpcr combines a free, open-source qPCR analysis R package with online teaching materials. 
@@ -26,18 +40,12 @@ tidyqpcr encourages standardised, reliable experimental design by prioritising M
 
 We want to make it easier for scientists to produce reliable and interpretable results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
-## Status
+# Status
 
-<<<<<<< HEAD
 As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
-=======
+
 As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
 
-## Contribute
-
-We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
-
-We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
 # Features 
 
 ## Current features include:
@@ -96,3 +104,9 @@ To find these from your R session, enter `browseVignettes(package="tidyqpcr")`.
 
 
 Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
+
+# Contribute
+
+We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
+
+We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
