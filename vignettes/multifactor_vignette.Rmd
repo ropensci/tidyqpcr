@@ -1,15 +1,17 @@
 ---
-title: "Multifactorial multi-plate qPCR analysis"
+title: "Multifactorial multi-plate qPCR analysis example"
 author: "Edward Wallace"
 date: "June 2018"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
-  %\VignetteIndexEntry{Multifactorial}
+  %\VignetteIndexEntry{MultifactorialExample}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-# Plan
+# Summary: an example multifactorial qPCR experiment.
 
 This vignette shows how to use tidyqpcr functions to normalize and plot data from multifactorial experiments: many primer sets, many conditions, two plates.
 
@@ -53,7 +55,7 @@ theme_set(theme_cowplot(font_size=11) %+replace%
 ## Label and plan plates
 
 
-Reverse transcription by random primers (mixed with oligo-dT??)
+Reverse transcription by random primers mixed with oligo-dT.
 
 
 ```{r label_plates,dependson="plate_functions"}
@@ -86,12 +88,14 @@ plateplan <-
 
 ```
 
-
+Display the plate plan using display_plate. 
 
 ```{r display_plates,fig.height=9,fig.width=10,dependson="label_plates"}
 display_plate( plateplan %>%
     mutate(Sample=Condition) )
 ```
+
+Note that display_plate requires a column called `Sample`, which here we had to make from the `Condition` varilable using `mutate(Sample=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
 
 ## Load and summarize data
 
@@ -110,7 +114,7 @@ plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plat
     mutate(BiolRep="2",Plate="2")
 
 plates <- bind_rows(plate1,plate2) %>%
-    mutate( Sample=paste0(Condition,BiolRep) )
+    unite(Sample,Condition,BiolRep,sep="",remove=FALSE)
 
 summary(plates)
 

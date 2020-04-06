@@ -9,7 +9,7 @@ label_plate_rowcol(plate, rowkey = NULL, colkey = NULL)
 \arguments{
 \item{plate}{tibble (data frame) with variables WellR, WellC, Well. This
 would usually be produced by create_blank_plate(). It is possible to
-include other information in additional variables}
+include other information in additional variables.}
 
 \item{rowkey}{tibble (data frame) describing plate rows, with variables WellR
 and others.}
@@ -20,10 +20,12 @@ WellC and others.}
 \value{
 tibble (data frame) with variables WellR, WellC, Well. This contains
   all combinations of WellR and WellC found in the input plate, and all
-  information supplied in rowkey and colkey distributed across every 
-  well of the plate. Return plate is ordered by row WellR then column WellC. 
-  Note this may cause a problem if WellC is a character (1,10,11,...), 
-  instead of a factor or integer (1,2,3,...)
+  information supplied in rowkey and colkey distributed across every well of
+  the plate. Return plate is ordered by row WellR then column WellC. Note
+  this may cause a problem if WellC is supplied as a character (1,10,11,...),
+  instead of a factor or integer (1,2,3,...). For this reason, the function
+  my default converts WellR in `rowkey`, and WellC in `colkey`, to factors,
+  taking factor levels from `plate`, and warns the user.
 }
 \description{
 See vignettes for further examples
@@ -32,12 +34,13 @@ See vignettes for further examples
 label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 }
 \seealso{
-Other plate creation functions: \code{\link{create_blank_plate}},
-  \code{\link{create_colkey_4dilutions_mRTNT_in24}},
-  \code{\link{create_colkey_6dilutions_mRTNT_in24}},
-  \code{\link{create_colkey_6in24}},
-  \code{\link{create_rowkey_4in16}},
-  \code{\link{create_rowkey_8in16_plain}},
-  \code{\link{display_plate}}
+Other plate creation functions: 
+\code{\link{create_blank_plate}()},
+\code{\link{create_colkey_4dilutions_mRTNT_in24}()},
+\code{\link{create_colkey_6dilutions_mRTNT_in24}()},
+\code{\link{create_colkey_6in24}()},
+\code{\link{create_rowkey_4in16}()},
+\code{\link{create_rowkey_8in16_plain}()},
+\code{\link{display_plate}()}
 }
 \concept{plate creation functions}

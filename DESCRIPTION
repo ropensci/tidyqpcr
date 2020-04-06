@@ -12,7 +12,9 @@ Imports:
     tidyr,
     dplyr,
     readr,
-    ggplot2
+    ggplot2,
+    forcats,
+    assertthat
 Suggests: knitr, 
     rmarkdown, 
     tidyverse,
@@ -20,4 +22,4 @@ Suggests: knitr,
 VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
