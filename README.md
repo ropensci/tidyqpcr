@@ -10,7 +10,7 @@
 
 [Features](#Features)
 
-[Getting started](#Getting started)
+[Getting started](#Getting-started)
 
 [Contribute](#Contribute)
 
