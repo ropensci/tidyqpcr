@@ -57,7 +57,7 @@ We will be following the [code of conduct from the tidyverse](https://dplyr.tidy
 
 # Getting started
 
-## Install instructions
+## Installing tidyqpcr
 
 First install [R](https://www.r-project.org/). 
 
@@ -82,11 +82,14 @@ Then load tidyqpcr as a standard package:
 library(tidyqpcr)
 ```
 
-## Use
+## Using tidyqpcr
 
-The best place to start is the vignettes, see `vignette(package="tidyqpcr")` from your R session.
+The best place to start is the vignettes, which offer tutorials and example data analyses including figures. Currently there are 3 vignettes:
 
-* calibration_vignette.Rmd - qPCR primer calibration
-* multifactor_vignette.Rmd - RT-qPCR of gene expression in multifactorial design
+* [IntroDesignPlatesetup](vignettes/platesetup_vignette.Rmd) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
+* [MultifactorialExample](vignettes/multifactor_vignette.Rmd) - Example design and analysis of a (real) multifactorial qPCR experiment.
+* [ProbeCalibration](vignettes/platesetup_vignette.Rmd) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
 
-Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`.
+To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
+
+Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
