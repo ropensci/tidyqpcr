@@ -17,7 +17,6 @@ make_row_names_LC_1536()
 make_row_names_Echo_1536()
 
 create_blank_plate_1536well(WellR = make_row_names_LC_1536(), WellC = 1:48)
-
 }
 \arguments{
 \item{WellR}{Vector of Row labels, usually LETTERS}
