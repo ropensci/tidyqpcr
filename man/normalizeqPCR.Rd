@@ -9,25 +9,35 @@
 getNormCt(
   ct_df,
   value = "Ct",
-  normProbes = "ALG9",
-  probename = "Probe",
+  normTargetIDs = "ALG9",
+  probename = "TargetID",
   normby.function = median
 )
 
-normalizeqPCR(ct_df, value = "Ct", normProbes = "ALG9", probename = "Probe")
+normalizeqPCR(
+  ct_df,
+  value = "Ct",
+  normTargetIDs = "ALG9",
+  probename = "TargetID"
+)
 
-normaliseqPCR(ct_df, value = "Ct", normProbes = "ALG9", probename = "Probe")
+normaliseqPCR(
+  ct_df,
+  value = "Ct",
+  normTargetIDs = "ALG9",
+  probename = "TargetID"
+)
 }
 \arguments{
 \item{ct_df}{a data frame containing columns "SampleID", value (default Ct) and
-probe (default Probe). Crucially, SampleID should be the same for
+probename (default TargetID). Crucially, SampleID should be the same for
 different technical replicates measuring identical reactions in different
 wells of the plate, but differ for different biological and experimental 
 replicates.}
 
 \item{value}{the column name of the value that will be normalized}
 
-\item{normProbes}{names of PCR probes (or primer sets) to normalize by, i.e.
+\item{normTargetIDs}{names of PCR probes (or primer sets) to normalize by, i.e.
 reference genes}
 
 \item{probename}{the column name for probe sets}

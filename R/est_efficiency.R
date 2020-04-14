@@ -1,5 +1,5 @@
 
-#' Calibrate probes by calculating detection efficiency and R squared
+#' Calibrate primer sets / probes by calculating detection efficiency and R squared
 #' 
 #' Note efficiency is given in ratio, not per cent; multiply by 100 for that.
 #'
@@ -38,7 +38,7 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #'
 #' @param ct_df a data frame with Ct data, 1 row per well
 #' 
-#' Must have columns Type, Probe, Ct, Dilution. Only Type=="+RT" columns are used.
+#' Must have columns Type, TargetID, Ct, Dilution. Only Type=="+RT" columns are used.
 #' 
 #' @param formula formula to use for log-log regression fit. 
 #' 
@@ -46,7 +46,7 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' If only a single Biological Replicate, change to Ct ~ log2(Dilution).
 #' If multiple SampleIDs, change to Ct ~ log2(Dilution) + SampleID. See ?formula for background
 #'
-#' @return data frame with columns: Probe, efficiency, efficiency.sd, r.squared
+#' @return data frame with columns: TargetID, efficiency, efficiency.sd, r.squared
 #' 
 #' @seealso est_efficiency_1
 #' 
@@ -56,7 +56,7 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 est_efficiency <- function(ct_df,formula = Ct ~ log2(Dilution) + BioRep) {
     ct_df %>%
         dplyr::filter(Type=="+RT") %>%
-        dplyr::group_by(Probe) %>%
+        dplyr::group_by(TargetID) %>%
         dplyr::do(est_efficiency_1(.,formula=formula))
 }
 

@@ -284,9 +284,9 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
 }
 
 
-#' Display plate plan with SampleID, Probe, Type per Well
+#' Display plate plan with SampleID, TargetID, Type per Well
 #'
-#' @param plate tibble with variables WellC, WellR, SampleID, Probe, Type. 
+#' @param plate tibble with variables WellC, WellR, SampleID, TargetID, Type. 
 #'   Output from label_plate_rowcol. 
 #'
 #' @return ggplot object; major output is to plot it
@@ -306,8 +306,8 @@ display_plate <- function(plate) {
     ggplot2::ggplot(data=plate,
                     aes(x=as_factor(WellC),
                         y=as_factor(WellR))) +
-        ggplot2::geom_tile(aes(fill=Probe),alpha=0.3) +
-        ggplot2::geom_text(aes(label=paste(Probe,SampleID,Type,sep="\n")),
+        ggplot2::geom_tile(aes(fill=TargetID),alpha=0.3) +
+        ggplot2::geom_text(aes(label=paste(TargetID,SampleID,Type,sep="\n")),
                            size=2.5,lineheight=1) +
         ggplot2::scale_x_discrete(expand=c(0,0)) +
         ggplot2::scale_y_discrete(expand=c(0,0),
@@ -332,11 +332,11 @@ display_plate <- function(plate) {
 #' @export
 #' @importFrom magrittr %>%
 #' 
-getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
+getNormCt <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID",
                       normby.function=median) {
-    # make subset of ct_df where gene is one of normProbes
+    # make subset of ct_df where gene is one of normTargetIDs
     norm.by <- dplyr::filter(ct_df, 
-                             !!dplyr::sym(probename) %in% normProbes) %>%
+                             !!dplyr::sym(probename) %in% normTargetIDs) %>%
         .[[value]] %>%
         normby.function(na.rm=TRUE)
     
@@ -350,12 +350,12 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
 #' Normalize cycle count (log2-fold) data within SampleID
 #'
 #' @param ct_df a data frame containing columns "SampleID", value (default Ct) and
-#'   probe (default Probe). Crucially, SampleID should be the same for
+#'   probename (default TargetID). Crucially, SampleID should be the same for
 #'   different technical replicates measuring identical reactions in different
 #'   wells of the plate, but differ for different biological and experimental 
 #'   replicates.
 #' @param value the column name of the value that will be normalized
-#' @param normProbes names of PCR probes (or primer sets) to normalize by, i.e.
+#' @param normTargetIDs names of PCR probes (or primer sets) to normalize by, i.e.
 #'   reference genes
 #' @param probename the column name for probe sets
 #'   
@@ -370,10 +370,10 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
 #' @export
 #' @importFrom magrittr %>%
 #' 
-normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
+normalizeqPCR <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID") {
     ct_df %>%
         dplyr::group_by(SampleID) %>%
-        dplyr::do(getNormCt(.,value,normProbes,probename)) %>%
+        dplyr::do(getNormCt(.,value,normTargetIDs,probename)) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
                Value.norm = .Value - norm.by, 
@@ -388,6 +388,6 @@ normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-normaliseqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
-    normalizeqPCR(ct_df=ct_df,value=value,normProbes=normProbes,probename=probename)
+normaliseqPCR <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID") {
+    normalizeqPCR(ct_df=ct_df,value=value,normTargetIDs=normTargetIDs,probename=probename)
 } 

@@ -1,7 +1,7 @@
 ---
 title: "Introduction to designing an experiment and setting up a plate plan in tidyqpcr"
 author: "Edward Wallace"
-date: "March 2020"
+date: "April 2020"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -32,7 +32,7 @@ theme_set(theme_cowplot(font_size=11) %+replace%
 
 This vignette introduces how to set up plates for tidyqpcr analysis. Start here if you are new-ish to the tidyverse or want to see explanations about how to design experiments and plate layouts. For worked examples of tidyqpcr analysis with 384-well plates, see:
 
-* Probe Calibration vignette, `vignette("calibration_vignette",package="tidyqpcr")`
+* Primers and Probes Calibration vignette, `vignette("calibration_vignette",package="tidyqpcr")`
 * Multifactorial experiment vignette, `vignette("multifactor_vignette",package="tidyqpcr")`
 
 Setting up plates is partly a technical question of how to use functions in tidyqpcr and the tidyverse, but more fundamentally a question about how to design your experiment. We recommend the community-led best-practice [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762): how many replicates do you need, and what information do you need to provide to accompany your analysis?
@@ -41,16 +41,17 @@ We suggest thinking through the whole experiment first, including what you will 
 
 This vignette builds from a 12-well "practice plate" up to a 96 well plate for a plausible small RT-qPCR experiment. The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.
 
-This vignette focuses on one probe per well (for SYBR data), and doesn't discuss more than one probe (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
+This vignette focuses on one primer set per well (for SYBR data), and doesn't discuss more than one probe per well (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
 
-## Essential information: Probe, SampleID, Type
+## Essential information: TargetID, SampleID, Type
 
-Each well of your plate measures one or more probes in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the probe(s), sample, and preparation type for every well.  
-So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: Probe, SampleID, and Type.
+Each well of your plate measures one or more targets in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the probe(s), sample, and preparation type for every well.  
+So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: TargetID, SampleID, and Type.
 
-**Probe** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
-If you are detecting multiple regions of the same gene, or trialing multiple primer sets, you have to give them different Probe names.
-Note again that the current (March 2020) version of tidyqpcr has been tested on SYBR/intercalating dye data with one probe per well only.
+**TargetID** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
+If you are detecting multiple regions of the same gene, or trialing multiple probes or primer sets, you have to give them different TargetID names.
+We chose to name this variable "TargetID" to make it clear that this could refer to a primer set, primer set/ probe combination, detecting a single target sequence.
+Note again that the current (April 2020) version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.
 
 **SampleID** should uniquely identify a nucleic acid sample in your experiment. SampleID can either describe all the relevant information, for example `HeatShock_10min_RepA`, `InputControl_WildType_Rep3`; or provide other unique identifying information, for example `S013`. 
 Functions including `display_plate` and `normalizeqPCR` assume that there is a column called `SampleID`, and use it to decide which wells get analysed together.
@@ -60,7 +61,7 @@ We discuss below how to add other kinds of information/metadata to help your ana
 Negative controls are crucial, either no template (NT) controls, or specifically for RNA-measuring RT-qPCR, the no-reverse transcriptase control that detects DNA contamination, as discussed in the MIQE guidelines.
 So for RT-qPCR experiments we expect to have Type +RT and -RT for each sample, and for primer calibration we would always have a no template control.
 
-Technical replicates are also necessary for qPCR experiments to track the variability. This occurs as multiple Wells, each of which has the same combination of Probe, SampleID, and Type.
+Technical replicates are also necessary for qPCR experiments to track the variability. This occurs as multiple Wells, each of which has the same combination of TargetID, SampleID, and Type.
 
 ## Using rows and columns to make life easier
 
@@ -74,7 +75,7 @@ tidyqpcr is setup to make it easy to specify column contents with a `colkey`, an
 
 Let's imagine we are performing a RT-qPCR experiment measuring:
 
-* Probes against 4 genes: ACT1, BFG2, CDC19, and DED1. 
+* Primer sets against 4 genes: ACT1, BFG2, CDC19, and DED1. 
 * Three biological replicates: rep1, rep2, rep3
 * Three technical replicates of +RT and one of -RT
 
@@ -82,15 +83,15 @@ We need 4 * 3 * 4 = 48 wells for this experiment. Let's put this information int
 
 ## Practice version, only a single technical replicate.
 
-Here we use the function `tibble` to make the rowkey data tibble, and the function `rep` to repeat the Probe information enough times to fill the plate. These functions are imported into tidyqpcr; access their help files directly by `?tibble` and `?rep` from your R session.
+Here we use the function `tibble` to make the rowkey data tibble, and the function `rep` to repeat the TargetID information enough times to fill the plate. These functions are imported into tidyqpcr; access their help files directly by `?tibble` and `?rep` from your R session.
 
 We use the built-in constant `LETTERS` to label the well row (`WellR`) with letters A through D, like they are labeled on a normal 96-well plate.
 
 ```{r minimal_noreps_rows,results="show",echo=TRUE}
-Probes <- c("ACT1","BFG2","CDC19","DED1")
+TargetIDs <- c("ACT1","BFG2","CDC19","DED1")
 
 rowkey4 <- tibble(WellR=LETTERS[1:4],
-                 Probe=Probes) 
+                 TargetID=TargetIDs) 
 print(rowkey4)
 ```
 
@@ -106,7 +107,7 @@ colkey3 <- tibble(WellC=1:3,
 print(colkey3)
 ```
 
-To hold the information about a blank plate, with information on both the row and column for each well, tidyqpcr has the function `create_blank_plate`
+To hold the information about a blank plate, with information on both the row and column for each well, tidyqpcr has the function `create_blank_plate`:
 
 
 ```{r create_blank_12well,results="show",echo=TRUE}
@@ -145,7 +146,6 @@ Here we are putting three replicates of +RT and one of -RT for each sample. This
 We could achieve these replicates in the plate plan by explicitly writing out every time as in `c("+RT","+RT","+RT","-RT")`, or we can again use the `rep` function. Below, we use `rep("+RT",times=9)` to make 9 repeats, meaning that the 3 tech reps of +RT samples are next to each other. We use the concatenate function `c`, to arrange that next to the single replicates of the -RT samples. 
 
 ```{r minimal_48_cols,results="show",echo=TRUE}
-# define the Probes
 SampleIDs = c("rep1","rep2","rep3")
 Types = c( rep("+RT",times=9), rep("-RT",times=3))
 print(Types)
@@ -193,19 +193,19 @@ print(ConditionsRep)
 
 ## Repeating probe names without repeating yourself
 
-We also use the function `rep` to repeat the Probe information 4 times, to fill the plate. Again, ask for help using `?rep`.
+We also use the function `rep` to repeat the TargetID information 4 times, to fill the plate. Again, ask for help using `?rep`.
 
 ```{r probes4rep,results="show",echo=TRUE}
-Probes <- c("ACT1","BFG2","CDC19","DED1")
-ProbesRep <- rep(Probes,times=2)
-print(ProbesRep)
+TargetIDs <- c("ACT1","BFG2","CDC19","DED1")
+TargetIDsRep <- rep(TargetIDs,times=2)
+print(TargetIDsRep)
 ```
 
 Now combine this into a rowkey:
 
 ```{r twocondition_96_rows,results="show",echo=TRUE}
 rowkey8 <- tibble(WellR=LETTERS[1:8],
-                 Probe=ProbesRep,
+                 TargetID=TargetIDsRep,
                  Condition=ConditionsRep
                  ) 
 print(rowkey8)
@@ -278,10 +278,10 @@ ADD HERE
 
 The plate plan should contain:
 
-* All the information you need to identify the sample and probe *uniquely*.
+* All the information you need to identify the sample and probe/primer set *uniquely*.
 * Everything you might want to plot and compare with outputs.
 
-For example, suppose you are testing multiple probes against the same target, your favourite gene `YFG1`, and you have probe sets A, B, and C. Then you might want a variable called `Target` which lists `YFG1` for these, in addition to the variable `Probe` with values `YFG1_A`, `YFG1_B`, and `YFG1_C`.
+For example, suppose you are testing multiple primer sets against the same target, your favourite gene `YFG1`, and you have primer sets A, B, and C. Then you might want a variable called `Gene` with value `YFG1` for all of these, in addition to the variable `TargetID` with values `YFG1_A`, `YFG1_B`, and `YFG1_C`.
 
 This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify SampleID as `WT_25C_10min_rep1`, and then use `separate(col=SampleID,into=c("Strain","Temperature","Time","Biorep"),remove=FALSE)` to create individual columns with copies of that information. 
 The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly
@@ -291,6 +291,6 @@ The functions `unite` and `separate` have visual descriptions on the [RStudio da
 ## Hints and Tips
 
 * In tidyqpcr we chose to give all variables capitalized names, such as `SampleID`, because R functions are often lower-case, such as `sample`. Keeping variable names capitalized avoids some bugs and confusion.
-* What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same SampleID/Probe in two adjacent rows, using `rep(SampleID,each=2)` might help.
+* What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same SampleID/TargetID in two adjacent rows, using `rep(SampleID,each=2)` might help.
 * If your experiment spans multiple plates, it can be helpful to re-use `colkey` and `rowkey` in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the SampleID name includes replicate information and so is unique for the analysis.
 

@@ -9,7 +9,7 @@ est_efficiency(ct_df, formula = Ct ~ log2(Dilution) + BioRep)
 \arguments{
 \item{ct_df}{a data frame with Ct data, 1 row per well
 
-Must have columns Type, Probe, Ct, Dilution. Only Type=="+RT" columns are used.}
+Must have columns Type, TargetID, Ct, Dilution. Only Type=="+RT" columns are used.}
 
 \item{formula}{formula to use for log-log regression fit. 
 
@@ -18,7 +18,7 @@ If only a single Biological Replicate, change to Ct ~ log2(Dilution).
 If multiple SampleIDs, change to Ct ~ log2(Dilution) + SampleID. See ?formula for background}
 }
 \value{
-data frame with columns: Probe, efficiency, efficiency.sd, r.squared
+data frame with columns: TargetID, efficiency, efficiency.sd, r.squared
 }
 \description{
 See calibration vignette for example of usage.

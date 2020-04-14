@@ -2,7 +2,7 @@
 % Please edit documentation in R/est_efficiency.R
 \name{est_efficiency_1}
 \alias{est_efficiency_1}
-\title{Calibrate probes by calculating detection efficiency and R squared}
+\title{Calibrate primer sets / probes by calculating detection efficiency and R squared}
 \usage{
 est_efficiency_1(ct_df_1, formula = Ct ~ log2(Dilution) + BioRep)
 }
