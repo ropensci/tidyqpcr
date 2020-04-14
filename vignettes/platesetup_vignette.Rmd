@@ -46,7 +46,7 @@ This vignette focuses on one probe per well (for SYBR data), and doesn't discuss
 ## Essential information: Probe, Sample, Type
 
 Each well of your plate measures one or more probes in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the probe(s), sample, and preparation type for every well.  
-So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: Probe, Sample,and Type.
+So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: Probe, Sample, and Type.
 
 **Probe** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
 If you are detecting multiple regions of the same gene, or trialing multiple primer sets, you have to give them different Probe names.
@@ -80,14 +80,13 @@ Let's imagine we are performing a RT-qPCR experiment measuring:
 
 We need 4 * 3 * 4 = 48 wells for this experiment. Let's put this information into 48 wells of a 96-well plate.
 
-## Practice version, only one replicate.
+## Practice version, only a single technical replicate.
 
 Here we use the function `tibble` to make the rowkey data tibble, and the function `rep` to repeat the Probe information enough times to fill the plate. These functions are imported into tidyqpcr; access their help files directly by `?tibble` and `?rep` from your R session.
 
 We use the built-in constant `LETTERS` to label the well row (`WellR`) with letters A through D, like they are labeled on a normal 96-well plate.
 
 ```{r minimal_noreps_rows,results="show",echo=TRUE}
-# define the Probes
 Probes <- c("ACT1","BFG2","CDC19","DED1")
 
 rowkey4 <- tibble(WellR=LETTERS[1:4],
@@ -98,7 +97,6 @@ print(rowkey4)
 Similarly, we put the sample information in a tibble for the columns, including `WellC` for the column name
 
 ```{r minimal_noreps_cols,results="show",echo=TRUE}
-# define the Probes
 Samples <- c("rep1","rep2","rep3")
 Types   <- "+RT"
 
@@ -131,7 +129,7 @@ plate_plan12 <- label_plate_rowcol(
 print(plate_plan12)
 ```
 
-We visualise this plate plan using the `display_plate` function
+We visualise this plate plan using the `display_plate` function:
 
 ```{r minimal_noreps_display,results="show",echo=TRUE,fig.height=3,fig.width=3}
 display_plate(plate_plan12)
@@ -269,6 +267,12 @@ display_plate(plate_plan96)
 ```
 
 We could print this plate map and take it into the lab as a visual aid for plate loading.
+
+
+# Built-in functions to create plates with standard designs
+
+ADD HERE
+
 
 # What information goes in the plate plan, revisited?
 
