@@ -45,12 +45,12 @@ This vignette focuses on one primer set per well (for SYBR data), and doesn't di
 
 ## Essential information: TargetID, SampleID, Type
 
-Each well of your plate measures one or more targets in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the probe(s), sample, and preparation type for every well.  
+Each well of your plate measures one or more sequence targets in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the target(s), sample, and preparation type for every well.  
 So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: TargetID, SampleID, and Type.
 
 **TargetID** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
 If you are detecting multiple regions of the same gene, or trialing multiple probes or primer sets, you have to give them different TargetID names.
-We chose to name this variable "TargetID" to make it clear that this could refer to a primer set, primer set/ probe combination, detecting a single target sequence.
+We chose to name this variable "TargetID" to make it clear that this could refer to a primer set, or a primer set/ probe combination, detecting a single target sequence.
 Note again that the current (April 2020) version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.
 
 **SampleID** should uniquely identify a nucleic acid sample in your experiment. SampleID can either describe all the relevant information, for example `HeatShock_10min_RepA`, `InputControl_WildType_Rep3`; or provide other unique identifying information, for example `S013`. 
@@ -65,9 +65,9 @@ Technical replicates are also necessary for qPCR experiments to track the variab
 
 ## Using rows and columns to make life easier
 
-Technically, tidyqpcr can cope with any combination of probe and sample in any well. As long as the information is associated clearly, later analysis will work fine. However, good systematic designs that are interpretable both by people (you) and by the computer are less error prone.
+Technically, tidyqpcr can cope with any combination of target and sample in any well. As long as the information is associated clearly, later analysis will work fine. However, good systematic designs that are interpretable both by people (you) and by the computer are less error prone.
 
-One systematic approach is to have each row measure exactly one probe and each column one sample. Or vice versa: one row per sample, one column per probe. This has the advantage of being straightforward to load with a multichannel pipette. 
+One systematic approach is to have each row measure exactly one target and each column one sample. Or vice versa: one row per sample, one column per target. This has the advantage of being straightforward to load with a multichannel pipette. 
 
 tidyqpcr is setup to make it easy to specify column contents with a `colkey`, and row contents with a `rowkey`, then to combine these into a plan for an entire plate or for a sub-region of a plate. 
 
@@ -141,7 +141,7 @@ Expanding this practice plan to incorporate replicates can be done by taking thi
 
 ## Repeat columns for the SampleIDs and Types
 
-Here we are putting three replicates of +RT and one of -RT for each sample. This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/probe combinations. 
+Here we are putting three replicates of +RT and one of -RT for each sample. This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/target combinations. 
 
 We could achieve these replicates in the plate plan by explicitly writing out every time as in `c("+RT","+RT","+RT","-RT")`, or we can again use the `rep` function. Below, we use `rep("+RT",times=9)` to make 9 repeats, meaning that the 3 tech reps of +RT samples are next to each other. We use the concatenate function `c`, to arrange that next to the single replicates of the -RT samples. 
 
@@ -176,13 +176,13 @@ display_plate(plate_plan48)
 ```
 
 
-# Adding more samples and repeating probes
+# Adding more samples and repeating targets
 
 What if we want to measure more than one condition, beyond replicates? For example, a control treatment compared to a drug treatment, or a change in nutrient conditions? We can achieve this again by extending the "repeating block" approach to include the second condition. 
 
 ## Adding experimental conditions
 
-In our example, let us do this explicitly. For the rowkey we can use the `rep` function to measure each probe in conditions `Ctrl` and `Drug`, repeating each 4 times. 
+In our example, let us do this explicitly. For the rowkey we can use the `rep` function to measure each target in conditions `Ctrl` and `Drug`, repeating each 4 times. 
 
 ```{r conditions2rep,results="show",echo=TRUE}
 Conditions <- c("Ctrl","Drug")
@@ -191,11 +191,11 @@ print(ConditionsRep)
 ```
 
 
-## Repeating probe names without repeating yourself
+## Repeating target names without repeating yourself
 
 We also use the function `rep` to repeat the TargetID information 4 times, to fill the plate. Again, ask for help using `?rep`.
 
-```{r probes4rep,results="show",echo=TRUE}
+```{r targets4rep,results="show",echo=TRUE}
 TargetIDs <- c("ACT1","BFG2","CDC19","DED1")
 TargetIDsRep <- rep(TargetIDs,times=2)
 print(TargetIDsRep)
@@ -278,7 +278,7 @@ ADD HERE
 
 The plate plan should contain:
 
-* All the information you need to identify the sample and probe/primer set *uniquely*.
+* All the information you need to identify the sample and target/probe/primer set *uniquely*.
 * Everything you might want to plot and compare with outputs.
 
 For example, suppose you are testing multiple primer sets against the same target, your favourite gene `YFG1`, and you have primer sets A, B, and C. Then you might want a variable called `Gene` with value `YFG1` for all of these, in addition to the variable `TargetID` with values `YFG1_A`, `YFG1_B`, and `YFG1_C`.

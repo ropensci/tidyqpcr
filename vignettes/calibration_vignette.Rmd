@@ -61,7 +61,7 @@ theme_set(theme_cowplot(font_size=11) %+replace%
 Names <- c("ECM38","FET5","GPT2","ILV5","NRD1","RDL1","TFS1") 
 # ORF ids of target genes
 Targets  <- c("YLR299W","YFL041W","YKR067W","YLR355C","YNL251C","YOR285W","YLR178C")
-# Repeats of gene names to account for resting multiple probesets
+# Repeats of gene names to account for testing multiple primer sets
 Namesrep <- c(rep(Names[1:2],each=3),rep(Names[3:7],each=2))
 # id numbers of multiple probesets (reflecting IDs as ordered)
 TargetIDs <- paste(Namesrep,
