@@ -4,7 +4,7 @@
 \alias{est_efficiency}
 \title{Calibrate multiple probes by calculating detection efficiency and R squared}
 \usage{
-est_efficiency(ct_df, formula = Ct ~ log2(Dilution) + BioRep)
+est_efficiency(ct_df, formula = Ct ~ log2(Dilution) + BioRep, usetypes = "+RT")
 }
 \arguments{
 \item{ct_df}{a data frame with Ct data, 1 row per well
@@ -16,6 +16,13 @@ Must have columns Type, TargetID, Ct, Dilution. Only Type=="+RT" columns are use
 Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
 If only a single Biological Replicate, change to Ct ~ log2(Dilution).
 If multiple SampleIDs, change to Ct ~ log2(Dilution) + SampleID. See ?formula for background}
+
+\item{usetypes}{Type column values to use, default "+RT" for RT-qPCR.
+
+By default, this includes only reverse-transcribed values in the efficiency
+estimation, so excludes negative controls such as no-template and no-RT.
+
+To skip this filtering step, set usetypes=NA.}
 }
 \value{
 data frame with columns: TargetID, efficiency, efficiency.sd, r.squared

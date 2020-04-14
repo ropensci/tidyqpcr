@@ -45,6 +45,14 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
 #' If only a single Biological Replicate, change to Ct ~ log2(Dilution).
 #' If multiple SampleIDs, change to Ct ~ log2(Dilution) + SampleID. See ?formula for background
+
+#' @param usetypes Type column values to use, default "+RT" for RT-qPCR.
+#' 
+#' By default, this includes only reverse-transcribed values in the efficiency
+#' estimation, so excludes negative controls such as no-template and no-RT.
+#' 
+#' To skip this filtering step, set usetypes=NA.
+#' 
 #'
 #' @return data frame with columns: TargetID, efficiency, efficiency.sd, r.squared
 #' 
@@ -53,9 +61,11 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' @export
 #' @importFrom magrittr %>%
 #' 
-est_efficiency <- function(ct_df,formula = Ct ~ log2(Dilution) + BioRep) {
+est_efficiency <- function(ct_df,formula = Ct ~ log2(Dilution) + BioRep,usetypes="+RT") {
+    if( !is.na(usetypes) ) {
+        ct_df <- dplyr::filter(ct_df, Type %in% usetypes)
+    }
     ct_df %>%
-        dplyr::filter(Type=="+RT") %>%
         dplyr::group_by(TargetID) %>%
         dplyr::do(est_efficiency_1(.,formula=formula))
 }
