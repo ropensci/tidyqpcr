@@ -4,7 +4,7 @@
 \alias{getNormCt}
 \alias{normalizeqPCR}
 \alias{normaliseqPCR}
-\title{Normalize cycle count (log2-fold) data within Sample}
+\title{Normalize cycle count (log2-fold) data within SampleID}
 \usage{
 getNormCt(
   ct_df,
@@ -19,8 +19,8 @@ normalizeqPCR(ct_df, value = "Ct", normProbes = "ALG9", probename = "Probe")
 normaliseqPCR(ct_df, value = "Ct", normProbes = "ALG9", probename = "Probe")
 }
 \arguments{
-\item{ct_df}{a data frame containing columns "Sample", value (default Ct) and
-probe (default Probe). Crucially, Sample name should be the same for
+\item{ct_df}{a data frame containing columns "SampleID", value (default Ct) and
+probe (default Probe). Crucially, SampleID should be the same for
 different technical replicates measuring identical reactions in different
 wells of the plate, but differ for different biological and experimental 
 replicates.}
@@ -46,14 +46,14 @@ data frame like ct_df with three additional columns:
   }
 }
 \description{
-Normalize cycle count (log2-fold) data within Sample
+Normalize cycle count (log2-fold) data within SampleID
 }
 \section{Functions}{
 \itemize{
 \item \code{getNormCt}: get the median value of a set of normalization
 (reference) probes, for each sample.
 
-\item \code{normaliseqPCR}: Normalise cycle count (log2-fold) data within Sample.
+\item \code{normaliseqPCR}: Normalise cycle count (log2-fold) data within SampleID.
 Synonym for normalizeqPCR.
 }}
 

@@ -73,7 +73,7 @@ create_blank_plate_1536well <- function(
 #' @param ... Vectors of length 6 describing well contents, e.g. sample or probe. 
 #' @return tibble (data frame) with 24 rows, and columns WellC, Type, TechRep, and supplied values. 
 #' @examples
-#' create_colkey_6in24(Sample=LETTERS[1:6])
+#' create_colkey_6in24(SampleID=LETTERS[1:6])
 #' @family plate creation functions
 #' 
 #' @export
@@ -179,7 +179,7 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
 #' @return tibble (data frame) with 16 rows, and variables WellR, Type, TechRep,
 #'   and supplied values.
 #' @examples
-#' create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
+#' create_rowkey_4in16(SampleID=c("sheep","goat","cow","chicken"))
 #' @family plate creation functions
 #' 
 #' @export
@@ -211,7 +211,7 @@ create_rowkey_4in16 <- function(...) {
 #' @return tibble (data frame) with 16 rows, and variables WellC, and supplied
 #'   values.
 #' @examples
-#' create_rowkey_8in16_plain(Sample=c("me","you","them","him",
+#' create_rowkey_8in16_plain(SampleID=c("me","you","them","him",
 #'                                    "her","dog","cat","monkey"))
 #' @family plate creation functions
 #' 
@@ -284,9 +284,9 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
 }
 
 
-#' Display plate plan with Sample, Probe, Type per Well
+#' Display plate plan with SampleID, Probe, Type per Well
 #'
-#' @param plate tibble with variables WellC, WellR, Sample, Probe, Type. 
+#' @param plate tibble with variables WellC, WellR, SampleID, Probe, Type. 
 #'   Output from label_plate_rowcol. 
 #'
 #' @return ggplot object; major output is to plot it
@@ -307,7 +307,7 @@ display_plate <- function(plate) {
                     aes(x=as_factor(WellC),
                         y=as_factor(WellR))) +
         ggplot2::geom_tile(aes(fill=Probe),alpha=0.3) +
-        ggplot2::geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),
+        ggplot2::geom_text(aes(label=paste(Probe,SampleID,Type,sep="\n")),
                            size=2.5,lineheight=1) +
         ggplot2::scale_x_discrete(expand=c(0,0)) +
         ggplot2::scale_y_discrete(expand=c(0,0),
@@ -347,10 +347,10 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
         return()
 }
 
-#' Normalize cycle count (log2-fold) data within Sample
+#' Normalize cycle count (log2-fold) data within SampleID
 #'
-#' @param ct_df a data frame containing columns "Sample", value (default Ct) and
-#'   probe (default Probe). Crucially, Sample name should be the same for
+#' @param ct_df a data frame containing columns "SampleID", value (default Ct) and
+#'   probe (default Probe). Crucially, SampleID should be the same for
 #'   different technical replicates measuring identical reactions in different
 #'   wells of the plate, but differ for different biological and experimental 
 #'   replicates.
@@ -372,7 +372,7 @@ getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
 #' 
 normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
     ct_df %>%
-        dplyr::group_by(Sample) %>%
+        dplyr::group_by(SampleID) %>%
         dplyr::do(getNormCt(.,value,normProbes,probename)) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
@@ -382,7 +382,7 @@ normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") 
         return()
 }
 
-#' @describeIn normalizeqPCR Normalise cycle count (log2-fold) data within Sample.
+#' @describeIn normalizeqPCR Normalise cycle count (log2-fold) data within SampleID.
 #' Synonym for normalizeqPCR.
 #' 
 #' @export

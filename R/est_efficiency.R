@@ -44,7 +44,7 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' 
 #' Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
 #' If only a single Biological Replicate, change to Ct ~ log2(Dilution).
-#' If multiple Samples, change to Ct ~ log2(Dilution) + Sample. See ?formula for background
+#' If multiple SampleIDs, change to Ct ~ log2(Dilution) + SampleID. See ?formula for background
 #'
 #' @return data frame with columns: Probe, efficiency, efficiency.sd, r.squared
 #' 

@@ -80,7 +80,7 @@ plate1plan <-
         create_blank_plate(),
         rowkey,
         create_colkey_4dilutions_mRTNT_in24()) %>%
-    mutate(Sample=paste(BioRep,DilutionNice,sep="_"))
+    mutate(SampleID=paste(BioRep,DilutionNice,sep="_"))
 
 
 ```

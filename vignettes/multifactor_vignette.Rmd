@@ -92,10 +92,10 @@ Display the plate plan using display_plate.
 
 ```{r display_plates,fig.height=9,fig.width=10,dependson="label_plates"}
 display_plate( plateplan %>%
-    mutate(Sample=Condition) )
+    mutate(SampleID=Condition) )
 ```
 
-Note that display_plate requires a column called `Sample`, which here we had to make from the `Condition` varilable using `mutate(Sample=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
+Note that display_plate requires a column called `SampleID`, which here we had to make from the `Condition` varilable using `mutate(SampleID=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
 
 ## Load and summarize data
 
@@ -114,7 +114,7 @@ plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plat
     mutate(BiolRep="2",Plate="2")
 
 plates <- bind_rows(plate1,plate2) %>%
-    unite(Sample,Condition,BiolRep,sep="",remove=FALSE)
+    unite(SampleID,Condition,BiolRep,sep="",remove=FALSE)
 
 summary(plates)
 
@@ -151,7 +151,7 @@ platesnorm <- plates %>%
     normalizeqPCR(normProbes = "PGK1")
 
 platesmed <- platesnorm %>%
-    group_by(Sample,Condition,BiolRep,HS,Drug,Sample,Probe) %>%
+    group_by(SampleID,Condition,BiolRep,HS,Drug,Probe) %>%
     summarize(Ct=median(Value.norm,na.rm=TRUE),
               Abund=median(Value.normexp,na.rm=TRUE))
 
