@@ -1,3 +1,5 @@
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
 
 *Empowering scientists to conduct reproducible, flexible, and MIQE best-practice compliant quantitative PCR analysis.*
