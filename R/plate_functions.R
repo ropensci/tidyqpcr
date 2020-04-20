@@ -326,30 +326,30 @@ display_plate <- function(plate) {
 #'   (reference) probes, for each sample.
 #'   
 #' @param normby.function Function to use to calculate the value to 
-#' normalise by on log2/Ct scale. 
+#' normalise by on log2/Cq scale. 
 #' Default value is median, alternatively could use mean.
 #' 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-getNormCt <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID",
+getNormCq <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID",
                       normby.function=median) {
-    # make subset of ct_df where gene is one of normTargetIDs
-    norm.by <- dplyr::filter(ct_df, 
+    # make subset of cq_df where gene is one of normTargetIDs
+    norm.by <- dplyr::filter(cq_df, 
                              !!dplyr::sym(probename) %in% normTargetIDs) %>%
         .[[value]] %>%
         normby.function(na.rm=TRUE)
     
-    # assign median of value to ct_df$norm.by
+    # assign median of value to cq_df$norm.by
     # note this is the same value for every row, a waste of space technically
-    ct_df %>%
+    cq_df %>%
         dplyr::mutate(norm.by = norm.by) %>%
         return()
 }
 
 #' Normalize cycle count (log2-fold) data within SampleID
 #'
-#' @param ct_df a data frame containing columns "SampleID", value (default Ct) and
+#' @param cq_df a data frame containing columns "SampleID", value (default Cq) and
 #'   probename (default TargetID). Crucially, SampleID should be the same for
 #'   different technical replicates measuring identical reactions in different
 #'   wells of the plate, but differ for different biological and experimental 
@@ -359,21 +359,21 @@ getNormCt <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID"
 #'   reference genes
 #' @param probename the column name for probe sets
 #'   
-#' @return data frame like ct_df with three additional columns:
+#' @return data frame like cq_df with three additional columns:
 #' 
 #' \tabular{ll}{
 #'   norm.by       \tab the median value of the reference probes  \cr
-#'   Value.norm    \tab the normalized value, \eqn{\Delta Ct} \cr
-#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Ct)}
+#'   Value.norm    \tab the normalized value, \eqn{\Delta Cq} \cr
+#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)}
 #'   }
 #' 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-normalizeqPCR <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID") {
-    ct_df %>%
+normalizeqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID") {
+    cq_df %>%
         dplyr::group_by(SampleID) %>%
-        dplyr::do(getNormCt(.,value,normTargetIDs,probename)) %>%
+        dplyr::do(getNormCq(.,value,normTargetIDs,probename)) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
                Value.norm = .Value - norm.by, 
@@ -388,6 +388,6 @@ normalizeqPCR <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="Targe
 #' @export
 #' @importFrom magrittr %>%
 #' 
-normaliseqPCR <- function(ct_df,value="Ct",normTargetIDs="ALG9",probename="TargetID") {
-    normalizeqPCR(ct_df=ct_df,value=value,normTargetIDs=normTargetIDs,probename=probename)
+normaliseqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID") {
+    normalizeqPCR(cq_df=cq_df,value=value,normTargetIDs=normTargetIDs,probename=probename)
 } 

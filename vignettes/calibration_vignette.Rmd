@@ -107,7 +107,7 @@ display_plate(plate1plan)
 ```
 
 
-# Analyze Ct (quantification cycle count) data
+# Analyze Cq (quantification cycle count) data
 
 ## Load and summarize data
 
@@ -117,7 +117,7 @@ display_plate(plate1plan)
 
 plates <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt",
                        skip=1) %>%
-    mutate(Well=Pos,Ct=Cp) %>%
+    mutate(Well=Pos,Cq=Cp) %>%
     right_join(plate1plan)
 
 ```
@@ -136,7 +136,7 @@ We detect no signal in NT (no template) negative control, and very weak signal i
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
 
 ggplot(data=plates) +
-    geom_point(aes(x=TargetID,y=Ct,colour=DilutionNice,shape=Type),
+    geom_point(aes(x=TargetID,y=Cq,colour=DilutionNice,shape=Type),
                position=position_jitter(width = 0.2,height=0)) +
     labs(y="Cycle count to threshold",
          title="All reps, unnormalized") +
@@ -149,10 +149,10 @@ ggplot(data=plates) +
 
 ## Dilution series is linear for all probes
 
-Visual display of linearity of Ct with log(Dilution).
+Visual display of linearity of Cq with log(Dilution).
 
 ```{r plot_dilutions,dependson="load_plates",fig.height=11,fig.width=6}
-ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
+ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Cq)) +
     geom_point() +
     stat_smooth(formula=y~x,method="lm",se=FALSE,
                 aes(colour="fit",linetype="fit")) + 
@@ -169,7 +169,7 @@ ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Ct)) +
 
 ## Calculate primer efficiencies for all probes
 
-Use regression to estimate linearity of Ct with log(Dilution), including the slope or efficiency.
+Use regression to estimate linearity of Cq with log(Dilution), including the slope or efficiency.
 
 ```{r calibrate_dilutions,dependson="load_plates",results="show",echo=TRUE}
 est_efficiency(plates)
@@ -182,7 +182,7 @@ est_efficiency(plates)
 TargetIDsnice <- c("ECM38_3","FET5_1","GPT2_4","ILV5_4","NRD1_1","RDL1_4","TFS1_1")
 
 ggplot(data=filter(plates,Type=="+RT",TargetID %in% TargetIDsnice),
-       aes(x=Dilution,y=Ct)) +
+       aes(x=Dilution,y=Cq)) +
     geom_point() +
     stat_smooth(formula=y~x,method="lm",se=FALSE,
                 aes(colour="fit",linetype="fit")) + 

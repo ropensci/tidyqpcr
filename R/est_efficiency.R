@@ -3,16 +3,16 @@
 #' 
 #' Note efficiency is given in ratio, not per cent; multiply by 100 for that.
 #'
-#' @param ct_df_1 a data frame with Ct data, 1 row per well.
+#' @param cq_df_1 a data frame with Cq (quantification cycle) data, 1 row per well.
 #' 
-#' Must have columns Ct, Dilution. 
+#' Must have columns Cq, Dilution. 
 #' 
-#' Assumes data are only for 1 probe, i.e. all values in ct_df_1 are fit with the same slope.
+#' Assumes data are only for 1 probe, i.e. all values in cq_df_1 are fit with the same slope.
 #' 
 #' @param formula formula to use for log-log regression fit. 
 #' 
-#' Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
-#' If only a single Biological Replicate, change to Ct ~ log2(Dilution).
+#' Default value assumes multiple biological replicates Cq ~ log2(Dilution) + BioRep.
+#' If only a single Biological Replicate, change to Cq ~ log2(Dilution).
 #'
 #' @return data frame with 1 single row, and columns: efficiency, efficiency.sd, r.squared
 #'
@@ -21,9 +21,9 @@
 #' @export
 #' @importFrom tibble tibble
 #' 
-est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
+est_efficiency_1 <- function(cq_df_1,formula = Cq ~ log2(Dilution) + BioRep) {
     slopefit <-  stats::lm(formula = formula,
-                    data    = ct_df_1)
+                    data    = cq_df_1)
     slopefitsummary <- summary(slopefit)
     tibble(efficiency = - slopefit$coefficients[2],
            efficiency.sd = slopefitsummary$coefficients[2,2],
@@ -36,15 +36,15 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' 
 #' Note efficiency is given in ratio, not per cent; multiply by 100 for that.
 #'
-#' @param ct_df a data frame with Ct data, 1 row per well
+#' @param cq_df a data frame with Cq (quantification cycle) data, 1 row per well
 #' 
-#' Must have columns Type, TargetID, Ct, Dilution. Only Type=="+RT" columns are used.
+#' Must have columns Type, TargetID, Cq, Dilution. Only Type=="+RT" columns are used.
 #' 
 #' @param formula formula to use for log-log regression fit. 
 #' 
-#' Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
-#' If only a single Biological Replicate, change to Ct ~ log2(Dilution).
-#' If multiple SampleIDs, change to Ct ~ log2(Dilution) + SampleID. See ?formula for background
+#' Default value assumes multiple biological replicates Cq ~ log2(Dilution) + BioRep.
+#' If only a single Biological Replicate, change to Cq ~ log2(Dilution).
+#' If multiple SampleIDs, change to Cq ~ log2(Dilution) + SampleID. See ?formula for background
 
 #' @param usetypes Type column values to use, default "+RT" for RT-qPCR.
 #' 
@@ -61,11 +61,11 @@ est_efficiency_1 <- function(ct_df_1,formula = Ct ~ log2(Dilution) + BioRep) {
 #' @export
 #' @importFrom magrittr %>%
 #' 
-est_efficiency <- function(ct_df,formula = Ct ~ log2(Dilution) + BioRep,usetypes="+RT") {
+est_efficiency <- function(cq_df,formula = Cq ~ log2(Dilution) + BioRep,usetypes="+RT") {
     if( !is.na(usetypes) ) {
-        ct_df <- dplyr::filter(ct_df, Type %in% usetypes)
+        cq_df <- dplyr::filter(cq_df, Type %in% usetypes)
     }
-    ct_df %>%
+    cq_df %>%
         dplyr::group_by(TargetID) %>%
         dplyr::do(est_efficiency_1(.,formula=formula))
 }

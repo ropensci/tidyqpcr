@@ -103,13 +103,13 @@ Note that display_plate requires a column called `SampleID`, which here we had t
 # read my plates
 
 plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt",skip=1) %>%
-    mutate(Well=Pos,Ct=Cp) %>%
+    mutate(Well=Pos,Cq=Cp) %>%
     left_join(plateplan) %>%
     mutate(BiolRep="1",Plate="1")
 
 
 plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt",skip=1) %>%
-    mutate(Well=Pos,Ct=Cp) %>%
+    mutate(Well=Pos,Cq=Cp) %>%
     left_join(plateplan) %>%
     mutate(BiolRep="2",Plate="2")
 
@@ -128,7 +128,7 @@ summary(plates)
 
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=8}
 ggplot(data=plates) +
-    geom_point(aes(x=TargetID,y=Ct,shape=Condition,colour=Condition),
+    geom_point(aes(x=TargetID,y=Cq,shape=Condition,colour=Condition),
                position=position_jitter(width = 0.2,height=0)) +
     labs(y="Cycle count to threshold",
          title="All reps, unnormalized") +
@@ -141,7 +141,7 @@ ggplot(data=plates) +
 ```
 
 
-## Normalize Ct to PGK1, within Sample only 
+## Normalize Cq to PGK1, within Sample only 
 
 
 
@@ -152,7 +152,7 @@ platesnorm <- plates %>%
 
 platesmed <- platesnorm %>%
     group_by(SampleID,Condition,BiolRep,HS,Drug,TargetID) %>%
-    summarize(Ct=median(Value.norm,na.rm=TRUE),
+    summarize(Cq=median(Value.norm,na.rm=TRUE),
               Abund=median(Value.normexp,na.rm=TRUE))
 
 filter(platesmed,TargetID=="HSP26")
@@ -165,7 +165,7 @@ filter(platesmed,TargetID=="HSP26")
 ggplot(data=platesnorm) +
     geom_point(aes(x=TargetID,y=Value.norm,shape=Condition,colour=Condition),
                position=position_jitter(width = 0.2,height=0)) +
-    labs(y="Ct relative to PGK1") +
+    labs(y="Cq relative to PGK1") +
     scale_shape_manual(values=c(15:18,5:6)) + 
     facet_grid(BiolRep~.) +
     theme(axis.text.x=element_text(angle=90,vjust=0.5),
