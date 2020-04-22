@@ -241,26 +241,36 @@ create_rowkey_8in16_plain <- function(...) {
 #'   and others.
 #' @param colkey tibble (data frame) describing plate columns, with variables
 #'   WellC and others.
-#' @return tibble (data frame) with variables WellR, WellC, Well. This contains
-#'   all combinations of WellR and WellC found in the input plate, and all
-#'   information supplied in rowkey and colkey distributed across every well of
-#'   the plate. Return plate is ordered by row WellR then column WellC. Note
-#'   this may cause a problem if WellC is supplied as a character (1,10,11,...),
-#'   instead of a factor or integer (1,2,3,...). For this reason, the function
-#'   my default converts WellR in `rowkey`, and WellC in `colkey`, to factors,
-#'   taking factor levels from `plate`, and warns the user.
+#' @param coercefactors if TRUE, coerce WellR in rowkey and WellC in colkey to factors
+#' @return tibble (data frame) with variables WellR, WellC, Well, and others. 
+#'   
+#'   This tibble contains all combinations of WellR and WellC found in the input
+#'   plate, and all information supplied in rowkey and colkey distributed across
+#'   every well of the plate. Return plate is ordered by row WellR then column
+#'   WellC.
+#'   
+#'   Note this ordering may cause a problem if WellC is supplied as a character
+#'   (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
+#'   the function by default converts WellR in `rowkey`, and WellC in `colkey`,
+#'   to factors, taking factor levels from `plate`, and warns the user.
+#'   
+#'   Other tidyqpcr functions require plate plans to contain variables SampleID,
+#'   TargetID, and Type, so `label_plate_rowcol` will warn if any of these are
+#'   missing. This is a warning, not an error, because these variables can be
+#'   added by users later.
+#'   
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 #' @family plate creation functions
 #' 
 #' @export
 #' 
-label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
+label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL,coercefactors=TRUE) {
     if (!is.null(colkey)) {
         assertthat::assert_that(has_name(colkey,"WellC"))
         # Note: should this if clause be a freestanding function?
         # coerce_column_to_factor(df, col, warn=TRUE) ?
-        if( !is.factor(colkey$WellC) ) {
+        if( !is.factor(colkey$WellC) & coercefactors ) {
             warning("coercing WellC to a factor with levels from plate$WellC")
             colkey <- dplyr::mutate(colkey,
                                     WellC=factor(WellC,
@@ -271,7 +281,7 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
     }
     if (!is.null(rowkey)) {
         assertthat::assert_that(has_name(rowkey,"WellR"))
-        if( !is.factor(rowkey$WellR) ) {
+        if( !is.factor(rowkey$WellR) & coercefactors ) {
             warning("coercing WellR to a factor with levels from plate$WellR")
             rowkey <- dplyr::mutate(rowkey,
                                     WellR=factor(WellR,
@@ -279,6 +289,16 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
                                     )
         }
         plate <- dplyr::left_join(plate,rowkey,by="WellR")
+    }
+    # check that plate contains SampleID, TargetID, Type, warn if not
+    if( ! "SampleID" %in% names(plate) ) {
+        warning("plate does not contain variable SampleID")
+    }
+    if( ! "TargetID" %in% names(plate) ) {
+        warning("plate does not have variable TargetID")
+    }
+    if( ! "Type" %in% names(plate) ) {
+        warning("plate does not have variable Type")
     }
     return( dplyr::arrange( plate, WellR, WellC ) )
 }
