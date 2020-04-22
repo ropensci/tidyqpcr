@@ -19,7 +19,7 @@ Create a 16-row key with 8 values repeated over 16 plate rows. No other
 information is included by default, hence "plain".
 }
 \examples{
-create_rowkey_8in16_plain(Sample=c("me","you","them","him",
+create_rowkey_8in16_plain(SampleID=c("me","you","them","him",
                                    "her","dog","cat","monkey"))
 }
 \seealso{

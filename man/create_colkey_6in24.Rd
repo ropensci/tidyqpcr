@@ -17,7 +17,7 @@ Create a 24-column key with 6 values repeated over 24 plate columns.
 Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
 }
 \examples{
-create_colkey_6in24(Sample=LETTERS[1:6])
+create_colkey_6in24(SampleID=LETTERS[1:6])
 }
 \seealso{
 Other plate creation functions: 

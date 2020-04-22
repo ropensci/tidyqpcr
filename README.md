@@ -50,21 +50,26 @@ We want to make it easier for scientists to produce reliable and interpretable r
 
 As of April 2020, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes] (https://github.com/dimmestp) is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
 
+## News
+
+20 April 2020, upgrades that break previous code, commit #cda1742 changes variable and function names to use SampleID for nucleic acid sample (replaces Sample), Target ID for primer set/ probe (replaces Probe), and Cq for quantification cycle (replaces Ct). It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
+
+
 # Features 
 
 ## Current features
 
 * lay out and display 96/384-well plates for easy experimental setup
-* read-in Ct and raw data from Roche LightCycler machines with single-channel fluorescence
+* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence
 * calibration of primer sets including estimating efficiencies and visualization of curves
 * visualization of amplification and melt curves
-* normalization of Ct data to one or more reference probe sets by delta delta count method
+* normalization of Cq data to one or more reference probe sets by delta delta count method
 * flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/)
 
 ## Future priorities
 
 * including primer efficiencies in quantification
-* an open-source and tested Ct/Cq calculation algorithm
+* an open-source and tested Cq calculation algorithm
 * extend to 1536-well plates 
 * files for automatic plate loading with [Opentrons](https://opentrons.com/) and [Labcyte Echo](https://www.labcyte.com/products/liquid-handling/echo-liquid-handlers) liquid handlers.
 

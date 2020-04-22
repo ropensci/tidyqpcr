@@ -2,21 +2,21 @@
 % Please edit documentation in R/est_efficiency.R
 \name{est_efficiency_1}
 \alias{est_efficiency_1}
-\title{Calibrate probes by calculating detection efficiency and R squared}
+\title{Calibrate primer sets / probes by calculating detection efficiency and R squared}
 \usage{
-est_efficiency_1(ct_df_1, formula = Ct ~ log2(Dilution) + BioRep)
+est_efficiency_1(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep)
 }
 \arguments{
-\item{ct_df_1}{a data frame with Ct data, 1 row per well.
+\item{cq_df_1}{a data frame with Cq (quantification cycle) data, 1 row per well.
 
-Must have columns Ct, Dilution. 
+Must have columns Cq, Dilution. 
 
-Assumes data are only for 1 probe, i.e. all values in ct_df_1 are fit with the same slope.}
+Assumes data are only for 1 probe, i.e. all values in cq_df_1 are fit with the same slope.}
 
 \item{formula}{formula to use for log-log regression fit. 
 
-Default value assumes multiple biological replicates Ct ~ log2(Dilution) + BioRep.
-If only a single Biological Replicate, change to Ct ~ log2(Dilution).}
+Default value assumes multiple biological replicates Cq ~ log2(Dilution) + BioRep.
+If only a single Biological Replicate, change to Cq ~ log2(Dilution).}
 }
 \value{
 data frame with 1 single row, and columns: efficiency, efficiency.sd, r.squared

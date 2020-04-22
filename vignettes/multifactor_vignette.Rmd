@@ -60,14 +60,14 @@ Reverse transcription by random primers mixed with oligo-dT.
 
 ```{r label_plates,dependson="plate_functions"}
 
-# list Targets /Probes
-Probes <- c("HOR7", "HSP12", "HSP26", "HSP78", 
+# list Targets / Probes
+TargetIDs <- c("HOR7", "HSP12", "HSP26", "HSP78", 
             "HSP104", "RTC3", "SSA4", "PGK1", 
             "ALG9", " HHT2", "HTB2", "RPS3", 
             "RPS13", "RPS15", "RPS30A", "RPL39")
 
 rowkey <- tibble(WellR=LETTERS[1:16],
-                 Probe=factor(Probes,levels=Probes) 
+                 TargetID=factor(TargetIDs,levels=TargetIDs) 
                  ) 
 
 # Set up experimental samples
@@ -92,10 +92,10 @@ Display the plate plan using display_plate.
 
 ```{r display_plates,fig.height=9,fig.width=10,dependson="label_plates"}
 display_plate( plateplan %>%
-    mutate(Sample=Condition) )
+    mutate(SampleID=Condition) )
 ```
 
-Note that display_plate requires a column called `Sample`, which here we had to make from the `Condition` varilable using `mutate(Sample=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
+Note that display_plate requires a column called `SampleID`, which here we had to make from the `Condition` varilable using `mutate(SampleID=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
 
 ## Load and summarize data
 
@@ -103,18 +103,18 @@ Note that display_plate requires a column called `Sample`, which here we had to 
 # read my plates
 
 plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt",skip=1) %>%
-    mutate(Well=Pos,Ct=Cp) %>%
+    mutate(Well=Pos,Cq=Cp) %>%
     left_join(plateplan) %>%
     mutate(BiolRep="1",Plate="1")
 
 
 plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt",skip=1) %>%
-    mutate(Well=Pos,Ct=Cp) %>%
+    mutate(Well=Pos,Cq=Cp) %>%
     left_join(plateplan) %>%
     mutate(BiolRep="2",Plate="2")
 
 plates <- bind_rows(plate1,plate2) %>%
-    unite(Sample,Condition,BiolRep,sep="",remove=FALSE)
+    unite(SampleID,Condition,BiolRep,sep="",remove=FALSE)
 
 summary(plates)
 
@@ -128,7 +128,7 @@ summary(plates)
 
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=8}
 ggplot(data=plates) +
-    geom_point(aes(x=Probe,y=Ct,shape=Condition,colour=Condition),
+    geom_point(aes(x=TargetID,y=Cq,shape=Condition,colour=Condition),
                position=position_jitter(width = 0.2,height=0)) +
     labs(y="Cycle count to threshold",
          title="All reps, unnormalized") +
@@ -141,21 +141,21 @@ ggplot(data=plates) +
 ```
 
 
-## Normalize Ct to PGK1, within Sample only 
+## Normalize Cq to PGK1, within Sample only 
 
 
 
 ```{r normalize_counts,dependson="load_plates"}
 platesnorm <- plates %>% 
     filter(Type=="+RT") %>%
-    normalizeqPCR(normProbes = "PGK1")
+    normalizeqPCR(normTargetIDs = "PGK1")
 
 platesmed <- platesnorm %>%
-    group_by(Sample,Condition,BiolRep,HS,Drug,Sample,Probe) %>%
-    summarize(Ct=median(Value.norm,na.rm=TRUE),
+    group_by(SampleID,Condition,BiolRep,HS,Drug,TargetID) %>%
+    summarize(Cq=median(Value.norm,na.rm=TRUE),
               Abund=median(Value.normexp,na.rm=TRUE))
 
-filter(platesmed,Probe=="HSP26")
+filter(platesmed,TargetID=="HSP26")
 
 ```
 
@@ -163,9 +163,9 @@ filter(platesmed,Probe=="HSP26")
 
 ```{r plot_normalized,dependson="normalize_counts",fig.height=6,fig.width=6}
 ggplot(data=platesnorm) +
-    geom_point(aes(x=Probe,y=Value.norm,shape=Condition,colour=Condition),
+    geom_point(aes(x=TargetID,y=Value.norm,shape=Condition,colour=Condition),
                position=position_jitter(width = 0.2,height=0)) +
-    labs(y="Ct relative to PGK1") +
+    labs(y="Cq relative to PGK1") +
     scale_shape_manual(values=c(15:18,5:6)) + 
     facet_grid(BiolRep~.) +
     theme(axis.text.x=element_text(angle=90,vjust=0.5),
@@ -174,7 +174,7 @@ ggplot(data=platesnorm) +
 
 ```
 
-## Plot normalized data, summarized vs Probe
+## Plot normalized data, summarized vs TargetID
 
 ### All on same axes
 
@@ -182,7 +182,7 @@ This plot shows all the summarized data on the same axes, but it is hard to pick
 
 ```{r plot_normalizedsummarized1,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data=platesmed) +
-    geom_point(aes(x=Probe,y=Abund,shape=BiolRep,colour=Condition),
+    geom_point(aes(x=TargetID,y=Abund,shape=BiolRep,colour=Condition),
                position=position_jitter(width = 0.2,height=0)) +
     scale_shape_manual(values=c(15:18,5:6)) + 
     scale_y_log10nice("mRNA relative detection") + 
@@ -198,7 +198,7 @@ This plot shows all the summarized data "faceted" on different axes for differen
 
 ```{r plot_normalizedsummarizedbyHS,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data=platesmed) +
-    geom_point(aes(x=Probe,y=Abund,shape=BiolRep,colour=HS),
+    geom_point(aes(x=TargetID,y=Abund,shape=BiolRep,colour=HS),
                position=position_jitter(width = 0.2,height=0)) +
     facet_wrap(~Drug,ncol=3) +
     scale_colour_manual(values=c("-"="grey50","+"="red")) +
@@ -215,7 +215,7 @@ By contrast, this plot shows all the summarized data "faceted" on different axes
 
 ```{r plot_normalizedsummarizedbyDrug,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data=platesmed) +
-    geom_point(aes(x=Probe,y=Abund,shape=BiolRep,colour=Drug),
+    geom_point(aes(x=TargetID,y=Abund,shape=BiolRep,colour=Drug),
                position=position_jitter(width = 0.2,height=0)) +
     facet_wrap(~HS,ncol=3) +
     scale_y_log10nice("mRNA relative detection") + 
@@ -270,7 +270,7 @@ platesmelt <- bind_rows(plate1curve,plate2curve) %>%
 ggplot(data=platesmelt %>% 
            filter(TechRep==1,BiolRep==1),
        aes(x=Temperature,y=dRdT,linetype=Type)) + 
-    facet_grid(Condition~Probe) + 
+    facet_grid(Condition~TargetID) + 
     geom_line() +
     scale_linetype_manual(values=c("-RT"="dashed","+RT"="solid")) +
     scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
@@ -283,7 +283,7 @@ ggplot(data=platesmelt %>%
 ggplot(data=platesmelt %>% 
            filter(TechRep==1,BiolRep==2),
        aes(x=Temperature,y=dRdT,linetype=Type)) + 
-    facet_grid(Condition~Probe) + 
+    facet_grid(Condition~TargetID) + 
     geom_line() +
     scale_linetype_manual(values=c("-RT"="dashed","+RT"="solid")) +
     scale_x_continuous(breaks=seq(60,100,10),minor_breaks=seq(60,100,5)) + 
@@ -297,7 +297,7 @@ ggplot(data=platesmelt %>%
 ggplot(data=platesamp %>% 
            filter(TechRep==1,BiolRep==1),
        aes(x=Cycle,y=Signal,linetype=Type)) + 
-    facet_grid(Condition~Probe) + 
+    facet_grid(Condition~TargetID) + 
     geom_line() +
     scale_linetype_manual(values=c("-RT"="dashed","+RT"="solid")) +
     expand_limits(y=0) + 
@@ -308,7 +308,7 @@ ggplot(data=platesamp %>%
 ggplot(data=platesamp %>% 
            filter(TechRep==1,BiolRep==2),
        aes(x=Cycle,y=Signal,linetype=Type)) + 
-    facet_grid(Condition~Probe) + 
+    facet_grid(Condition~TargetID) + 
     geom_line() +
     scale_linetype_manual(values=c("-RT"="dashed","+RT"="solid")) +
     expand_limits(y=0) + 
