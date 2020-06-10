@@ -4,11 +4,19 @@
 \alias{getdRdTall}
 \title{Calculate dR/dT for melt curves of every well in a plate}
 \usage{
-getdRdTall(platemelt)
+getdRdTall(platemelt, method = "spline", ...)
 }
 \arguments{
 \item{platemelt}{data frame describing melt curves, including variables
 Well, Temperature, Fluor (fluorescence value).}
+
+\item{method}{to use for smoothing:
+
+  "spline" default, uses smoothing spline stats::smooth.spline.
+  
+  "diff" base::diff for lagged difference}
+
+\item{...}{other arguments to pass to smoothing method.}
 }
 \value{
 platemelt with additional column dRdT.

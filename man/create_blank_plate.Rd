@@ -28,10 +28,10 @@ tibble (data frame) with columns WellR, WellC, Well. This contains
   all pairwise combinations of WellR and WellC, as well as individual Well
   names. Both WellR and WellC are coerced to factors (even if WellC
   is supplied as numbers), to ensure order is consistent.
-  
-  However, Well is a character vector as that is the default behaviour of 
+
+  However, Well is a character vector as that is the default behaviour of
   "unite", and display order doesn't matter.
-  
+
   Default value describes a full 384-well plate.
 }
 \description{
@@ -42,9 +42,11 @@ For more help, examples and explanations, see the plate setup vignette:
 \itemize{
 \item \code{create_blank_plate_96well}: create blank 96-well plate
 
-\item \code{make_row_names_LC_1536}: Row names for 1536-well plates on Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+\item \code{make_row_names_LC_1536}: Row names for 1536-well plates on
+Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
 
-\item \code{make_row_names_Echo_1536}: Row names for 1536-well plates on Labcyte Echo A,B,...,Z,AA,AB,...,AF.
+\item \code{make_row_names_Echo_1536}: Row names for 1536-well plates on
+Labcyte Echo A,B,...,Z,AA,AB,...,AF.
 
 \item \code{create_blank_plate_1536well}: create blank 1536-well plate
 }}

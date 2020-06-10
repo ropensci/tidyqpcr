@@ -7,13 +7,15 @@
 create_colkey_6in24(...)
 }
 \arguments{
-\item{...}{Vectors of length 6 describing well contents, e.g. sample or probe.}
+\item{...}{Vectors of length 6 describing well contents,
+e.g. sample or probe.}
 }
 \value{
-tibble (data frame) with 24 rows, and columns WellC, Type, TechRep, and supplied values.
+tibble (data frame) with 24 rows, and columns
+WellC, Type, TechRep, and supplied values.
 }
 \description{
-Create a 24-column key with 6 values repeated over 24 plate columns. 
+Create a 24-column key with 6 values repeated over 24 plate columns.
 Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
 }
 \examples{

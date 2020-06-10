@@ -7,7 +7,7 @@
 display_plate(plate)
 }
 \arguments{
-\item{plate}{tibble with variables WellC, WellR, SampleID, TargetID, Type. 
+\item{plate}{tibble with variables WellC, WellR, SampleID, TargetID, Type.
 Output from label_plate_rowcol.}
 }
 \value{

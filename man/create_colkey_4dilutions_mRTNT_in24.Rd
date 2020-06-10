@@ -5,7 +5,7 @@
 \title{Create a 4-dilution column key for primer calibration}
 \usage{
 create_colkey_4dilutions_mRTNT_in24(
-  Dilution = c(1, 1/5, 1/25, 1/125, 1, 1),
+  Dilution = c(5^(0:-3), 1, 1),
   DilutionNice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
   Type = c(rep("+RT", 4), "-RT", "NT"),
   BioRep = rep(c("A", "B"), each = 12, length.out = 24),

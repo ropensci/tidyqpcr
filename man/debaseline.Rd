@@ -15,22 +15,22 @@ cmplification curves from Roche Lightcycler format data.}
 amplification.}
 }
 \value{
-platemap with additional columns per Well: 
+platemap with additional columns per Well:
 \tabular{ll}{
   Base      \tab baseline /background value  \cr
   Signal    \tab normalized fluorescence signal, i.e. Fluor - Base
   }
 }
 \description{
-Remove baseline from qPCR amplification curves 
+Remove baseline from qPCR amplification curves
 by subtracting median of initial cycles.
 }
 \details{
 BETA function version because:
 
-- assumes Roche Lightcycler format, 
+- assumes Roche Lightcycler format,
 we should ideally replace "program==2" by something more generic?
 
-- the rule-of thumb "baseline is median of initial 10 cycles" 
+- the rule-of thumb "baseline is median of initial 10 cycles"
 has not been tested robustly
 }

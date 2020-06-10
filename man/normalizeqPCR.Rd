@@ -29,21 +29,21 @@ normaliseqPCR(
 )
 }
 \arguments{
-\item{cq_df}{a data frame containing columns "SampleID", value (default Cq) and
-probename (default TargetID). Crucially, SampleID should be the same for
-different technical replicates measuring identical reactions in different
-wells of the plate, but differ for different biological and experimental 
-replicates.}
+\item{cq_df}{a data frame containing columns "SampleID", value (default Cq)
+and probename (default TargetID). Crucially, SampleID should be the same
+for different technical replicates measuring identical reactions in
+different wells of the plate, but differ for different biological and
+experimental replicates.}
 
 \item{value}{the column name of the value that will be normalized}
 
-\item{normTargetIDs}{names of PCR probes (or primer sets) to normalize by, i.e.
-reference genes}
+\item{normTargetIDs}{names of PCR probes (or primer sets) to normalize by,
+i.e. reference genes}
 
 \item{probename}{the column name for probe sets}
 
-\item{normby.function}{Function to use to calculate the value to 
-normalise by on log2/Cq scale. 
+\item{normby.function}{Function to use to calculate the value to
+normalise by on log2/Cq scale.
 Default value is median, alternatively could use mean.}
 }
 \value{
@@ -63,7 +63,7 @@ Normalize cycle count (log2-fold) data within SampleID
 \item \code{getNormCq}: get the median value of a set of normalization
 (reference) probes, for each sample.
 
-\item \code{normaliseqPCR}: Normalise cycle count (log2-fold) data within SampleID.
-Synonym for normalizeqPCR.
+\item \code{normaliseqPCR}: Normalise cycle count (log2-fold) data within
+SampleID. Synonym for normalizeqPCR.
 }}
 

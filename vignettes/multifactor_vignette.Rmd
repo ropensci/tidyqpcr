@@ -228,6 +228,7 @@ ggplot(data=platesmed) +
 
 # Melt and Amp Curves
 
+Note: this chunk throwing an error in CHECK.
 
 ```{r load_amp,dependson="label_plates",results="show"}
 

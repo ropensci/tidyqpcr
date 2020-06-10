@@ -17,21 +17,22 @@ and others.}
 \item{colkey}{tibble (data frame) describing plate columns, with variables
 WellC and others.}
 
-\item{coercefactors}{if TRUE, coerce WellR in rowkey and WellC in colkey to factors}
+\item{coercefactors}{if TRUE, coerce WellR in rowkey and WellC in colkey
+to factors}
 }
 \value{
-tibble (data frame) with variables WellR, WellC, Well, and others. 
-  
+tibble (data frame) with variables WellR, WellC, Well, and others.
+
   This tibble contains all combinations of WellR and WellC found in the input
   plate, and all information supplied in rowkey and colkey distributed across
   every well of the plate. Return plate is ordered by row WellR then column
   WellC.
-  
+
   Note this ordering may cause a problem if WellC is supplied as a character
   (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
   the function by default converts WellR in `rowkey`, and WellC in `colkey`,
   to factors, taking factor levels from `plate`, and warns the user.
-  
+
   Other tidyqpcr functions require plate plans to contain variables SampleID,
   TargetID, and Type, so `label_plate_rowcol` will warn if any of these are
   missing. This is a warning, not an error, because these variables can be

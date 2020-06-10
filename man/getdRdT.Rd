@@ -4,19 +4,23 @@
 \alias{getdRdT}
 \title{Calculate dR/dT for a melt curve of signal R vs temperature T}
 \usage{
-getdRdT(TT, RR, method = c("spline", "diff"), ...)
+getdRdT(TT, RR, method = "spline", ...)
 }
 \arguments{
 \item{TT}{Temperature.}
 
 \item{RR}{Signal, assumed fluorescence signal matched to TT.}
 
-\item{method}{to use, defaulting to a smoothing spline.}
+\item{method}{to use for smoothing:
+
+  "spline" default, uses smoothing spline stats::smooth.spline.
+  
+  "diff" base::diff for lagged difference}
 
 \item{...}{other arguments to pass to smoothing method.}
 }
 \value{
-estimated first derivative of RR with respect to TT, 
+estimated first derivative of RR with respect to TT,
 numeric vector of same length as RR.
 }
 \description{
