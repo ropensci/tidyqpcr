@@ -121,4 +121,13 @@ Individual R functions are also documented, use R's standard help system after l
 
 We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
 
+## Code of conduct
+
 We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
+
+## Code style
+
+tidyqpcr *mostly* follows the [tidyverse style guide](https://style.tidyverse.org/), with one exception:
+
+* Variable names are mostly CamelCase, which we have found useful in differentiating data frame variables, for example called *Time* from functions called *time*. This means fewer problems in dealing with time-course experimental data
+* Function names are all snake_case
