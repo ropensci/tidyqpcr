@@ -9,7 +9,7 @@
 #'
 #' Must have columns Cq, Dilution.
 #'
-#' Assumes data are only for 1 probe, i.e. all values in cq_df_1 are
+#' Assumes data are only for 1 probe/TargetID, i.e. all values in cq_df_1 are
 #' fit with the same slope.
 #'
 #' @param formula formula to use for log-log regression fit.
@@ -28,6 +28,9 @@
 #' @importFrom tibble tibble
 #'
 est_efficiency <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
+    if (length(unique(cq_df_1$TargetID)) > 1 ) {
+            warning("multiple TargetIDs, did you mean to run est_efficiency_plate?")
+    }
     slopefit <- stats::lm(formula = formula, data = cq_df_1)
     slopefitsummary <- summary(slopefit)
     tibble(efficiency = -slopefit$coefficients[2],

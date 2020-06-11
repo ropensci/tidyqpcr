@@ -121,7 +121,7 @@ calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
 #'
 getdRdTall <- function(platemelt, method = "spline") {
     lifecycle::deprecate_warn("0.2", "getdRdTall()",
-                              "calculate_drdt()",
+                              "calculate_drdt_plate()",
         details = "Replaced with more specific name")
     calculate_drdt_plate(platemelt = platemelt,
                          method = method)
