@@ -14,7 +14,8 @@ Imports:
     readr,
     ggplot2,
     forcats,
-    assertthat
+    assertthat,
+    lifecycle
 Suggests: knitr, 
     rmarkdown, 
     tidyverse,
@@ -23,3 +24,4 @@ VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true
 RoxygenNote: 7.1.0
+Encoding: UTF-8

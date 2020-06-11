@@ -41,43 +41,54 @@ debaseline <- function(plateamp, maxcycle = 10) {
 }
 
 
-#' Calculate dR/dT for a melt curve of signal R vs temperature T
+#' Calculate dy/dx vector from vectors y and x
 #'
-#' @param TT Temperature.
-#' @param RR Signal, assumed fluorescence signal matched to TT.
+#' Used in tidyqpcr to calculate dR/dT for a melt curve of fluorescence signal R
+#' vs temperature T.
+#'
+#' @param x input variable, numeric vector, assumed to be temperature
+#' @param y output variable, numeric vector of same length as x, assumed
+#'   to be fluorescence signal.
 #' @param method to use for smoothing:
-#' 
+#'
 #'   "spline" default, uses smoothing spline stats::smooth.spline.
-#'   
+#'
 #'   "diff" base::diff for lagged difference
 #'
 #' @param ... other arguments to pass to smoothing method.
 #'
-#' @return estimated first derivative of RR with respect to TT,
-#' numeric vector of same length as RR.
+#' @return estimated first derivative of y with respect to x, numeric vector of
+#'   same length as y.
 #'
 #' @family melt_curve_functions
 #'
 #' @export
-#'
-getdRdT <- function(TT, RR, method = "spline", ...) {
+#' 
+calculate_dydx_1 <- function(x, y, method = "spline", ...) {
+    assertthat::assert_that(is.numeric(x))
+    assertthat::assert_that(is.numeric(y))
+    assertthat::assert_that(length(x) == length(y))
     if (method == "diff") {
-       return(-c(diff(RR) / diff(TT), NA))
+       return(-c(diff(y) / diff(x), NA))
     } else if (method == "spline") {
-        fit <- stats::smooth.spline(x = TT, y = RR, ...)
-        return(-1 * stats::predict(object = fit, x = TT, deriv = 1)$y)
+        fit <- stats::smooth.spline(x = x, y = y, ...)
+        return(-1 * stats::predict(object = fit, x = x, deriv = 1)$y)
     }
 }
 
 
-#' Calculate dR/dT for melt curves of every well in a plate
+#' Calculate dR/dT of melt curves for of every well in a plate.
+#'
+#' dR/dT, the derivative of the melt curve (of fluorescence signal R vs
+#' temperature T), has a maximum at the melting temperature Tm. A single peak in
+#' this suggests a single-liength PCR product is present in the well.
 #'
 #' @param platemelt data frame describing melt curves, including variables
 #'   Well, Temperature, Fluor (fluorescence value).
 #' @param method to use for smoothing:
-#' 
+#'
 #'   "spline" default, uses smoothing spline stats::smooth.spline.
-#'   
+#'
 #'   "diff" base::diff for lagged difference
 #'
 #' @param ... other arguments to pass to smoothing method.
@@ -89,16 +100,29 @@ getdRdT <- function(TT, RR, method = "spline", ...) {
 #' @export
 #' @importFrom magrittr %>%
 #'
-getdRdTall <- function(platemelt, method = "spline", ...) {
+calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
     platemelt %>%
         dplyr::arrange(Well, Temperature) %>%
         # @ewallace: doesn't group by plate, only by well,
         # so will fail strangely if used on data from multiple plates
         dplyr::group_by(Well) %>%
-        dplyr::mutate(dRdT = getdRdT(Temperature, 
-                                     Fluor,
-                                     method=method, 
-                                     ...)
+        dplyr::mutate(dRdT =
+                          calculate_dydx_1(x = Temperature,
+                                           y = Fluor,
+                                           method = method,
+                                           ...)
                       ) %>%
         dplyr::ungroup()
+}
+
+#' @describeIn calculate_drdt_plate
+#'
+#' @export
+#'
+getdRdTall <- function(platemelt, method = "spline") {
+    lifecycle::deprecate_warn("0.2", "getdRdTall()",
+                              "calculate_drdt()",
+        details = "Replaced with more specific name")
+    calculate_drdt_plate(platemelt = platemelt,
+                         method = method)
 }

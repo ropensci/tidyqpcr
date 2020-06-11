@@ -260,7 +260,7 @@ platesamp <- bind_rows(plate1curve,plate2curve) %>%
 
 platesmelt <- bind_rows(plate1curve,plate2curve) %>% 
     filter(Program != 2) %>% 
-    getdRdTall() %>% 
+    calculate_drdt_plate() %>% 
     filter(Temperature >= 61)  
 
 ```
