@@ -42,10 +42,10 @@ create_blank_plate_96well <- function() {
 }
 
 #' @describeIn create_blank_plate Row names for 1536-well plates on
-#' Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+#' Roche Lightcycler (tm) 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
 #' @export
 #'
-make_row_names_LC_1536 <- function() {
+make_row_names_lc1536 <- function() {
     paste0(rep(LETTERS[1:8], each = 4), letters[1:4])
 }
 
@@ -53,7 +53,7 @@ make_row_names_LC_1536 <- function() {
 #' Labcyte Echo A,B,...,Z,AA,AB,...,AF.
 #' @export
 #'
-make_row_names_Echo_1536 <- function() {
+make_row_names_echo1536 <- function() {
     c(LETTERS[1:26], paste0("A", LETTERS[1:6]))
 }
 
@@ -61,8 +61,8 @@ make_row_names_Echo_1536 <- function() {
 #' @export
 #'
 create_blank_plate_1536well <- function(
-    WellR=make_row_names_LC_1536(),
-    WellC=1:48) {
+    WellR = make_row_names_lc1536(),
+    WellC = 1:48) {
     create_blank_plate(WellR, WellC)
 }
 
@@ -103,8 +103,9 @@ create_colkey_6in24 <- function(...) {
 #' Create a 4-dilution column key for primer calibration
 #'
 #' Creates a 24-column key for primer calibration, with 2x BioReps and 2x
-#' TechReps, and 5-fold dilution until 5^4 of +RT; then -RT, NT controls. That
-#' is a total of 6 versions of each sample replicate.
+#' TechReps, and 5-fold dilution until 5^4 of +RT; then -RT (no reverse
+#' transcriptase), NT (no template) negative controls. That is a total of 6
+#' versions of each sample replicate.
 #'
 #' @param Dilution Numeric vector of length 6 describing sample dilutions
 #' @param DilutionNice Character vector of length 6 with nice labels for sample
@@ -116,14 +117,14 @@ create_colkey_6in24 <- function(...) {
 #' @return tibble (data frame) with 24 rows, and columns WellC, Dilution,
 #'   DilutionNice, Type, BioRep, TechRep.
 #' @examples
-#' create_colkey_4dilutions_mRTNT_in24()
+#' create_colkey_4diln_2ctrl_in24()
 #' @family plate creation functions
 #'
 #' @export
 #' @importFrom tibble tibble
 #'
-create_colkey_4dilutions_mRTNT_in24 <- function(
-                     Dilution     = c(5^(0:-3), 1, 1),
+create_colkey_4diln_2ctrl_in24 <- function(
+                     Dilution     = c(5 ^ (0:-3), 1, 1),
                      DilutionNice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
                      Type         = c(rep("+RT", 4), "-RT", "NT"),
                      BioRep       = rep(c("A", "B"), each = 12,
@@ -144,8 +145,9 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
 #' Create a 6-dilution column key for primer calibration
 #'
 #' Creates a 24-column key for primer calibration, with 1x BioReps and 3x
-#' TechReps, and 5-fold dilution until 5^6 of +RT; then -RT, NT controls. That
-#' is a total of 8 versions of each replicate.
+#' TechReps, and 5-fold dilution until 5^6 of +RT; then -RT (no reverse
+#' transcriptase), NT (no template) negative controls. That is a total of 8
+#' versions of each replicate.
 #'
 #' @param Dilution Numeric vector of length 8 describing sample dilutions
 #' @param DilutionNice Character vector of length 8 with nice labels for sample
@@ -156,14 +158,14 @@ create_colkey_4dilutions_mRTNT_in24 <- function(
 #' @return tibble (data frame) with 24 rows, and variables WellC, Dilution,
 #'   DilutionNice, Type, BioRep, TechRep.
 #' @examples
-#' create_colkey_6dilutions_mRTNT_in24()
+#' create_colkey_6diln_2ctrl_in24()
 #' @family plate creation functions
 #'
 #' @export
 #' @importFrom tibble tibble
 #'
-create_colkey_6dilutions_mRTNT_in24 <- function(
-                     Dilution=c(5^(0:-5), 1, 1),
+create_colkey_6diln_2ctrl_in24 <- function(
+                     Dilution=c(5 ^ (0:-5), 1, 1),
                      DilutionNice=c("1x", "5x", "25x", "125x",
                                     "625x", "3125x", "-RT", "NT"),
                      Type=c(rep("+RT", 6), "-RT", "NT"),

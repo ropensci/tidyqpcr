@@ -79,7 +79,7 @@ plate1plan <-
     label_plate_rowcol(
         create_blank_plate(),
         rowkey,
-        create_colkey_4dilutions_mRTNT_in24()) %>%
+        create_colkey_4diln_2ctrl_in24()) %>%
     mutate(SampleID=paste(BioRep,DilutionNice,sep="_"))
 
 

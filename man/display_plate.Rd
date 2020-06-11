@@ -22,8 +22,8 @@ Display plate plan with SampleID, TargetID, Type per Well
 \seealso{
 Other plate creation functions: 
 \code{\link{create_blank_plate}()},
-\code{\link{create_colkey_4dilutions_mRTNT_in24}()},
-\code{\link{create_colkey_6dilutions_mRTNT_in24}()},
+\code{\link{create_colkey_4diln_2ctrl_in24}()},
+\code{\link{create_colkey_6diln_2ctrl_in24}()},
 \code{\link{create_colkey_6in24}()},
 \code{\link{create_rowkey_4in16}()},
 \code{\link{create_rowkey_8in16_plain}()},
