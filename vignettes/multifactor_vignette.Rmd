@@ -148,7 +148,7 @@ ggplot(data=plates) +
 ```{r normalize_counts,dependson="load_plates"}
 platesnorm <- plates %>% 
     filter(Type=="+RT") %>%
-    normalizeqPCR(normTargetIDs = "PGK1")
+    calculate_deltacq_bysampleid(normTargetIDs = "PGK1")
 
 platesmed <- platesnorm %>%
     group_by(SampleID,Condition,BiolRep,HS,Drug,TargetID) %>%

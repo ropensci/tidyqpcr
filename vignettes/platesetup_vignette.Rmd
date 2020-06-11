@@ -54,7 +54,7 @@ We chose to name this variable "TargetID" to make it clear that this could refer
 Note again that the current (April 2020) version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.
 
 **SampleID** should uniquely identify a nucleic acid sample in your experiment. SampleID can either describe all the relevant information, for example `HeatShock_10min_RepA`, `InputControl_WildType_Rep3`; or provide other unique identifying information, for example `S013`. 
-Functions including `display_plate` and `normalizeqPCR` assume that there is a column called `SampleID`, and use it to decide which wells get analysed together.
+Functions including `display_plate` and `calculate_deltacq_bysampleid` assume that there is a column called `SampleID`, and use it to decide which wells get analysed together.
 We discuss below how to add other kinds of information/metadata to help your analysis.
 
 **Type** is used for different types of nucleic acid preps from the same sample.
@@ -85,7 +85,7 @@ We need 4 * 3 * 4 = 48 wells for this experiment. Let's put this information int
 
 Here we use the function `tibble` to make the rowkey data tibble, and the function `rep` to repeat the TargetID information enough times to fill the plate. These functions are imported into tidyqpcr; access their help files directly by `?tibble` and `?rep` from your R session.
 
-We use the built-in constant `LETTERS` to label the well row (`WellR`) with letters A through D, like they are labeled on a normal 96-well plate.
+We use the built-in constant `LETTERS` to label the well row (`WellR`) with letters A through D, like they are labeled on a standard 96-well plate.
 
 ```{r minimal_noreps_rows,results="show",echo=TRUE}
 TargetIDs <- c("ACT1","BFG2","CDC19","DED1")

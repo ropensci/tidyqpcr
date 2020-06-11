@@ -2,43 +2,34 @@
 % Please edit documentation in R/est_efficiency.R
 \name{est_efficiency}
 \alias{est_efficiency}
-\title{Calibrate multiple probes by calculating detection efficiency and R squared}
+\title{Calibrate primer sets / probes by calculating detection efficiency and
+R squared}
 \usage{
-est_efficiency(cq_df, formula = Cq ~ log2(Dilution) + BioRep, usetypes = "+RT")
+est_efficiency(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep)
 }
 \arguments{
-\item{cq_df}{a data frame with Cq (quantification cycle) data, 1 row per well
+\item{cq_df_1}{data frame with Cq (quantification cycle) data,
+1 row per well.
 
-Must have columns Type, TargetID, Cq, Dilution.
-Only Type=="+RT" columns are used.}
+Must have columns Cq, Dilution.
+
+Assumes data are only for 1 probe, i.e. all values in cq_df_1 are
+fit with the same slope.}
 
 \item{formula}{formula to use for log-log regression fit.
 
 Default value assumes multiple biological replicates,
 Cq ~ log2(Dilution) + BioRep.
 
-If only a single Biological Replicate, change to Cq ~ log2(Dilution).
-If multiple SampleIDs, change to Cq ~ log2(Dilution) + SampleID.
-
-See ?formula for background and help.}
-
-\item{usetypes}{Type column values to use, default "+RT" for RT-qPCR.
-
-By default, this includes only reverse-transcribed values in the efficiency
-estimation, so excludes negative controls such as no-template and no-RT.
-
-To skip this filtering step, set usetypes=NA.}
+If only a single Biological Replicate, change to Cq ~ log2(Dilution).}
 }
 \value{
-data frame with columns:
-TargetID, efficiency, efficiency.sd, r.squared.
+data frame with 1 single row, and columns:
+efficiency, efficiency.sd, r.squared.
 }
 \description{
-See calibration vignette for example of usage.
-}
-\details{
 Note efficiency is given in ratio, not per cent; multiply by 100 for that.
 }
 \seealso{
-est_efficiency_1
+est_efficiency_bytargetid
 }

@@ -22,12 +22,12 @@
 #' @return data frame with 1 single row, and columns:
 #' efficiency, efficiency.sd, r.squared.
 #'
-#' @seealso est_efficiency
+#' @seealso est_efficiency_bytargetid
 #'
 #' @export
 #' @importFrom tibble tibble
 #'
-est_efficiency_1 <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
+est_efficiency <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
     slopefit <- stats::lm(formula = formula, data = cq_df_1)
     slopefitsummary <- summary(slopefit)
     tibble(efficiency = -slopefit$coefficients[2],
@@ -67,12 +67,12 @@ est_efficiency_1 <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
 #' @return data frame with columns:
 #' TargetID, efficiency, efficiency.sd, r.squared.
 #'
-#' @seealso est_efficiency_1
+#' @seealso est_efficiency
 #'
 #' @export
 #' @importFrom magrittr %>%
 #'
-est_efficiency <- function(cq_df,
+est_efficiency_bytargetid <- function(cq_df,
                            formula = Cq ~ log2(Dilution) + BioRep,
                            usetypes="+RT") {
     if (!is.na(usetypes)) {
@@ -80,5 +80,5 @@ est_efficiency <- function(cq_df,
     }
     cq_df %>%
         dplyr::group_by(TargetID) %>%
-        dplyr::do(est_efficiency_1(., formula = formula))
+        dplyr::do(est_efficiency(., formula = formula))
 }

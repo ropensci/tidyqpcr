@@ -172,7 +172,7 @@ ggplot(data=filter(plates,Type=="+RT"),aes(x=Dilution,y=Cq)) +
 Use regression to estimate linearity of Cq with log(Dilution), including the slope or efficiency.
 
 ```{r calibrate_dilutions,dependson="load_plates",results="show",echo=TRUE}
-est_efficiency(plates)
+est_efficiency_bytargetid(plates)
 ```
 
 
