@@ -46,38 +46,13 @@ tidyqpcr encourages standardised, reliable experimental design by prioritising M
 
 We want to make it easier for scientists to produce reliable and interpretable results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
-<<<<<<< HEAD
-# Status
-||||||| merged common ancestors
-## Status
-
-As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
-=======
 # Status
 
 As of April 2020, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
->>>>>>> 53deb8e3a737f5b235c5159fa5dd994dba88fa88
 
-<<<<<<< HEAD
-As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
-||||||| merged common ancestors
-## Contribute
-=======
-## News
->>>>>>> 53deb8e3a737f5b235c5159fa5dd994dba88fa88
-
-<<<<<<< HEAD
-As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
-||||||| merged common ancestors
-We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
-
-We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
-=======
 * 20 April 2020, upgrades that break previous code, commit #cda1742 changes variable and function names to use SampleID for nucleic acid sample (replaces Sample), Target ID for primer set/ probe (replaces Probe), and Cq for quantification cycle (replaces Ct). 
 It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
 Alternatively, pre-change analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
-
->>>>>>> 53deb8e3a737f5b235c5159fa5dd994dba88fa88
 
 # Features 
 
