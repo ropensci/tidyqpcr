@@ -59,7 +59,7 @@ est_efficiency_1 <- function(cq_df_1,formula = Cq ~ log2(Dilution) + BioRep) {
 #' @seealso est_efficiency_1
 #' 
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 est_efficiency <- function(cq_df,formula = Cq ~ log2(Dilution) + BioRep,usetypes="+RT") {
     if( !is.na(usetypes) ) {

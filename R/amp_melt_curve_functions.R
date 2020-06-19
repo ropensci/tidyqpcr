@@ -27,7 +27,7 @@
 #'
 #' 
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 debaseline <- function(plateamp,maxcycle=10) {
     baseline <- 
@@ -76,7 +76,7 @@ getdRdT <- function(TT,RR,method=c("spline","diff"),...) {
 #' @family melt_curve_functions
 #' 
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 getdRdTall <- function(platemelt) {
     platemelt %>%

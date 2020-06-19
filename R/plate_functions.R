@@ -24,7 +24,7 @@
 #' 
 #' @export
 #' @importFrom tibble tibble as_tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' @importFrom forcats as_factor
 #' 
 create_blank_plate <- function(WellR=LETTERS[1:16],WellC=1:24) {
@@ -78,7 +78,7 @@ create_blank_plate_1536well <- function(
 #' 
 #' @export
 #' @importFrom tibble tibble as_tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 create_colkey_6in24 <- function(...) {
     colkey <- tibble(WellC=factor(1:24),
@@ -184,7 +184,7 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
 #' 
 #' @export
 #' @importFrom tibble tibble as_tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 create_rowkey_4in16 <- function(...) {
     rowkey <- tibble(WellR=LETTERS[1:16],
@@ -217,7 +217,7 @@ create_rowkey_4in16 <- function(...) {
 #' 
 #' @export
 #' @importFrom tibble tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 create_rowkey_8in16_plain <- function(...) {
     rowkey <- tibble(WellR=LETTERS[1:16])
@@ -350,7 +350,7 @@ display_plate <- function(plate) {
 #' Default value is median, alternatively could use mean.
 #' 
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 getNormCq <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID",
                       normby.function=median) {
@@ -388,7 +388,7 @@ getNormCq <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID"
 #'   }
 #' 
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 normalizeqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID") {
     cq_df %>%
@@ -406,7 +406,7 @@ normalizeqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="Targe
 #' Synonym for normalizeqPCR.
 #' 
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' 
 normaliseqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID") {
     normalizeqPCR(cq_df=cq_df,value=value,normTargetIDs=normTargetIDs,probename=probename)
