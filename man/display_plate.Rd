@@ -2,19 +2,19 @@
 % Please edit documentation in R/plate_functions.R
 \name{display_plate}
 \alias{display_plate}
-\title{Display plate plan with Sample, Probe, Type per Well}
+\title{Display plate plan with SampleID, TargetID, Type per Well}
 \usage{
 display_plate(plate)
 }
 \arguments{
-\item{plate}{tibble with variables WellC, WellR, Sample, Probe, Type. 
+\item{plate}{tibble with variables WellC, WellR, SampleID, TargetID, Type. 
 Output from label_plate_rowcol.}
 }
 \value{
 ggplot object; major output is to plot it
 }
 \description{
-Display plate plan with Sample, Probe, Type per Well
+Display plate plan with SampleID, TargetID, Type per Well
 }
 \examples{
 # !Needs a labeled example from label_plate_rowcol...

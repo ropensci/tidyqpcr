@@ -1,3 +1,5 @@
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
 
 *Empowering scientists to conduct reproducible, flexible, and MIQE best-practice compliant quantitative PCR analysis.*
@@ -44,28 +46,56 @@ tidyqpcr encourages standardised, reliable experimental design by prioritising M
 
 We want to make it easier for scientists to produce reliable and interpretable results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
+<<<<<<< HEAD
 # Status
-
-As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
+||||||| merged common ancestors
+## Status
 
 As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+=======
+# Status
+
+As of April 2020, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+>>>>>>> 53deb8e3a737f5b235c5159fa5dd994dba88fa88
+
+<<<<<<< HEAD
+As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. We would be delighted to work with you to answer questions, add features, and fix problems. Please file an issue or email Edward dot Wallace at his University email address, (ed.ac.uk). 
+||||||| merged common ancestors
+## Contribute
+=======
+## News
+>>>>>>> 53deb8e3a737f5b235c5159fa5dd994dba88fa88
+
+<<<<<<< HEAD
+As of Feb 2020, this software is in development. Edward Wallace wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. Sam Haynes is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+||||||| merged common ancestors
+We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
+
+We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
+=======
+* 20 April 2020, upgrades that break previous code, commit #cda1742 changes variable and function names to use SampleID for nucleic acid sample (replaces Sample), Target ID for primer set/ probe (replaces Probe), and Cq for quantification cycle (replaces Ct). 
+It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
+Alternatively, pre-change analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
+
+>>>>>>> 53deb8e3a737f5b235c5159fa5dd994dba88fa88
 
 # Features 
 
 ## Current features
 
 * lay out and display 96/384-well plates for easy experimental setup
-* read-in Ct and raw data from Roche LightCycler machines with single-channel fluorescence
+* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence
 * calibration of primer sets including estimating efficiencies and visualization of curves
 * visualization of amplification and melt curves
-* normalization of Ct data to one or more reference probe sets by delta delta count method
+* normalization of Cq data to one or more reference probe sets by delta delta count method
 * flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/)
 
 ## Future priorities
 
 * including primer efficiencies in quantification
-* an open-source and tested Ct/Cq calculation algorithm
+* an open-source and tested Cq calculation algorithm
 * extend to 1536-well plates 
+* metadata handling compatible with RDML format
 * files for automatic plate loading with [Opentrons](https://opentrons.com/) and [Labcyte Echo](https://www.labcyte.com/products/liquid-handling/echo-liquid-handlers) liquid handlers.
 
 
@@ -102,7 +132,7 @@ The best place to start is the vignettes, which offer tutorials and example data
 
 * [IntroDesignPlatesetup](vignettes/platesetup_vignette.Rmd) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
 * [MultifactorialExample](vignettes/multifactor_vignette.Rmd) - Example design and analysis of a (real) multifactorial qPCR experiment.
-* [ProbeCalibration](vignettes/platesetup_vignette.Rmd) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
+* [PrimerCalibration](vignettes/calibration_vignette.Rmd) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
 
 To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
 

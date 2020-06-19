@@ -73,7 +73,7 @@ create_blank_plate_1536well <- function(
 #' @param ... Vectors of length 6 describing well contents, e.g. sample or probe. 
 #' @return tibble (data frame) with 24 rows, and columns WellC, Type, TechRep, and supplied values. 
 #' @examples
-#' create_colkey_6in24(Sample=LETTERS[1:6])
+#' create_colkey_6in24(SampleID=LETTERS[1:6])
 #' @family plate creation functions
 #' 
 #' @export
@@ -179,7 +179,7 @@ create_colkey_6dilutions_mRTNT_in24 <- function(
 #' @return tibble (data frame) with 16 rows, and variables WellR, Type, TechRep,
 #'   and supplied values.
 #' @examples
-#' create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
+#' create_rowkey_4in16(SampleID=c("sheep","goat","cow","chicken"))
 #' @family plate creation functions
 #' 
 #' @export
@@ -211,7 +211,7 @@ create_rowkey_4in16 <- function(...) {
 #' @return tibble (data frame) with 16 rows, and variables WellC, and supplied
 #'   values.
 #' @examples
-#' create_rowkey_8in16_plain(Sample=c("me","you","them","him",
+#' create_rowkey_8in16_plain(SampleID=c("me","you","them","him",
 #'                                    "her","dog","cat","monkey"))
 #' @family plate creation functions
 #' 
@@ -241,26 +241,36 @@ create_rowkey_8in16_plain <- function(...) {
 #'   and others.
 #' @param colkey tibble (data frame) describing plate columns, with variables
 #'   WellC and others.
-#' @return tibble (data frame) with variables WellR, WellC, Well. This contains
-#'   all combinations of WellR and WellC found in the input plate, and all
-#'   information supplied in rowkey and colkey distributed across every well of
-#'   the plate. Return plate is ordered by row WellR then column WellC. Note
-#'   this may cause a problem if WellC is supplied as a character (1,10,11,...),
-#'   instead of a factor or integer (1,2,3,...). For this reason, the function
-#'   my default converts WellR in `rowkey`, and WellC in `colkey`, to factors,
-#'   taking factor levels from `plate`, and warns the user.
+#' @param coercefactors if TRUE, coerce WellR in rowkey and WellC in colkey to factors
+#' @return tibble (data frame) with variables WellR, WellC, Well, and others. 
+#'   
+#'   This tibble contains all combinations of WellR and WellC found in the input
+#'   plate, and all information supplied in rowkey and colkey distributed across
+#'   every well of the plate. Return plate is ordered by row WellR then column
+#'   WellC.
+#'   
+#'   Note this ordering may cause a problem if WellC is supplied as a character
+#'   (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
+#'   the function by default converts WellR in `rowkey`, and WellC in `colkey`,
+#'   to factors, taking factor levels from `plate`, and warns the user.
+#'   
+#'   Other tidyqpcr functions require plate plans to contain variables SampleID,
+#'   TargetID, and Type, so `label_plate_rowcol` will warn if any of these are
+#'   missing. This is a warning, not an error, because these variables can be
+#'   added by users later.
+#'   
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 #' @family plate creation functions
 #' 
 #' @export
 #' 
-label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
+label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL,coercefactors=TRUE) {
     if (!is.null(colkey)) {
         assertthat::assert_that(has_name(colkey,"WellC"))
         # Note: should this if clause be a freestanding function?
         # coerce_column_to_factor(df, col, warn=TRUE) ?
-        if( !is.factor(colkey$WellC) ) {
+        if( !is.factor(colkey$WellC) & coercefactors ) {
             warning("coercing WellC to a factor with levels from plate$WellC")
             colkey <- dplyr::mutate(colkey,
                                     WellC=factor(WellC,
@@ -271,7 +281,7 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
     }
     if (!is.null(rowkey)) {
         assertthat::assert_that(has_name(rowkey,"WellR"))
-        if( !is.factor(rowkey$WellR) ) {
+        if( !is.factor(rowkey$WellR) & coercefactors ) {
             warning("coercing WellR to a factor with levels from plate$WellR")
             rowkey <- dplyr::mutate(rowkey,
                                     WellR=factor(WellR,
@@ -280,13 +290,23 @@ label_plate_rowcol <- function(plate,rowkey=NULL,colkey=NULL) {
         }
         plate <- dplyr::left_join(plate,rowkey,by="WellR")
     }
+    # check that plate contains SampleID, TargetID, Type, warn if not
+    if( ! "SampleID" %in% names(plate) ) {
+        warning("plate does not contain variable SampleID")
+    }
+    if( ! "TargetID" %in% names(plate) ) {
+        warning("plate does not have variable TargetID")
+    }
+    if( ! "Type" %in% names(plate) ) {
+        warning("plate does not have variable Type")
+    }
     return( dplyr::arrange( plate, WellR, WellC ) )
 }
 
 
-#' Display plate plan with Sample, Probe, Type per Well
+#' Display plate plan with SampleID, TargetID, Type per Well
 #'
-#' @param plate tibble with variables WellC, WellR, Sample, Probe, Type. 
+#' @param plate tibble with variables WellC, WellR, SampleID, TargetID, Type. 
 #'   Output from label_plate_rowcol. 
 #'
 #' @return ggplot object; major output is to plot it
@@ -306,8 +326,8 @@ display_plate <- function(plate) {
     ggplot2::ggplot(data=plate,
                     aes(x=as_factor(WellC),
                         y=as_factor(WellR))) +
-        ggplot2::geom_tile(aes(fill=Probe),alpha=0.3) +
-        ggplot2::geom_text(aes(label=paste(Probe,Sample,Type,sep="\n")),
+        ggplot2::geom_tile(aes(fill=TargetID),alpha=0.3) +
+        ggplot2::geom_text(aes(label=paste(TargetID,SampleID,Type,sep="\n")),
                            size=2.5,lineheight=1) +
         ggplot2::scale_x_discrete(expand=c(0,0)) +
         ggplot2::scale_y_discrete(expand=c(0,0),
@@ -326,54 +346,54 @@ display_plate <- function(plate) {
 #'   (reference) probes, for each sample.
 #'   
 #' @param normby.function Function to use to calculate the value to 
-#' normalise by on log2/Ct scale. 
+#' normalise by on log2/Cq scale. 
 #' Default value is median, alternatively could use mean.
 #' 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-getNormCt <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe",
+getNormCq <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID",
                       normby.function=median) {
-    # make subset of ct_df where gene is one of normProbes
-    norm.by <- dplyr::filter(ct_df, 
-                             !!dplyr::sym(probename) %in% normProbes) %>%
+    # make subset of cq_df where gene is one of normTargetIDs
+    norm.by <- dplyr::filter(cq_df, 
+                             !!dplyr::sym(probename) %in% normTargetIDs) %>%
         .[[value]] %>%
         normby.function(na.rm=TRUE)
     
-    # assign median of value to ct_df$norm.by
+    # assign median of value to cq_df$norm.by
     # note this is the same value for every row, a waste of space technically
-    ct_df %>%
+    cq_df %>%
         dplyr::mutate(norm.by = norm.by) %>%
         return()
 }
 
-#' Normalize cycle count (log2-fold) data within Sample
+#' Normalize cycle count (log2-fold) data within SampleID
 #'
-#' @param ct_df a data frame containing columns "Sample", value (default Ct) and
-#'   probe (default Probe). Crucially, Sample name should be the same for
+#' @param cq_df a data frame containing columns "SampleID", value (default Cq) and
+#'   probename (default TargetID). Crucially, SampleID should be the same for
 #'   different technical replicates measuring identical reactions in different
 #'   wells of the plate, but differ for different biological and experimental 
 #'   replicates.
 #' @param value the column name of the value that will be normalized
-#' @param normProbes names of PCR probes (or primer sets) to normalize by, i.e.
+#' @param normTargetIDs names of PCR probes (or primer sets) to normalize by, i.e.
 #'   reference genes
 #' @param probename the column name for probe sets
 #'   
-#' @return data frame like ct_df with three additional columns:
+#' @return data frame like cq_df with three additional columns:
 #' 
 #' \tabular{ll}{
 #'   norm.by       \tab the median value of the reference probes  \cr
-#'   Value.norm    \tab the normalized value, \eqn{\Delta Ct} \cr
-#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Ct)}
+#'   Value.norm    \tab the normalized value, \eqn{\Delta Cq} \cr
+#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)}
 #'   }
 #' 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
-    ct_df %>%
-        dplyr::group_by(Sample) %>%
-        dplyr::do(getNormCt(.,value,normProbes,probename)) %>%
+normalizeqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID") {
+    cq_df %>%
+        dplyr::group_by(SampleID) %>%
+        dplyr::do(getNormCq(.,value,normTargetIDs,probename)) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
                Value.norm = .Value - norm.by, 
@@ -382,12 +402,12 @@ normalizeqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") 
         return()
 }
 
-#' @describeIn normalizeqPCR Normalise cycle count (log2-fold) data within Sample.
+#' @describeIn normalizeqPCR Normalise cycle count (log2-fold) data within SampleID.
 #' Synonym for normalizeqPCR.
 #' 
 #' @export
 #' @importFrom magrittr %>%
 #' 
-normaliseqPCR <- function(ct_df,value="Ct",normProbes="ALG9",probename="Probe") {
-    normalizeqPCR(ct_df=ct_df,value=value,normProbes=normProbes,probename=probename)
+normaliseqPCR <- function(cq_df,value="Cq",normTargetIDs="ALG9",probename="TargetID") {
+    normalizeqPCR(cq_df=cq_df,value=value,normTargetIDs=normTargetIDs,probename=probename)
 } 

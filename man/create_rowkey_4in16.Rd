@@ -19,7 +19,7 @@ Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4
 values is repeated over 3x +RT Techreps and 1x -RT.
 }
 \examples{
-create_rowkey_4in16(Sample=c("sheep","goat","cow","chicken"))
+create_rowkey_4in16(SampleID=c("sheep","goat","cow","chicken"))
 }
 \seealso{
 Other plate creation functions: 
