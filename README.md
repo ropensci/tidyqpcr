@@ -102,6 +102,8 @@ Then load tidyqpcr as a standard package:
 ```
 library(tidyqpcr)
 ```
+**Note**
+tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2. This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded. Restarting the R session and loading tidyqpcr separately may solve such issues.
 
 ## Using tidyqpcr
 
