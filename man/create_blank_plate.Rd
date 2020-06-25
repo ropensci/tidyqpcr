@@ -8,7 +8,7 @@
 \alias{create_blank_plate_1536well}
 \title{Create a blank plate template as a tibble}
 \usage{
-create_blank_plate(WellR = LETTERS[1:16], WellC = 1:24)
+create_blank_plate(well_row = LETTERS[1:16], well_col = 1:24)
 
 create_blank_plate_96well()
 
@@ -16,20 +16,23 @@ make_row_names_lc1536()
 
 make_row_names_echo1536()
 
-create_blank_plate_1536well(WellR = make_row_names_lc1536(), WellC = 1:48)
+create_blank_plate_1536well(
+  well_row = make_row_names_lc1536(),
+  well_col = 1:48
+)
 }
 \arguments{
-\item{WellR}{Vector of Row labels, usually LETTERS}
+\item{well_row}{Vector of Row labels, usually LETTERS}
 
-\item{WellC}{Vector of Column labels, usually numbers}
+\item{well_col}{Vector of Column labels, usually numbers}
 }
 \value{
-tibble (data frame) with columns WellR, WellC, Well. This contains
-  all pairwise combinations of WellR and WellC, as well as individual Well
-  names. Both WellR and WellC are coerced to factors (even if WellC
+tibble (data frame) with columns well_row, well_col, well. This contains
+  all pairwise combinations of well_row and well_col, as well as individual well
+  names. Both well_row and well_col are coerced to factors (even if well_col
   is supplied as numbers), to ensure order is consistent.
 
-  However, Well is a character vector as that is the default behaviour of
+  However, well is a character vector as that is the default behaviour of
   "unite", and display order doesn't matter.
 
   Default value describes a full 384-well plate.
@@ -52,7 +55,7 @@ Labcyte Echo A,B,...,Z,AA,AB,...,AF.
 }}
 
 \examples{
-create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
+create_blank_plate(well_row=LETTERS[1:2],well_col=1:3)
 create_blank_plate_96well()
 
 }

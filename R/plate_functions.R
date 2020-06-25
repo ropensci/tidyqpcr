@@ -4,20 +4,20 @@
 #' For more help, examples and explanations, see the plate setup vignette:
 #' \code{vignette("platesetup_vignette", package = "tidyqpcr")}
 #'
-#' @param WellR Vector of Row labels, usually LETTERS
-#' @param WellC Vector of Column labels, usually numbers
-#' @return tibble (data frame) with columns WellR, WellC, Well. This contains
-#'   all pairwise combinations of WellR and WellC, as well as individual Well
-#'   names. Both WellR and WellC are coerced to factors (even if WellC
+#' @param well_row Vector of Row labels, usually LETTERS
+#' @param well_col Vector of Column labels, usually numbers
+#' @return tibble (data frame) with columns well_row, well_col, well. This contains
+#'   all pairwise combinations of well_row and well_col, as well as individual well
+#'   names. Both well_row and well_col are coerced to factors (even if well_col
 #'   is supplied as numbers), to ensure order is consistent.
 #'
-#'   However, Well is a character vector as that is the default behaviour of
+#'   However, well is a character vector as that is the default behaviour of
 #'   "unite", and display order doesn't matter.
 #'
 #'   Default value describes a full 384-well plate.
 #'
 #' @examples
-#' create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
+#' create_blank_plate(well_row=LETTERS[1:2],well_col=1:3)
 #' create_blank_plate_96well()
 #'
 #' @family plate creation functions
@@ -27,18 +27,18 @@
 #' @importFrom magrittr %>%
 #' @importFrom forcats as_factor
 #'
-create_blank_plate <- function(WellR = LETTERS[1:16], WellC = 1:24) {
-    tidyr::crossing(WellR = as_factor(WellR),
-                             WellC = as_factor(WellC)) %>%
+create_blank_plate <- function(well_row = LETTERS[1:16], well_col = 1:24) {
+    tidyr::crossing(well_row = as_factor(well_row),
+                             well_col = as_factor(well_col)) %>%
         as_tibble() %>%
-        tidyr::unite(Well, WellR, WellC, sep = "", remove = FALSE)
+        tidyr::unite(well, well_row, well_col, sep = "", remove = FALSE)
 }
 
 #' @describeIn create_blank_plate create blank 96-well plate
 #' @export
 #'
 create_blank_plate_96well <- function() {
-    create_blank_plate(WellR = LETTERS[1:8], WellC = 1:12)
+    create_blank_plate(well_row = LETTERS[1:8], well_col = 1:12)
 }
 
 #' @describeIn create_blank_plate Row names for 1536-well plates on
@@ -61,9 +61,9 @@ make_row_names_echo1536 <- function() {
 #' @export
 #'
 create_blank_plate_1536well <- function(
-    WellR = make_row_names_lc1536(),
-    WellC = 1:48) {
-    create_blank_plate(WellR, WellC)
+    well_row = make_row_names_lc1536(),
+    well_col = 1:48) {
+    create_blank_plate(well_row, well_col)
 }
 
 #' Create a 6-value, 24-column key for plates
@@ -74,7 +74,7 @@ create_blank_plate_1536well <- function(
 #' @param ... Vectors of length 6 describing well contents,
 #' e.g. sample or probe.
 #' @return tibble (data frame) with 24 rows, and columns
-#' WellC, prep_type, TechRep, and supplied values.
+#' well_col, prep_type, TechRep, and supplied values.
 #'
 #' @examples
 #' create_colkey_6in24(sample_id=LETTERS[1:6])
@@ -85,7 +85,7 @@ create_blank_plate_1536well <- function(
 #' @importFrom magrittr %>%
 #'
 create_colkey_6in24 <- function(...) {
-    colkey <- tibble(WellC   = factor(1:24),
+    colkey <- tibble(well_col   = factor(1:24),
                      prep_type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
                          factor(levels = c("+RT", "-RT")),
                      TechRep = rep(c(1, 2, 3, 1), each = 6) %>%
@@ -114,7 +114,7 @@ create_colkey_6in24 <- function(...) {
 #'   NT)
 #' @param BioRep Character vector of length 6 describing biological replicates
 #' @param TechRep Character vector of length 6 describing technical replicates
-#' @return tibble (data frame) with 24 rows, and columns WellC, dilution,
+#' @return tibble (data frame) with 24 rows, and columns well_col, dilution,
 #'   dilution_nice, prep_type, BioRep, TechRep.
 #' @examples
 #' create_colkey_4diln_2ctrl_in24()
@@ -132,7 +132,7 @@ create_colkey_4diln_2ctrl_in24 <- function(
                      TechRep      = rep(1:2, each = 6,
                                         length.out = 24)
                      ) {
-    tibble(WellC = factor(1:24),
+    tibble(well_col = factor(1:24),
            dilution = rep(dilution, 4),
            dilution_nice = rep(dilution_nice, 4),
            prep_type = factor(rep(prep_type, 4),
@@ -155,7 +155,7 @@ create_colkey_4diln_2ctrl_in24 <- function(
 #' @param prep_type Character vector of length 8 describing type of sample (+RT, -RT,
 #'   NT)
 #' @param TechRep Character vector of length 8 describing technical replicates
-#' @return tibble (data frame) with 24 rows, and variables WellC, dilution,
+#' @return tibble (data frame) with 24 rows, and variables well_col, dilution,
 #'   dilution_nice, prep_type, BioRep, TechRep.
 #' @examples
 #' create_colkey_6diln_2ctrl_in24()
@@ -171,7 +171,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
                      prep_type=c(rep("+RT", 6), "-RT", "NT"),
                      TechRep = rep(1:3, each = 8, length.out = 24)
                      ) {
-    tibble(WellC = factor(1:24),
+    tibble(well_col = factor(1:24),
            dilution = rep(dilution, 3),
            dilution_nice = rep(dilution_nice, 3),
            prep_type = factor(rep(prep_type, 3),
@@ -186,7 +186,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #'
 #' @param ... Vectors of length 4 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and variables WellR, prep_type, TechRep,
+#' @return tibble (data frame) with 16 rows, and variables well_row, prep_type, TechRep,
 #'   and supplied values.
 #' @examples
 #' create_rowkey_4in16(sample_id=c("sheep","goat","cow","chicken"))
@@ -197,7 +197,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #' @importFrom magrittr %>%
 #'
 create_rowkey_4in16 <- function(...) {
-    rowkey <- tibble(WellR = LETTERS[1:16],
+    rowkey <- tibble(well_row = LETTERS[1:16],
                      prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
                                    levels = c("+RT", "-RT")),
                      TechRep = factor(rep(c(1, 2, 3, 1), each = 4),
@@ -218,7 +218,7 @@ create_rowkey_4in16 <- function(...) {
 #'
 #' @param ... Vectors of length 8 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and variables WellC, and supplied
+#' @return tibble (data frame) with 16 rows, and variables well_col, and supplied
 #'   values.
 #' @examples
 #' create_rowkey_8in16_plain(sample_id=c("me","you","them","him",
@@ -230,7 +230,7 @@ create_rowkey_4in16 <- function(...) {
 #' @importFrom magrittr %>%
 #'
 create_rowkey_8in16_plain <- function(...) {
-    rowkey <- tibble(WellR = LETTERS[1:16])
+    rowkey <- tibble(well_row = LETTERS[1:16])
     if (!missing(...)) {
         pieces8 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces8) == 8)
@@ -244,26 +244,26 @@ create_rowkey_8in16_plain <- function(...) {
 #'
 #' See vignettes for further examples
 #'
-#' @param plate tibble (data frame) with variables WellR, WellC, Well. This
+#' @param plate tibble (data frame) with variables well_row, well_col, well. This
 #'   would usually be produced by create_blank_plate(). It is possible to
 #'   include other information in additional variables.
-#' @param rowkey tibble (data frame) describing plate rows, with variables WellR
+#' @param rowkey tibble (data frame) describing plate rows, with variables well_row
 #'   and others.
 #' @param colkey tibble (data frame) describing plate columns, with variables
-#'   WellC and others.
-#' @param coercefactors if TRUE, coerce WellR in rowkey and WellC in colkey
+#'   well_col and others.
+#' @param coercefactors if TRUE, coerce well_row in rowkey and well_col in colkey
 #' to factors
 #'
-#' @return tibble (data frame) with variables WellR, WellC, Well, and others.
+#' @return tibble (data frame) with variables well_row, well_col, well, and others.
 #'
-#'   This tibble contains all combinations of WellR and WellC found in the input
+#'   This tibble contains all combinations of well_row and well_col found in the input
 #'   plate, and all information supplied in rowkey and colkey distributed across
-#'   every well of the plate. Return plate is ordered by row WellR then column
-#'   WellC.
+#'   every well of the plate. Return plate is ordered by row well_row then column
+#'   well_col.
 #'
-#'   Note this ordering may cause a problem if WellC is supplied as a character
+#'   Note this ordering may cause a problem if well_col is supplied as a character
 #'   (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
-#'   the function by default converts WellR in `rowkey`, and WellC in `colkey`,
+#'   the function by default converts well_row in `rowkey`, and well_col in `colkey`,
 #'   to factors, taking factor levels from `plate`, and warns the user.
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
@@ -282,28 +282,28 @@ label_plate_rowcol <- function(plate,
                                colkey = NULL,
                                coercefactors = TRUE) {
     if (!is.null(colkey)) {
-        assertthat::assert_that(assertthat::has_name(colkey, "WellC"))
+        assertthat::assert_that(assertthat::has_name(colkey, "well_col"))
         # Note: should this if clause be a freestanding function?
         # coerce_column_to_factor(df, col, warn=TRUE)?
-        if (!is.factor(colkey$WellC) & coercefactors) {
-            warning("coercing WellC to a factor with levels from plate$WellC")
+        if (!is.factor(colkey$well_col) & coercefactors) {
+            warning("coercing well_col to a factor with levels from plate$well_col")
             colkey <- dplyr::mutate(colkey,
-                                    WellC = factor(WellC,
-                                                   levels = levels(plate$WellC))
+                                    well_col = factor(well_col,
+                                                   levels = levels(plate$well_col))
                                     )
         }
-        plate <- dplyr::left_join(plate, colkey, by = "WellC")
+        plate <- dplyr::left_join(plate, colkey, by = "well_col")
     }
     if (!is.null(rowkey)) {
-        assertthat::assert_that(assertthat::has_name(rowkey, "WellR"))
-        if (!is.factor(rowkey$WellR) & coercefactors) {
-            warning("coercing WellR to a factor with levels from plate$WellR")
+        assertthat::assert_that(assertthat::has_name(rowkey, "well_row"))
+        if (!is.factor(rowkey$well_row) & coercefactors) {
+            warning("coercing well_row to a factor with levels from plate$well_row")
             rowkey <- dplyr::mutate(rowkey,
-                                    WellR = factor(WellR,
-                                                   levels = levels(plate$WellR))
+                                    well_row = factor(well_row,
+                                                   levels = levels(plate$well_row))
                                     )
         }
-        plate <- dplyr::left_join(plate, rowkey, by = "WellR")
+        plate <- dplyr::left_join(plate, rowkey, by = "well_row")
     }
     # check that plate contains sample_id, target_id, prep_type, warn if not
     if (! "sample_id" %in% names(plate)) {
@@ -315,13 +315,13 @@ label_plate_rowcol <- function(plate,
     if (! "prep_type" %in% names(plate)) {
         warning("plate does not have variable prep_type")
     }
-    return(dplyr::arrange(plate, WellR, WellC))
+    return(dplyr::arrange(plate, .data$well_row, .data$well_col))
 }
 
 
-#' Display plate plan with sample_id, target_id, prep_type per Well
+#' Display plate plan with sample_id, target_id, prep_type per well
 #'
-#' @param plate tibble with variables WellC, WellR, sample_id, target_id, prep_type.
+#' @param plate tibble with variables well_col, well_row, sample_id, target_id, prep_type.
 #'   Output from label_plate_rowcol.
 #'
 #' @return ggplot object; major output is to plot it
@@ -334,13 +334,13 @@ label_plate_rowcol <- function(plate,
 #'
 display_plate <- function(plate) {
     rowlevels <- plate %>%
-        dplyr::pull(WellR) %>%
+        dplyr::pull(well_row) %>%
         as_factor() %>%
         levels()
     #
     ggplot2::ggplot(data = plate,
-                    aes(x = as_factor(WellC),
-                        y = as_factor(WellR))) +
+                    aes(x = as_factor(well_col),
+                        y = as_factor(well_row))) +
         ggplot2::geom_tile(aes(fill = target_id), alpha = 0.3) +
         ggplot2::geom_text(aes(label = paste(target_id,
                                              sample_id,

@@ -11,7 +11,7 @@ getdRdTall(platemelt, method = "spline")
 }
 \arguments{
 \item{platemelt}{data frame describing melt curves, including variables
-Well, Temperature, Fluor (fluorescence value).}
+well, Temperature, Fluor (fluorescence value).}
 
 \item{method}{to use for smoothing:
 

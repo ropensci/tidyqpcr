@@ -76,7 +76,7 @@ target_id_levels <- paste(Namesrep,
 
 
 rowkey <- data.frame(
-  WellR = LETTERS[1:16],
+  well_row = LETTERS[1:16],
   Names = Namesrep,
   target_id = factor(target_id_levels, levels = target_id_levels)
 )
@@ -123,7 +123,7 @@ display_plate(plate1plan)
 plates <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt",
   skip = 1
 ) %>%
-  mutate(Well = Pos, cq = Cp) %>%
+  mutate(well = Pos, cq = Cp) %>%
   right_join(plate1plan)
 ```
 
@@ -230,7 +230,7 @@ ggplot(
 plate1curve <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt",
   skip = 2,
   col_names = c(
-    "Well", "SID", "Program", "Segment",
+    "well", "SID", "Program", "Segment",
     "Cycle", "Time", "Temperature", "Fluor"
   )
 ) %>%
@@ -253,7 +253,7 @@ platesmelt <- plate1curve %>%
 
 ```{r plotamp_A1,dependson="load_amp",fig.width=4,fig.height=3}
 ggplot(
-  data = platesamp %>% filter(Well == "A1"),
+  data = platesamp %>% filter(well == "A1"),
   aes(x = Cycle, y = Signal)
 ) +
   geom_line() +
@@ -293,7 +293,7 @@ ggplot(
 ```{r plotmelt_A1,dependson="load_amp",fig.width=4,fig.height=1.5}
 ggplot(
   data = platesmelt %>%
-    filter(Well == "A1"),
+    filter(well == "A1"),
   aes(x = Temperature, y = dRdT)
 ) +
   facet_wrap(~target_id) +

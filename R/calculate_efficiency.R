@@ -79,7 +79,7 @@ calculate_efficiency_bytargetid <- function(cq_df,
                            formula = cq ~ log2(dilution) + BioRep,
                            use_prep_types="+RT") {
     if (!is.na(use_prep_types)) {
-        cq_df <- dplyr::filter(cq_df, prep_type %in% use_prep_types)
+        cq_df <- dplyr::filter(cq_df, .data$prep_type %in% use_prep_types)
     }
     cq_df %>%
         dplyr::group_by(target_id) %>%

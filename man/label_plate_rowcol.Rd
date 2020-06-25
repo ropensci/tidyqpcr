@@ -7,30 +7,30 @@
 label_plate_rowcol(plate, rowkey = NULL, colkey = NULL, coercefactors = TRUE)
 }
 \arguments{
-\item{plate}{tibble (data frame) with variables WellR, WellC, Well. This
+\item{plate}{tibble (data frame) with variables well_row, well_col, well. This
 would usually be produced by create_blank_plate(). It is possible to
 include other information in additional variables.}
 
-\item{rowkey}{tibble (data frame) describing plate rows, with variables WellR
+\item{rowkey}{tibble (data frame) describing plate rows, with variables well_row
 and others.}
 
 \item{colkey}{tibble (data frame) describing plate columns, with variables
-WellC and others.}
+well_col and others.}
 
-\item{coercefactors}{if TRUE, coerce WellR in rowkey and WellC in colkey
+\item{coercefactors}{if TRUE, coerce well_row in rowkey and well_col in colkey
 to factors}
 }
 \value{
-tibble (data frame) with variables WellR, WellC, Well, and others.
+tibble (data frame) with variables well_row, well_col, well, and others.
 
-  This tibble contains all combinations of WellR and WellC found in the input
+  This tibble contains all combinations of well_row and well_col found in the input
   plate, and all information supplied in rowkey and colkey distributed across
-  every well of the plate. Return plate is ordered by row WellR then column
-  WellC.
+  every well of the plate. Return plate is ordered by row well_row then column
+  well_col.
 
-  Note this ordering may cause a problem if WellC is supplied as a character
+  Note this ordering may cause a problem if well_col is supplied as a character
   (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
-  the function by default converts WellR in `rowkey`, and WellC in `colkey`,
+  the function by default converts well_row in `rowkey`, and well_col in `colkey`,
   to factors, taking factor levels from `plate`, and warns the user.
 
   Other tidyqpcr functions require plate plans to contain variables

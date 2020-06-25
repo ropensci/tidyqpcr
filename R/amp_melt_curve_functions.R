@@ -14,12 +14,12 @@
 #' has not been tested robustly
 #'
 #' @param plateamp data frame with plate amplification data, including variables
-#'   Well, Cycle, Fluor (fluorescence value), and Program. Assume program 2 for
-#'   cmplification curves from Roche Lightcycler format data.
+#'   well, Cycle, Fluor (fluorescence value), and Program. Assume program 2 for
+#'   amplification curves from Roche Lightcycler format data.
 #' @param maxcycle maximum cycle value to use for baseline, before
 #'   amplification.
 #'
-#' @return platemap with additional columns per Well:
+#' @return platemap with additional columns per well:
 #' \tabular{ll}{
 #'   Base      \tab baseline /background value  \cr
 #'   Signal    \tab normalized fluorescence signal, i.e. Fluor - Base
@@ -32,7 +32,7 @@
 debaseline <- function(plateamp, maxcycle = 10) {
     baseline <-
         plateamp %>%
-        dplyr::group_by(Well) %>%
+        dplyr::group_by(well) %>%
         dplyr::filter(Program == 2, Cycle <= maxcycle) %>%
         dplyr::summarize(Base = stats::median(Fluor))
     plateamp %>%
@@ -84,7 +84,7 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #' this suggests a single-liength PCR product is present in the well.
 #'
 #' @param platemelt data frame describing melt curves, including variables
-#'   Well, Temperature, Fluor (fluorescence value).
+#'   well, Temperature, Fluor (fluorescence value).
 #' @param method to use for smoothing:
 #'
 #'   "spline" default, uses smoothing spline stats::smooth.spline.
@@ -102,10 +102,10 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #'
 calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
     platemelt %>%
-        dplyr::arrange(Well, Temperature) %>%
+        dplyr::arrange(well, Temperature) %>%
         # @ewallace: doesn't group by plate, only by well,
         # so will fail strangely if used on data from multiple plates
-        dplyr::group_by(Well) %>%
+        dplyr::group_by(well) %>%
         dplyr::mutate(dRdT =
                           calculate_dydx_1(x = Temperature,
                                            y = Fluor,

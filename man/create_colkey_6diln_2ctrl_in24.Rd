@@ -23,7 +23,7 @@ NT)}
 \item{TechRep}{Character vector of length 8 describing technical replicates}
 }
 \value{
-tibble (data frame) with 24 rows, and variables WellC, dilution,
+tibble (data frame) with 24 rows, and variables well_col, dilution,
   dilution_nice, prep_type, BioRep, TechRep.
 }
 \description{

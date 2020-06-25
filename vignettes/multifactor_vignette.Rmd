@@ -75,7 +75,7 @@ target_id_levels <- c(
 )
 
 rowkey <- tibble(
-  WellR = LETTERS[1:16],
+  well_row = LETTERS[1:16],
   target_id = factor(target_id_levels, levels = target_id_levels)
 )
 
@@ -95,7 +95,7 @@ colkey <- create_colkey_6in24(
 
 plateplan <-
   label_plate_rowcol(
-    create_blank_plate(WellR = LETTERS[1:16], WellC = 1:24),
+    create_blank_plate(well_row = LETTERS[1:16], well_col = 1:24),
     rowkey, colkey
   )
 ```
@@ -115,13 +115,13 @@ Note that display_plate requires a column called `sample_id`, which here we had 
 # read my plates
 
 plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt", skip = 1) %>%
-  mutate(Well = Pos, cq = Cp) %>%
+  mutate(well = Pos, cq = Cp) %>%
   left_join(plateplan) %>%
   mutate(BiolRep = "1", Plate = "1")
 
 
 plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt", skip = 1) %>%
-  mutate(Well = Pos, cq = Cp) %>%
+  mutate(well = Pos, cq = Cp) %>%
   left_join(plateplan) %>%
   mutate(BiolRep = "2", Plate = "2")
 
@@ -269,7 +269,7 @@ Note: this chunk throwing an error in CHECK.
 plate1curve <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1.txt",
   skip = 2,
   col_names = c(
-    "Well", "SID", "Program", "Segment",
+    "well", "SID", "Program", "Segment",
     "Cycle", "Time", "Temperature", "Fluor"
   )
 ) %>%
@@ -280,7 +280,7 @@ plate1curve <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15
 plate2curve <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt",
   skip = 2,
   col_names = c(
-    "Well", "SID", "Program", "Segment",
+    "well", "SID", "Program", "Segment",
     "Cycle", "Time", "Temperature", "Fluor"
   )
 ) %>%

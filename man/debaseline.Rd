@@ -8,14 +8,14 @@ debaseline(plateamp, maxcycle = 10)
 }
 \arguments{
 \item{plateamp}{data frame with plate amplification data, including variables
-Well, Cycle, Fluor (fluorescence value), and Program. Assume program 2 for
-cmplification curves from Roche Lightcycler format data.}
+well, Cycle, Fluor (fluorescence value), and Program. Assume program 2 for
+amplification curves from Roche Lightcycler format data.}
 
 \item{maxcycle}{maximum cycle value to use for baseline, before
 amplification.}
 }
 \value{
-platemap with additional columns per Well:
+platemap with additional columns per well:
 \tabular{ll}{
   Base      \tab baseline /background value  \cr
   Signal    \tab normalized fluorescence signal, i.e. Fluor - Base
