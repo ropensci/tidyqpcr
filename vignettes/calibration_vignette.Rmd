@@ -88,7 +88,7 @@ plate1plan <-
     rowkey,
     create_colkey_4diln_2ctrl_in24()
   ) %>%
-  mutate(sample_id = paste(BioRep, DilutionNice, sep = "_"))
+  mutate(sample_id = paste(BioRep, dilution_nice, sep = "_"))
 ```
 
 ## Spot-check the plate plan 
@@ -97,7 +97,7 @@ Checks that for selected techrep/probe/dilution combinations, the plate contains
 
 ```{r print_techreps,results="show",echo=TRUE,cache=FALSE}
 plate1plan %>%
-  filter(TechRep == "1", target_id == target_id_levels[1], DilutionNice == "1x")
+  filter(TechRep == "1", target_id == target_id_levels[1], dilution_nice == "1x")
 
 plate1plan %>%
   filter(TechRep == "2", target_id == target_id_levels[4])
@@ -123,7 +123,7 @@ display_plate(plate1plan)
 plates <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt",
   skip = 1
 ) %>%
-  mutate(Well = Pos, Cq = Cp) %>%
+  mutate(Well = Pos, cq = Cp) %>%
   right_join(plate1plan)
 ```
 
@@ -141,7 +141,7 @@ We detect no signal in NT (no template) negative control, and very weak signal i
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
 
 ggplot(data = plates) +
-  geom_point(aes(x = target_id, y = Cq, colour = DilutionNice, shape = Type),
+  geom_point(aes(x = target_id, y = cq, colour = dilution_nice, shape = Type),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(
@@ -157,10 +157,10 @@ ggplot(data = plates) +
 
 ## Dilution series is linear for all probes
 
-Visual display of linearity of Cq with log(Dilution).
+Visual display of linearity of cq with log(dilution).
 
 ```{r plot_dilutions,dependson="load_plates",fig.height=11,fig.width=6}
-ggplot(data = filter(plates, Type == "+RT"), aes(x = Dilution, y = Cq)) +
+ggplot(data = filter(plates, Type == "+RT"), aes(x = dilution, y = cq)) +
   geom_point() +
   stat_smooth(
     formula = y ~ x, method = "lm", se = FALSE,
@@ -183,10 +183,10 @@ ggplot(data = filter(plates, Type == "+RT"), aes(x = Dilution, y = Cq)) +
 
 ## Calculate primer efficiencies for all probes
 
-Use regression to estimate linearity of Cq with log(Dilution), including the slope or efficiency.
+Use regression to estimate linearity of cq with log(dilution), including the slope or efficiency.
 
 ```{r calibrate_dilutions,dependson="load_plates",results="show",echo=TRUE}
-est_efficiency_bytargetid(plates)
+calculate_efficiency_bytargetid(plates)
 ```
 
 
@@ -197,7 +197,7 @@ target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "R
 
 ggplot(
   data = filter(plates, Type == "+RT", target_id %in% target_id_levels_nice),
-  aes(x = Dilution, y = Cq)
+  aes(x = dilution, y = cq)
 ) +
   geom_point() +
   stat_smooth(
@@ -268,7 +268,7 @@ Broken up by technical replicate here, to avoid overplotting.
 ggplot(
   data = platesamp %>%
     filter(TechRep == "1"),
-  aes(x = Cycle, y = Signal, colour = factor(Dilution), linetype = Type)
+  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = Type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -279,7 +279,7 @@ ggplot(
 ggplot(
   data = platesamp %>%
     filter(TechRep == "2"),
-  aes(x = Cycle, y = Signal, colour = factor(Dilution), linetype = Type)
+  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = Type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -310,7 +310,7 @@ Again broken up by technical replicate.
 ggplot(
   data = platesmelt %>%
     filter(TechRep == "1"),
-  aes(x = Temperature, y = dRdT, colour = factor(Dilution), linetype = Type)
+  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = Type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -321,7 +321,7 @@ ggplot(
 ggplot(
   data = platesmelt %>%
     filter(TechRep == "2"),
-  aes(x = Temperature, y = dRdT, colour = factor(Dilution), linetype = Type)
+  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = Type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -337,7 +337,7 @@ ggplot(
 ggplot(
   data = platesmelt %>%
     filter(TechRep == "1", Type == "+RT"),
-  aes(x = Temperature, y = dRdT, colour = factor(Dilution))
+  aes(x = Temperature, y = dRdT, colour = factor(dilution))
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   geom_line() +
@@ -354,7 +354,7 @@ ggplot(
 ggplot(
   data = platesmelt %>%
     filter(TechRep == "2", Type == "+RT"),
-  aes(x = Temperature, y = dRdT, colour = factor(Dilution))
+  aes(x = Temperature, y = dRdT, colour = factor(dilution))
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   geom_line() +
@@ -377,7 +377,7 @@ target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "R
 ggplot(
   data = platesmelt %>%
     filter(
-      TechRep == "1", Type == "+RT", DilutionNice == "1x",
+      TechRep == "1", Type == "+RT", dilution_nice == "1x",
       target_id %in% target_id_levels_nice
     ),
   aes(x = Temperature, y = dRdT, colour = BioRep)

@@ -5,16 +5,16 @@
 \title{Create a 6-dilution column key for primer calibration}
 \usage{
 create_colkey_6diln_2ctrl_in24(
-  Dilution = c(5^(0:-5), 1, 1),
-  DilutionNice = c("1x", "5x", "25x", "125x", "625x", "3125x", "-RT", "NT"),
+  dilution = c(5^(0:-5), 1, 1),
+  dilution_nice = c("1x", "5x", "25x", "125x", "625x", "3125x", "-RT", "NT"),
   Type = c(rep("+RT", 6), "-RT", "NT"),
   TechRep = rep(1:3, each = 8, length.out = 24)
 )
 }
 \arguments{
-\item{Dilution}{Numeric vector of length 8 describing sample dilutions}
+\item{dilution}{Numeric vector of length 8 describing sample dilutions}
 
-\item{DilutionNice}{Character vector of length 8 with nice labels for sample
+\item{dilution_nice}{Character vector of length 8 with nice labels for sample
 dilutions}
 
 \item{Type}{Character vector of length 8 describing type of sample (+RT, -RT,
@@ -23,8 +23,8 @@ NT)}
 \item{TechRep}{Character vector of length 8 describing technical replicates}
 }
 \value{
-tibble (data frame) with 24 rows, and variables WellC, Dilution,
-  DilutionNice, Type, BioRep, TechRep.
+tibble (data frame) with 24 rows, and variables WellC, dilution,
+  dilution_nice, Type, BioRep, TechRep.
 }
 \description{
 Creates a 24-column key for primer calibration, with 1x BioReps and 3x

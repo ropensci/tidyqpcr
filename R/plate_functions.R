@@ -107,15 +107,15 @@ create_colkey_6in24 <- function(...) {
 #' transcriptase), NT (no template) negative controls. That is a total of 6
 #' versions of each sample replicate.
 #'
-#' @param Dilution Numeric vector of length 6 describing sample dilutions
-#' @param DilutionNice Character vector of length 6 with nice labels for sample
+#' @param dilution Numeric vector of length 6 describing sample dilutions
+#' @param dilution_nice Character vector of length 6 with nice labels for sample
 #'   dilutions
 #' @param Type Character vector of length 6 describing type of sample (+RT, -RT,
 #'   NT)
 #' @param BioRep Character vector of length 6 describing biological replicates
 #' @param TechRep Character vector of length 6 describing technical replicates
-#' @return tibble (data frame) with 24 rows, and columns WellC, Dilution,
-#'   DilutionNice, Type, BioRep, TechRep.
+#' @return tibble (data frame) with 24 rows, and columns WellC, dilution,
+#'   dilution_nice, Type, BioRep, TechRep.
 #' @examples
 #' create_colkey_4diln_2ctrl_in24()
 #' @family plate creation functions
@@ -124,8 +124,8 @@ create_colkey_6in24 <- function(...) {
 #' @importFrom tibble tibble
 #'
 create_colkey_4diln_2ctrl_in24 <- function(
-                     Dilution     = c(5 ^ (0:-3), 1, 1),
-                     DilutionNice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
+                     dilution      = c(5 ^ (0:-3), 1, 1),
+                     dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
                      Type         = c(rep("+RT", 4), "-RT", "NT"),
                      BioRep       = rep(c("A", "B"), each = 12,
                                         length.out = 24),
@@ -133,8 +133,8 @@ create_colkey_4diln_2ctrl_in24 <- function(
                                         length.out = 24)
                      ) {
     tibble(WellC = factor(1:24),
-           Dilution = rep(Dilution, 4),
-           DilutionNice = rep(DilutionNice, 4),
+           dilution = rep(dilution, 4),
+           dilution_nice = rep(dilution_nice, 4),
            Type = factor(rep(Type, 4),
                          levels = c("+RT", "-RT", "NT")),
            BioRep = factor(BioRep),
@@ -149,14 +149,14 @@ create_colkey_4diln_2ctrl_in24 <- function(
 #' transcriptase), NT (no template) negative controls. That is a total of 8
 #' versions of each replicate.
 #'
-#' @param Dilution Numeric vector of length 8 describing sample dilutions
-#' @param DilutionNice Character vector of length 8 with nice labels for sample
+#' @param dilution Numeric vector of length 8 describing sample dilutions
+#' @param dilution_nice Character vector of length 8 with nice labels for sample
 #'   dilutions
 #' @param Type Character vector of length 8 describing type of sample (+RT, -RT,
 #'   NT)
 #' @param TechRep Character vector of length 8 describing technical replicates
-#' @return tibble (data frame) with 24 rows, and variables WellC, Dilution,
-#'   DilutionNice, Type, BioRep, TechRep.
+#' @return tibble (data frame) with 24 rows, and variables WellC, dilution,
+#'   dilution_nice, Type, BioRep, TechRep.
 #' @examples
 #' create_colkey_6diln_2ctrl_in24()
 #' @family plate creation functions
@@ -165,15 +165,15 @@ create_colkey_4diln_2ctrl_in24 <- function(
 #' @importFrom tibble tibble
 #'
 create_colkey_6diln_2ctrl_in24 <- function(
-                     Dilution=c(5 ^ (0:-5), 1, 1),
-                     DilutionNice=c("1x", "5x", "25x", "125x",
+                     dilution = c(5 ^ (0:-5), 1, 1),
+                     dilution_nice = c("1x", "5x", "25x", "125x",
                                     "625x", "3125x", "-RT", "NT"),
                      Type=c(rep("+RT", 6), "-RT", "NT"),
                      TechRep = rep(1:3, each = 8, length.out = 24)
                      ) {
     tibble(WellC = factor(1:24),
-           Dilution = rep(Dilution, 3),
-           DilutionNice = rep(DilutionNice, 3),
+           dilution = rep(dilution, 3),
+           dilution_nice = rep(dilution_nice, 3),
            Type = factor(rep(Type, 3),
                          levels = c("+RT", "-RT", "NT")),
            TechRep = factor(TechRep))

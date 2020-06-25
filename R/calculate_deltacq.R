@@ -3,7 +3,7 @@
 #'   normalization (reference) probes, for a single sample.
 #'
 #' @param norm_function Function to use to calculate the value to
-#' normalise by on log2/Cq scale.
+#' normalise by on log2/cq scale.
 #' Default function is median, alternatively could use mean.
 #'
 #' @export
@@ -11,7 +11,7 @@
 #' @importFrom stats median
 #'
 calculate_normcq <- function(cq_df,
-                      value_name = "Cq",
+                      value_name = "cq",
                       norm_target_ids = "ALG9",
                       tid_name = "target_id",
                       norm_function = median) {
@@ -26,11 +26,11 @@ calculate_normcq <- function(cq_df,
     dplyr::mutate(cq_df, value_to_norm_by = value_to_norm_by)
 }
 
-#' Calculate delta Cq to normalize quantification cycle (log2-fold) data within
+#' Calculate delta cq to normalize quantification cycle (log2-fold) data within
 #' sample_id.
 #'
 #' @param cq_df a data frame containing columns `sample_id`, value_name (default
-#'   `Cq`) and tid_name (default `target_id`). Crucially, sample_id should be
+#'   `cq`) and tid_name (default `target_id`). Crucially, sample_id should be
 #'   the same for different technical replicates measuring identical reactions
 #'   in different wells of the plate, but differ for different biological and
 #'   experimental replicates.
@@ -50,7 +50,7 @@ calculate_normcq <- function(cq_df,
 #'
 calculate_deltacq_bysampleid <- function(cq_df,
                                          norm_target_ids,
-                                         value_name = "Cq",
+                                         value_name = "cq",
                                          tid_name = "target_id") {
     cq_df %>%
         dplyr::group_by(sample_id) %>%
@@ -72,7 +72,7 @@ calculate_deltacq_bysampleid <- function(cq_df,
 #' @export
 #'
 normalizeqPCR <- function(cq_df,
-                          value_name = "Cq",
+                          value_name = "cq",
                           norm_target_ids = "ALG9",
                           tid_name = "target_id") {
     lifecycle::deprecate_warn("0.2", "normalizeqPCR()",

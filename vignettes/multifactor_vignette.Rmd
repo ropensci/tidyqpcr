@@ -115,13 +115,13 @@ Note that display_plate requires a column called `sample_id`, which here we had 
 # read my plates
 
 plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt", skip = 1) %>%
-  mutate(Well = Pos, Cq = Cp) %>%
+  mutate(Well = Pos, cq = Cp) %>%
   left_join(plateplan) %>%
   mutate(BiolRep = "1", Plate = "1")
 
 
 plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt", skip = 1) %>%
-  mutate(Well = Pos, Cq = Cp) %>%
+  mutate(Well = Pos, cq = Cp) %>%
   left_join(plateplan) %>%
   mutate(BiolRep = "2", Plate = "2")
 
@@ -139,7 +139,7 @@ summary(plates)
 
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=8}
 ggplot(data = plates) +
-  geom_point(aes(x = target_id, y = Cq, shape = Condition, colour = Condition),
+  geom_point(aes(x = target_id, y = cq, shape = Condition, colour = Condition),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(
@@ -170,7 +170,7 @@ platesnorm <- plates %>%
 platesmed <- platesnorm %>%
   group_by(sample_id, Condition, BiolRep, HS, Drug, target_id) %>%
   summarize(
-    Cq = median(value_norm, na.rm = TRUE),
+    cq = median(value_norm, na.rm = TRUE),
     Abund = median(value_normexp, na.rm = TRUE)
   )
 
