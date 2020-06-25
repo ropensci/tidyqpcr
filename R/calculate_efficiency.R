@@ -46,8 +46,8 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + BioRep
 #'
 #' @param cq_df a data frame with cq (quantification cycle) data, 1 row per well
 #'
-#' Must have columns Type, target_id, cq, dilution.
-#' Only Type=="+RT" columns are used.
+#' Must have columns prep_type, target_id, cq, dilution.
+#' Only prep_type=="+RT" columns are used.
 #'
 #' @param formula formula to use for log-log regression fit.
 #'
@@ -59,12 +59,12 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + BioRep
 #'
 #' See ?formula for background and help.
 #'
-#' @param usetypes Type column values to use, default "+RT" for RT-qPCR.
+#' @param use_prep_types prep_type column values to use, default "+RT" for RT-qPCR.
 #'
 #' By default, this includes only reverse-transcribed values in the efficiency
 #' estimation, so excludes negative controls such as no-template and no-RT.
 #'
-#' To skip this filtering step, set usetypes=NA.
+#' To skip this filtering step, set use_prep_types=NA.
 #'
 #'
 #' @return data frame with columns:
@@ -77,9 +77,9 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + BioRep
 #'
 calculate_efficiency_bytargetid <- function(cq_df,
                            formula = cq ~ log2(dilution) + BioRep,
-                           usetypes="+RT") {
-    if (!is.na(usetypes)) {
-        cq_df <- dplyr::filter(cq_df, Type %in% usetypes)
+                           use_prep_types="+RT") {
+    if (!is.na(use_prep_types)) {
+        cq_df <- dplyr::filter(cq_df, prep_type %in% use_prep_types)
     }
     cq_df %>%
         dplyr::group_by(target_id) %>%

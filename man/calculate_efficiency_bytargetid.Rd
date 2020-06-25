@@ -7,14 +7,14 @@
 calculate_efficiency_bytargetid(
   cq_df,
   formula = cq ~ log2(dilution) + BioRep,
-  usetypes = "+RT"
+  use_prep_types = "+RT"
 )
 }
 \arguments{
 \item{cq_df}{a data frame with cq (quantification cycle) data, 1 row per well
 
-Must have columns Type, target_id, cq, dilution.
-Only Type=="+RT" columns are used.}
+Must have columns prep_type, target_id, cq, dilution.
+Only prep_type=="+RT" columns are used.}
 
 \item{formula}{formula to use for log-log regression fit.
 
@@ -26,12 +26,12 @@ If multiple sample_ids, change to cq ~ log2(dilution) + sample_id.
 
 See ?formula for background and help.}
 
-\item{usetypes}{Type column values to use, default "+RT" for RT-qPCR.
+\item{use_prep_types}{prep_type column values to use, default "+RT" for RT-qPCR.
 
 By default, this includes only reverse-transcribed values in the efficiency
 estimation, so excludes negative controls such as no-template and no-RT.
 
-To skip this filtering step, set usetypes=NA.}
+To skip this filtering step, set use_prep_types=NA.}
 }
 \value{
 data frame with columns:

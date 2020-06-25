@@ -74,7 +74,7 @@ create_blank_plate_1536well <- function(
 #' @param ... Vectors of length 6 describing well contents,
 #' e.g. sample or probe.
 #' @return tibble (data frame) with 24 rows, and columns
-#' WellC, Type, TechRep, and supplied values.
+#' WellC, prep_type, TechRep, and supplied values.
 #'
 #' @examples
 #' create_colkey_6in24(sample_id=LETTERS[1:6])
@@ -86,7 +86,7 @@ create_blank_plate_1536well <- function(
 #'
 create_colkey_6in24 <- function(...) {
     colkey <- tibble(WellC   = factor(1:24),
-                     Type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
+                     prep_type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
                          factor(levels = c("+RT", "-RT")),
                      TechRep = rep(c(1, 2, 3, 1), each = 6) %>%
                          factor(levels = 1:3)
@@ -110,12 +110,12 @@ create_colkey_6in24 <- function(...) {
 #' @param dilution Numeric vector of length 6 describing sample dilutions
 #' @param dilution_nice Character vector of length 6 with nice labels for sample
 #'   dilutions
-#' @param Type Character vector of length 6 describing type of sample (+RT, -RT,
+#' @param prep_type Character vector of length 6 describing type of sample (+RT, -RT,
 #'   NT)
 #' @param BioRep Character vector of length 6 describing biological replicates
 #' @param TechRep Character vector of length 6 describing technical replicates
 #' @return tibble (data frame) with 24 rows, and columns WellC, dilution,
-#'   dilution_nice, Type, BioRep, TechRep.
+#'   dilution_nice, prep_type, BioRep, TechRep.
 #' @examples
 #' create_colkey_4diln_2ctrl_in24()
 #' @family plate creation functions
@@ -126,7 +126,7 @@ create_colkey_6in24 <- function(...) {
 create_colkey_4diln_2ctrl_in24 <- function(
                      dilution      = c(5 ^ (0:-3), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
-                     Type         = c(rep("+RT", 4), "-RT", "NT"),
+                     prep_type         = c(rep("+RT", 4), "-RT", "NT"),
                      BioRep       = rep(c("A", "B"), each = 12,
                                         length.out = 24),
                      TechRep      = rep(1:2, each = 6,
@@ -135,7 +135,7 @@ create_colkey_4diln_2ctrl_in24 <- function(
     tibble(WellC = factor(1:24),
            dilution = rep(dilution, 4),
            dilution_nice = rep(dilution_nice, 4),
-           Type = factor(rep(Type, 4),
+           prep_type = factor(rep(prep_type, 4),
                          levels = c("+RT", "-RT", "NT")),
            BioRep = factor(BioRep),
            TechRep = factor(TechRep)
@@ -152,11 +152,11 @@ create_colkey_4diln_2ctrl_in24 <- function(
 #' @param dilution Numeric vector of length 8 describing sample dilutions
 #' @param dilution_nice Character vector of length 8 with nice labels for sample
 #'   dilutions
-#' @param Type Character vector of length 8 describing type of sample (+RT, -RT,
+#' @param prep_type Character vector of length 8 describing type of sample (+RT, -RT,
 #'   NT)
 #' @param TechRep Character vector of length 8 describing technical replicates
 #' @return tibble (data frame) with 24 rows, and variables WellC, dilution,
-#'   dilution_nice, Type, BioRep, TechRep.
+#'   dilution_nice, prep_type, BioRep, TechRep.
 #' @examples
 #' create_colkey_6diln_2ctrl_in24()
 #' @family plate creation functions
@@ -168,13 +168,13 @@ create_colkey_6diln_2ctrl_in24 <- function(
                      dilution = c(5 ^ (0:-5), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x",
                                     "625x", "3125x", "-RT", "NT"),
-                     Type=c(rep("+RT", 6), "-RT", "NT"),
+                     prep_type=c(rep("+RT", 6), "-RT", "NT"),
                      TechRep = rep(1:3, each = 8, length.out = 24)
                      ) {
     tibble(WellC = factor(1:24),
            dilution = rep(dilution, 3),
            dilution_nice = rep(dilution_nice, 3),
-           Type = factor(rep(Type, 3),
+           prep_type = factor(rep(prep_type, 3),
                          levels = c("+RT", "-RT", "NT")),
            TechRep = factor(TechRep))
 }
@@ -186,7 +186,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #'
 #' @param ... Vectors of length 4 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and variables WellR, Type, TechRep,
+#' @return tibble (data frame) with 16 rows, and variables WellR, prep_type, TechRep,
 #'   and supplied values.
 #' @examples
 #' create_rowkey_4in16(sample_id=c("sheep","goat","cow","chicken"))
@@ -198,7 +198,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #'
 create_rowkey_4in16 <- function(...) {
     rowkey <- tibble(WellR = LETTERS[1:16],
-                     Type = factor(c(rep("+RT", 12), rep("-RT", 4)),
+                     prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
                                    levels = c("+RT", "-RT")),
                      TechRep = factor(rep(c(1, 2, 3, 1), each = 4),
                                       levels = 1:3))
@@ -267,7 +267,7 @@ create_rowkey_8in16_plain <- function(...) {
 #'   to factors, taking factor levels from `plate`, and warns the user.
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
-#'   sample_id, target_id, and Type, so `label_plate_rowcol` will warn if any of
+#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if any of
 #'   these are missing. This is a warning, not an error, because these variables
 #'   can be added by users later.
 #'
@@ -305,23 +305,23 @@ label_plate_rowcol <- function(plate,
         }
         plate <- dplyr::left_join(plate, rowkey, by = "WellR")
     }
-    # check that plate contains sample_id, target_id, Type, warn if not
+    # check that plate contains sample_id, target_id, prep_type, warn if not
     if (! "sample_id" %in% names(plate)) {
         warning("plate does not contain variable sample_id")
     }
     if (! "target_id" %in% names(plate)) {
         warning("plate does not have variable target_id")
     }
-    if (! "Type" %in% names(plate)) {
-        warning("plate does not have variable Type")
+    if (! "prep_type" %in% names(plate)) {
+        warning("plate does not have variable prep_type")
     }
     return(dplyr::arrange(plate, WellR, WellC))
 }
 
 
-#' Display plate plan with sample_id, target_id, Type per Well
+#' Display plate plan with sample_id, target_id, prep_type per Well
 #'
-#' @param plate tibble with variables WellC, WellR, sample_id, target_id, Type.
+#' @param plate tibble with variables WellC, WellR, sample_id, target_id, prep_type.
 #'   Output from label_plate_rowcol.
 #'
 #' @return ggplot object; major output is to plot it
@@ -344,7 +344,7 @@ display_plate <- function(plate) {
         ggplot2::geom_tile(aes(fill = target_id), alpha = 0.3) +
         ggplot2::geom_text(aes(label = paste(target_id,
                                              sample_id,
-                                             Type,
+                                             prep_type,
                                              sep = "\n")),
                            size = 2.5, lineheight = 1) +
         ggplot2::scale_x_discrete(expand = c(0, 0)) +

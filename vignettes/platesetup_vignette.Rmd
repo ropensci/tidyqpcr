@@ -49,10 +49,10 @@ This vignette builds from a 12-well "practice plate" up to a 96 well plate for a
 
 This vignette focuses on one primer set per well (for SYBR data), and doesn't discuss more than one probe per well (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
 
-## Essential information: target_id, sample_id, Type
+## Essential information: target_id, sample_id, stype
 
 Each well of your plate measures one or more sequence targets in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the target(s), sample, and preparation type for every well.  
-So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: target_id, sample_id, and Type.
+So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: target_id, sample_id, and stype.
 
 **target_id** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
 If you are detecting multiple regions of the same gene, or trialing multiple probes or primer sets, you have to give them different target_id names.
@@ -63,11 +63,11 @@ Note again that the current (June 2020) version of tidyqpcr has been tested on S
 Functions including `display_plate` and `calculate_deltacq_bysampleid` assume that there is a column called `sample_id`, and use it to decide which wells get analysed together.
 We discuss below how to add other kinds of information/metadata to help your analysis.
 
-**Type** is used for different types of nucleic acid preps from the same sample.
+**prep_type** is used for different types of nucleic acid preps from the same sample.
 Negative controls are crucial, either no template (NT) controls, or specifically for RNA-measuring RT-qPCR, the no-reverse transcriptase control that detects DNA contamination, as discussed in the MIQE guidelines.
-So for RT-qPCR experiments we expect to have Type +RT and -RT for each sample, and for primer calibration we would always have a no template control.
+So for RT-qPCR experiments we expect to have prep_types +RT and -RT for each sample, and for primer calibration we would always have a no template control.
 
-Technical replicates are also necessary for qPCR experiments to track the variability. This occurs as multiple Wells, each of which has the same combination of target_id, sample_id, and Type.
+Technical replicates are also necessary for qPCR experiments to track the variability. This occurs as multiple Wells, each of which has the same combination of target_id, sample_id, and prep_type.
 
 ## Using rows and columns to make life easier
 
@@ -106,13 +106,13 @@ print(rowkey4)
 Similarly, we put the sample information in a tibble for the columns, including `WellC` for the column name
 
 ```{r minimal_noreps_cols,results="show",echo=TRUE}
-sample_ids <- c("rep1", "rep2", "rep3")
-Types <- "+RT"
+sample_id_levels <- c("rep1", "rep2", "rep3")
+prep_type_levels <- "+RT"
 
 colkey3 <- tibble(
   WellC = 1:3,
-  sample_id = sample_ids,
-  Type = Types
+  sample_id = sample_id_levels,
+  prep_type = prep_type_levels
 )
 print(colkey3)
 ```
@@ -149,21 +149,21 @@ display_plate(plate_plan12)
 Expanding this practice plan to incorporate replicates can be done by taking this little square and making copies across a larger plate. This strategy of making copies of a small square makes it easier to use multichannel pipettes to speed up plate loading. It also means that technical replicates of the same sample are not in adjacent wells on the plate, correcting for some  location-specific artefacts of amplification in the qPCR machine. However, if there are row- or column-specific artefacts, this approach does not allow you detect them separately.
 
 
-## Repeat columns for the sample_ids and Types
+## Repeat columns for the sample_ids and prep_types
 
 Here we are putting three replicates of +RT and one of -RT for each sample. This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/target combinations. 
 
 We could achieve these replicates in the plate plan by explicitly writing out every time as in `c("+RT", "+RT", "+RT", "-RT")`, or we can again use the `rep` function. Below, we use `rep("+RT", times = 9)` to make 9 repeats, meaning that the 3 tech reps of +RT samples are next to each other. We use the concatenate function `c`, to arrange that next to the single replicates of the -RT samples. 
 
 ```{r minimal_48_cols,results="show",echo=TRUE}
-sample_ids <- c("rep1", "rep2", "rep3")
-Types <- c(rep("+RT", times = 9), rep("-RT", times = 3))
-print(Types)
+sample_id_levels <- c("rep1", "rep2", "rep3")
+prep_type_vector <- c(rep("+RT", times = 9), rep("-RT", times = 3))
+print(prep_type_vector)
 
 colkey12 <- tibble(
   WellC = 1:12,
-  sample_id = rep(sample_ids, times = 4),
-  Type = Types
+  sample_id = rep(sample_id_levels, times = 4),
+  prep_type = prep_type_vector
 )
 print(colkey12)
 ```
@@ -231,12 +231,11 @@ If we kept `colkey12` from above, then the variable `sample_id` would no longer 
 
 ```{r twocondition_96_cols,results="show",echo=TRUE}
 Bioreps <- c("rep1", "rep2", "rep3")
-Types <- c(rep("+RT", times = 9), rep("-RT", times = 3))
 
 colkey12_twocondition <- tibble(
   WellC = 1:12,
   Biorep = rep(Bioreps, times = 4),
-  Type = Types
+  prep_type = prep_type_vector
 )
 print(colkey12_twocondition)
 ```

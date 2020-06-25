@@ -147,7 +147,7 @@ ggplot(data = plates) +
     title = "All reps, unnormalized"
   ) +
   scale_shape_manual(values = c(15:18, 5:6)) +
-  facet_grid(BiolRep ~ Type) +
+  facet_grid(BiolRep ~ prep_type) +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5),
     panel.border = element_rect(
@@ -164,7 +164,7 @@ ggplot(data = plates) +
 
 ```{r normalize_counts,dependson="load_plates"}
 platesnorm <- plates %>%
-  filter(Type == "+RT") %>%
+  filter(prep_type == "+RT") %>%
   calculate_deltacq_bysampleid(norm_target_ids = "PGK1")
 
 platesmed <- platesnorm %>%
@@ -308,7 +308,7 @@ platesmelt <- bind_rows(plate1curve, plate2curve) %>%
 ggplot(
   data = platesmelt %>%
     filter(TechRep == 1, BiolRep == 1),
-  aes(x = Temperature, y = dRdT, linetype = Type)
+  aes(x = Temperature, y = dRdT, linetype = prep_type)
 ) +
   facet_grid(Condition ~ target_id) +
   geom_line() +
@@ -324,7 +324,7 @@ ggplot(
 ggplot(
   data = platesmelt %>%
     filter(TechRep == 1, BiolRep == 2),
-  aes(x = Temperature, y = dRdT, linetype = Type)
+  aes(x = Temperature, y = dRdT, linetype = prep_type)
 ) +
   facet_grid(Condition ~ target_id) +
   geom_line() +
@@ -341,7 +341,7 @@ ggplot(
 ggplot(
   data = platesamp %>%
     filter(TechRep == 1, BiolRep == 1),
-  aes(x = Cycle, y = Signal, linetype = Type)
+  aes(x = Cycle, y = Signal, linetype = prep_type)
 ) +
   facet_grid(Condition ~ target_id) +
   geom_line() +
@@ -355,7 +355,7 @@ ggplot(
 ggplot(
   data = platesamp %>%
     filter(TechRep == 1, BiolRep == 2),
-  aes(x = Cycle, y = Signal, linetype = Type)
+  aes(x = Cycle, y = Signal, linetype = prep_type)
 ) +
   facet_grid(Condition ~ target_id) +
   geom_line() +

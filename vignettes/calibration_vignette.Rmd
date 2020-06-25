@@ -141,7 +141,7 @@ We detect no signal in NT (no template) negative control, and very weak signal i
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
 
 ggplot(data = plates) +
-  geom_point(aes(x = target_id, y = cq, colour = dilution_nice, shape = Type),
+  geom_point(aes(x = target_id, y = cq, colour = dilution_nice, shape = prep_type),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(
@@ -160,7 +160,7 @@ ggplot(data = plates) +
 Visual display of linearity of cq with log(dilution).
 
 ```{r plot_dilutions,dependson="load_plates",fig.height=11,fig.width=6}
-ggplot(data = filter(plates, Type == "+RT"), aes(x = dilution, y = cq)) +
+ggplot(data = filter(plates, prep_type == "+RT"), aes(x = dilution, y = cq)) +
   geom_point() +
   stat_smooth(
     formula = y ~ x, method = "lm", se = FALSE,
@@ -196,7 +196,7 @@ calculate_efficiency_bytargetid(plates)
 target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "RDL1_4", "TFS1_1")
 
 ggplot(
-  data = filter(plates, Type == "+RT", target_id %in% target_id_levels_nice),
+  data = filter(plates, prep_type == "+RT", target_id %in% target_id_levels_nice),
   aes(x = dilution, y = cq)
 ) +
   geom_point() +
@@ -268,7 +268,7 @@ Broken up by technical replicate here, to avoid overplotting.
 ggplot(
   data = platesamp %>%
     filter(TechRep == "1"),
-  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = Type)
+  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = prep_type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -279,7 +279,7 @@ ggplot(
 ggplot(
   data = platesamp %>%
     filter(TechRep == "2"),
-  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = Type)
+  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = prep_type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -310,7 +310,7 @@ Again broken up by technical replicate.
 ggplot(
   data = platesmelt %>%
     filter(TechRep == "1"),
-  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = Type)
+  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = prep_type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -321,7 +321,7 @@ ggplot(
 ggplot(
   data = platesmelt %>%
     filter(TechRep == "2"),
-  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = Type)
+  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = prep_type)
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
@@ -336,7 +336,7 @@ ggplot(
 ```{r plotmelt_zoomed,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(
   data = platesmelt %>%
-    filter(TechRep == "1", Type == "+RT"),
+    filter(TechRep == "1", prep_type == "+RT"),
   aes(x = Temperature, y = dRdT, colour = factor(dilution))
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
@@ -353,7 +353,7 @@ ggplot(
 
 ggplot(
   data = platesmelt %>%
-    filter(TechRep == "2", Type == "+RT"),
+    filter(TechRep == "2", prep_type == "+RT"),
   aes(x = Temperature, y = dRdT, colour = factor(dilution))
 ) +
   facet_grid(target_id ~ BioRep, scales = "free_y") +
@@ -377,7 +377,7 @@ target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "R
 ggplot(
   data = platesmelt %>%
     filter(
-      TechRep == "1", Type == "+RT", dilution_nice == "1x",
+      TechRep == "1", prep_type == "+RT", dilution_nice == "1x",
       target_id %in% target_id_levels_nice
     ),
   aes(x = Temperature, y = dRdT, colour = BioRep)

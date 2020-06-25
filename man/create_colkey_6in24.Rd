@@ -12,7 +12,7 @@ e.g. sample or probe.}
 }
 \value{
 tibble (data frame) with 24 rows, and columns
-WellC, Type, TechRep, and supplied values.
+WellC, prep_type, TechRep, and supplied values.
 }
 \description{
 Create a 24-column key with 6 values repeated over 24 plate columns.
