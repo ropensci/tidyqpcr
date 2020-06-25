@@ -13,7 +13,7 @@ est_efficiency_bytargetid(
 \arguments{
 \item{cq_df}{a data frame with Cq (quantification cycle) data, 1 row per well
 
-Must have columns Type, TargetID, Cq, Dilution.
+Must have columns Type, target_id, Cq, Dilution.
 Only Type=="+RT" columns are used.}
 
 \item{formula}{formula to use for log-log regression fit.
@@ -22,7 +22,7 @@ Default value assumes multiple biological replicates,
 Cq ~ log2(Dilution) + BioRep.
 
 If only a single Biological Replicate, change to Cq ~ log2(Dilution).
-If multiple SampleIDs, change to Cq ~ log2(Dilution) + SampleID.
+If multiple sample_ids, change to Cq ~ log2(Dilution) + sample_id.
 
 See ?formula for background and help.}
 
@@ -35,7 +35,7 @@ To skip this filtering step, set usetypes=NA.}
 }
 \value{
 data frame with columns:
-TargetID, efficiency, efficiency.sd, r.squared.
+target_id, efficiency, efficiency.sd, r.squared.
 }
 \description{
 See calibration vignette for example of usage.

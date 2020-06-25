@@ -65,11 +65,11 @@ theme_set(theme_cowplot(font_size = 11) %+replace%
 # Names of target genes
 Names <- c("ECM38", "FET5", "GPT2", "ILV5", "NRD1", "RDL1", "TFS1")
 # ORF ids of target genes
-Targets <- c("YLR299W", "YFL041W", "YKR067W", "YLR355C", "YNL251C", "YOR285W", "YLR178C")
+target_levels <- c("YLR299W", "YFL041W", "YKR067W", "YLR355C", "YNL251C", "YOR285W", "YLR178C")
 # Repeats of gene names to account for testing multiple primer sets
 Namesrep <- c(rep(Names[1:2], each = 3), rep(Names[3:7], each = 2))
 # id numbers of multiple probesets (reflecting IDs as ordered)
-TargetIDs <- paste(Namesrep,
+target_id_levels <- paste(Namesrep,
   c(1, 2, 3, 1, 3, 4, 1, 4, 1, 4, 1, 2, 4, 5, 1, 5),
   sep = "_"
 )
@@ -78,7 +78,7 @@ TargetIDs <- paste(Namesrep,
 rowkey <- data.frame(
   WellR = LETTERS[1:16],
   Names = Namesrep,
-  TargetID = factor(TargetIDs, levels = TargetIDs)
+  target_id = factor(target_id_levels, levels = target_id_levels)
 )
 
 
@@ -88,7 +88,7 @@ plate1plan <-
     rowkey,
     create_colkey_4diln_2ctrl_in24()
   ) %>%
-  mutate(SampleID = paste(BioRep, DilutionNice, sep = "_"))
+  mutate(sample_id = paste(BioRep, DilutionNice, sep = "_"))
 ```
 
 ## Spot-check the plate plan 
@@ -97,10 +97,10 @@ Checks that for selected techrep/probe/dilution combinations, the plate contains
 
 ```{r print_techreps,results="show",echo=TRUE,cache=FALSE}
 plate1plan %>%
-  filter(TechRep == "1", TargetID == TargetIDs[1], DilutionNice == "1x")
+  filter(TechRep == "1", target_id == target_id_levels[1], DilutionNice == "1x")
 
 plate1plan %>%
-  filter(TechRep == "2", TargetID == TargetIDs[4])
+  filter(TechRep == "2", target_id == target_id_levels[4])
 ```
 
 ## Display the plate plan
@@ -141,7 +141,7 @@ We detect no signal in NT (no template) negative control, and very weak signal i
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
 
 ggplot(data = plates) +
-  geom_point(aes(x = TargetID, y = Cq, colour = DilutionNice, shape = Type),
+  geom_point(aes(x = target_id, y = Cq, colour = DilutionNice, shape = Type),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(
@@ -177,7 +177,7 @@ ggplot(data = filter(plates, Type == "+RT"), aes(x = Dilution, y = Cq)) +
     title = "All reps, unnormalized",
     colour = "Dilution", linetype = "Dilution"
   ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -193,10 +193,10 @@ est_efficiency_bytargetid(plates)
 ## Dilution series for nice probes only shows linearity clearly
 
 ```{r plot_dilutions_nice,dependson="load_plates",fig.height=6,fig.width=4}
-TargetIDsnice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "RDL1_4", "TFS1_1")
+target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "RDL1_4", "TFS1_1")
 
 ggplot(
-  data = filter(plates, Type == "+RT", TargetID %in% TargetIDsnice),
+  data = filter(plates, Type == "+RT", target_id %in% target_id_levels_nice),
   aes(x = Dilution, y = Cq)
 ) +
   geom_point() +
@@ -215,7 +215,7 @@ ggplot(
     title = "All reps, unnormalized",
     colour = "Dilution", linetype = "Dilution"
   ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -270,7 +270,7 @@ ggplot(
     filter(TechRep == "1"),
   aes(x = Cycle, y = Signal, colour = factor(Dilution), linetype = Type)
 ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
@@ -281,7 +281,7 @@ ggplot(
     filter(TechRep == "2"),
   aes(x = Cycle, y = Signal, colour = factor(Dilution), linetype = Type)
 ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
@@ -296,7 +296,7 @@ ggplot(
     filter(Well == "A1"),
   aes(x = Temperature, y = dRdT)
 ) +
-  facet_wrap(~TargetID) +
+  facet_wrap(~target_id) +
   geom_line() +
   scale_y_continuous(expand = c(0.02, 0.02))
 ```
@@ -312,7 +312,7 @@ ggplot(
     filter(TechRep == "1"),
   aes(x = Temperature, y = dRdT, colour = factor(Dilution), linetype = Type)
 ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
@@ -323,7 +323,7 @@ ggplot(
     filter(TechRep == "2"),
   aes(x = Temperature, y = dRdT, colour = factor(Dilution), linetype = Type)
 ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
@@ -339,7 +339,7 @@ ggplot(
     filter(TechRep == "1", Type == "+RT"),
   aes(x = Temperature, y = dRdT, colour = factor(Dilution))
 ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   geom_line() +
   scale_x_continuous(
     breaks = seq(60, 100, 5), minor_breaks = seq(60, 100, 1),
@@ -356,7 +356,7 @@ ggplot(
     filter(TechRep == "2", Type == "+RT"),
   aes(x = Temperature, y = dRdT, colour = factor(Dilution))
 ) +
-  facet_grid(TargetID ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ BioRep, scales = "free_y") +
   geom_line() +
   scale_x_continuous(
     breaks = seq(60, 100, 5), minor_breaks = seq(60, 100, 1),
@@ -373,16 +373,16 @@ ggplot(
 ## Plot only zoomed melt curves for nice probes
 
 ```{r plotmelt_zoomed_nice,dependson="load_amp",fig.height=6,fig.width=4}
-TargetIDsnice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "RDL1_4", "TFS1_1")
+target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "RDL1_4", "TFS1_1")
 ggplot(
   data = platesmelt %>%
     filter(
       TechRep == "1", Type == "+RT", DilutionNice == "1x",
-      TargetID %in% TargetIDsnice
+      target_id %in% target_id_levels_nice
     ),
   aes(x = Temperature, y = dRdT, colour = BioRep)
 ) +
-  facet_grid(TargetID ~ ., scales = "free_y") +
+  facet_grid(target_id ~ ., scales = "free_y") +
   geom_line() +
   scale_x_continuous(
     breaks = seq(60, 100, 5), minor_breaks = seq(60, 100, 1),

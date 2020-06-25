@@ -77,7 +77,7 @@ create_blank_plate_1536well <- function(
 #' WellC, Type, TechRep, and supplied values.
 #'
 #' @examples
-#' create_colkey_6in24(SampleID=LETTERS[1:6])
+#' create_colkey_6in24(sample_id=LETTERS[1:6])
 #' @family plate creation functions
 #'
 #' @export
@@ -189,7 +189,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #' @return tibble (data frame) with 16 rows, and variables WellR, Type, TechRep,
 #'   and supplied values.
 #' @examples
-#' create_rowkey_4in16(SampleID=c("sheep","goat","cow","chicken"))
+#' create_rowkey_4in16(sample_id=c("sheep","goat","cow","chicken"))
 #' @family plate creation functions
 #'
 #' @export
@@ -221,7 +221,7 @@ create_rowkey_4in16 <- function(...) {
 #' @return tibble (data frame) with 16 rows, and variables WellC, and supplied
 #'   values.
 #' @examples
-#' create_rowkey_8in16_plain(SampleID=c("me","you","them","him",
+#' create_rowkey_8in16_plain(sample_id=c("me","you","them","him",
 #'                                    "her","dog","cat","monkey"))
 #' @family plate creation functions
 #'
@@ -266,10 +266,10 @@ create_rowkey_8in16_plain <- function(...) {
 #'   the function by default converts WellR in `rowkey`, and WellC in `colkey`,
 #'   to factors, taking factor levels from `plate`, and warns the user.
 #'
-#'   Other tidyqpcr functions require plate plans to contain variables SampleID,
-#'   TargetID, and Type, so `label_plate_rowcol` will warn if any of these are
-#'   missing. This is a warning, not an error, because these variables can be
-#'   added by users later.
+#'   Other tidyqpcr functions require plate plans to contain variables
+#'   sample_id, target_id, and Type, so `label_plate_rowcol` will warn if any of
+#'   these are missing. This is a warning, not an error, because these variables
+#'   can be added by users later.
 #'
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
@@ -305,12 +305,12 @@ label_plate_rowcol <- function(plate,
         }
         plate <- dplyr::left_join(plate, rowkey, by = "WellR")
     }
-    # check that plate contains SampleID, TargetID, Type, warn if not
-    if (! "SampleID" %in% names(plate)) {
-        warning("plate does not contain variable SampleID")
+    # check that plate contains sample_id, target_id, Type, warn if not
+    if (! "sample_id" %in% names(plate)) {
+        warning("plate does not contain variable sample_id")
     }
-    if (! "TargetID" %in% names(plate)) {
-        warning("plate does not have variable TargetID")
+    if (! "target_id" %in% names(plate)) {
+        warning("plate does not have variable target_id")
     }
     if (! "Type" %in% names(plate)) {
         warning("plate does not have variable Type")
@@ -319,9 +319,9 @@ label_plate_rowcol <- function(plate,
 }
 
 
-#' Display plate plan with SampleID, TargetID, Type per Well
+#' Display plate plan with sample_id, target_id, Type per Well
 #'
-#' @param plate tibble with variables WellC, WellR, SampleID, TargetID, Type.
+#' @param plate tibble with variables WellC, WellR, sample_id, target_id, Type.
 #'   Output from label_plate_rowcol.
 #'
 #' @return ggplot object; major output is to plot it
@@ -341,9 +341,9 @@ display_plate <- function(plate) {
     ggplot2::ggplot(data = plate,
                     aes(x = as_factor(WellC),
                         y = as_factor(WellR))) +
-        ggplot2::geom_tile(aes(fill = TargetID), alpha = 0.3) +
-        ggplot2::geom_text(aes(label = paste(TargetID,
-                                             SampleID,
+        ggplot2::geom_tile(aes(fill = target_id), alpha = 0.3) +
+        ggplot2::geom_text(aes(label = paste(target_id,
+                                             sample_id,
                                              Type,
                                              sep = "\n")),
                            size = 2.5, lineheight = 1) +

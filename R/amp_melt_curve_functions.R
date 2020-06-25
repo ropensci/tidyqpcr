@@ -63,7 +63,7 @@ debaseline <- function(plateamp, maxcycle = 10) {
 #' @family melt_curve_functions
 #'
 #' @export
-#' 
+#'
 calculate_dydx_1 <- function(x, y, method = "spline", ...) {
     assertthat::assert_that(is.numeric(x))
     assertthat::assert_that(is.numeric(y))

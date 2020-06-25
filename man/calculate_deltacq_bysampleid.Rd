@@ -5,64 +5,65 @@
 \alias{calculate_deltacq_bysampleid}
 \alias{normalizeqPCR}
 \title{Calculate delta Cq to normalize quantification cycle (log2-fold) data within
-SampleID.}
+sample_id.}
 \usage{
 calculate_normcq(
   cq_df,
-  value = "Cq",
-  normTargetIDs = "ALG9",
-  probename = "TargetID",
-  normby.function = median
+  value_name = "Cq",
+  norm_target_ids = "ALG9",
+  tid_name = "target_id",
+  norm_function = median
 )
 
 calculate_deltacq_bysampleid(
   cq_df,
-  normTargetIDs,
-  value = "Cq",
-  probename = "TargetID"
+  norm_target_ids,
+  value_name = "Cq",
+  tid_name = "target_id"
 )
 
 normalizeqPCR(
   cq_df,
-  value = "Cq",
-  normTargetIDs = "ALG9",
-  probename = "TargetID"
+  value_name = "Cq",
+  norm_target_ids = "ALG9",
+  tid_name = "target_id"
 )
 }
 \arguments{
-\item{cq_df}{a data frame containing columns `SampleID`, value (default `Cq`)
-and probename (default `TargetID`). Crucially, SampleID should be the same
-for different technical replicates measuring identical reactions in
-different wells of the plate, but differ for different biological and
+\item{cq_df}{a data frame containing columns `sample_id`, value_name (default
+`Cq`) and tid_name (default `target_id`). Crucially, sample_id should be
+the same for different technical replicates measuring identical reactions
+in different wells of the plate, but differ for different biological and
 experimental replicates.}
 
-\item{value}{the column name of the value that will be normalized}
+\item{value_name}{the column name of the value that will be normalized}
 
-\item{normTargetIDs}{names of PCR probes (or primer sets) to normalize by,
+\item{norm_target_ids}{names of PCR probes (or primer sets) to normalize by,
 i.e. reference genes}
 
-\item{probename}{the column name for probe sets}
+\item{tid_name}{the column name for probe sets}
 
-\item{normby.function}{Function to use to calculate the value to
+\item{norm_function}{Function to use to calculate the value to
 normalise by on log2/Cq scale.
-Default value is median, alternatively could use mean.}
+Default function is median, alternatively could use mean.}
 }
 \value{
 data frame like cq_df with three additional columns:
 
-  \tabular{ll}{ norm.by       \tab the median value of the reference probes
-  \cr Value.norm    \tab the normalized value, \eqn{\Delta Cq} \cr
-  Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)} }
+  \tabular{ll}{ value_to_norm_by       \tab the median value of the reference
+  probes \cr value_norm    \tab the normalized value, \eqn{\Delta Cq} \cr
+  value_normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)} }
 }
 \description{
 Calculate delta Cq to normalize quantification cycle (log2-fold) data within
-SampleID.
+sample_id.
 }
 \section{Functions}{
 \itemize{
-\item \code{calculate_normcq}: get the median value of a set of normalization
-(reference) probes, for a single sample.
+\item \code{calculate_normcq}: get the median value of a set of
+normalization (reference) probes, for a single sample.
 
-\item \code{normalizeqPCR}: Synonym for calculate_deltacq_plates.
+\item \code{normalizeqPCR}: Synonym for
+calculate_deltacq_plates.
 }}
 

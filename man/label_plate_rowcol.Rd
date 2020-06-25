@@ -33,10 +33,10 @@ tibble (data frame) with variables WellR, WellC, Well, and others.
   the function by default converts WellR in `rowkey`, and WellC in `colkey`,
   to factors, taking factor levels from `plate`, and warns the user.
 
-  Other tidyqpcr functions require plate plans to contain variables SampleID,
-  TargetID, and Type, so `label_plate_rowcol` will warn if any of these are
-  missing. This is a warning, not an error, because these variables can be
-  added by users later.
+  Other tidyqpcr functions require plate plans to contain variables
+  sample_id, target_id, and Type, so `label_plate_rowcol` will warn if any of
+  these are missing. This is a warning, not an error, because these variables
+  can be added by users later.
 }
 \description{
 See vignettes for further examples

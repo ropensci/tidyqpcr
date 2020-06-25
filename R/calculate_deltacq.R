@@ -1,81 +1,85 @@
 
-#' @describeIn calculate_deltacq_bysampleid get the median value of a set of normalization
-#'   (reference) probes, for a single sample.
+#' @describeIn calculate_deltacq_bysampleid get the median value of a set of
+#'   normalization (reference) probes, for a single sample.
 #'
-#' @param normby.function Function to use to calculate the value to
+#' @param norm_function Function to use to calculate the value to
 #' normalise by on log2/Cq scale.
-#' Default value is median, alternatively could use mean.
+#' Default function is median, alternatively could use mean.
 #'
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom stats median
 #'
 calculate_normcq <- function(cq_df,
-                      value = "Cq",
-                      normTargetIDs = "ALG9",
-                      probename = "TargetID",
-                      normby.function = median) {
-    # make subset of cq_df where gene is one or more normTargetIDs
-    norm.by <- dplyr::filter(cq_df,
-                             !!dplyr::sym(probename) %in% normTargetIDs) %>%
-        .[[value]] %>%
-        normby.function(na.rm = TRUE)
+                      value_name = "Cq",
+                      norm_target_ids = "ALG9",
+                      tid_name = "target_id",
+                      norm_function = median) {
+    # make subset of cq_df where gene is one or more norm_target_ids
+    value_to_norm_by <- dplyr::filter(cq_df,
+                             !!dplyr::sym(tid_name) %in% norm_target_ids) %>%
+        .[[value_name]] %>%
+        norm_function(na.rm = TRUE)
     #
-    # assign summary (median) value to cq_df$norm.by
+    # assign summary (median) value to cq_df$value_to_norm_by
     # note this is the same value for every row, a waste of space technically
-    dplyr::mutate(cq_df, norm.by = norm.by)
+    dplyr::mutate(cq_df, value_to_norm_by = value_to_norm_by)
 }
 
 #' Calculate delta Cq to normalize quantification cycle (log2-fold) data within
-#' SampleID.
+#' sample_id.
 #'
-#' @param cq_df a data frame containing columns `SampleID`, value (default `Cq`)
-#'   and probename (default `TargetID`). Crucially, SampleID should be the same
-#'   for different technical replicates measuring identical reactions in
-#'   different wells of the plate, but differ for different biological and
+#' @param cq_df a data frame containing columns `sample_id`, value_name (default
+#'   `Cq`) and tid_name (default `target_id`). Crucially, sample_id should be
+#'   the same for different technical replicates measuring identical reactions
+#'   in different wells of the plate, but differ for different biological and
 #'   experimental replicates.
-#' @param value the column name of the value that will be normalized
-#' @param normTargetIDs names of PCR probes (or primer sets) to normalize by,
+#' @param value_name the column name of the value that will be normalized
+#' @param norm_target_ids names of PCR probes (or primer sets) to normalize by,
 #'   i.e. reference genes
-#' @param probename the column name for probe sets
+#' @param tid_name the column name for probe sets
 #'
 #' @return data frame like cq_df with three additional columns:
 #'
-#'   \tabular{ll}{ norm.by       \tab the median value of the reference probes
-#'   \cr Value.norm    \tab the normalized value, \eqn{\Delta Cq} \cr
-#'   Value.normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)} }
+#'   \tabular{ll}{ value_to_norm_by       \tab the median value of the reference
+#'   probes \cr value_norm    \tab the normalized value, \eqn{\Delta Cq} \cr
+#'   value_normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)} }
 #'
 #' @export
 #' @importFrom magrittr %>%
-#'   
+#'
 calculate_deltacq_bysampleid <- function(cq_df,
-                                         normTargetIDs,
-                                         value = "Cq",
-                                         probename = "TargetID") {
+                                         norm_target_ids,
+                                         value_name = "Cq",
+                                         tid_name = "target_id") {
     cq_df %>%
-        dplyr::group_by(SampleID) %>%
-        dplyr::do(calculate_normcq(., value, normTargetIDs, probename)) %>%
+        dplyr::group_by(sample_id) %>%
+        dplyr::do(calculate_normcq(.,
+                                   value_name,
+                                   norm_target_ids,
+                                   tid_name)) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(.Value = !!dplyr::sym(value), # a tidyeval trick
-               Value.norm    = .Value - norm.by,
-               Value.normexp = 2^-Value.norm) %>%
-        dplyr::select(-.Value) %>%
+        dplyr::mutate(.value = !!dplyr::sym(value_name), # a tidyeval trick
+               value_norm    = .value - value_to_norm_by,
+               value_normexp = 2^-value_norm) %>%
+        dplyr::select(-.value) %>%
         return()
 }
 
-#' @describeIn calculate_deltacq_bysampleid Synonym for calculate_deltacq_plates.
+#' @describeIn calculate_deltacq_bysampleid Synonym for
+#'   calculate_deltacq_plates.
 #'
 #' @export
 #'
 normalizeqPCR <- function(cq_df,
-                          value = "Cq",
-                          normTargetIDs = "ALG9",
-                          probename = "TargetID") {
+                          value_name = "Cq",
+                          norm_target_ids = "ALG9",
+                          tid_name = "target_id") {
     lifecycle::deprecate_warn("0.2", "normalizeqPCR()",
                               "calculate_deltacq_bysampleid()",
         details = "Replaced with more descriptive name")
     calculate_deltacq_bysampleid(cq_df = cq_df,
-                  normTargetIDs = normTargetIDs,
-                  value = value,
-                  probename = probename)
+                  norm_target_ids = norm_target_ids,
+                  value_name = value_name,
+                  tid_name = tid_name)
 }

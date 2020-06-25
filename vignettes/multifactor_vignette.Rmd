@@ -67,7 +67,7 @@ Reverse transcription by random primers mixed with oligo-dT.
 ```{r label_plates,dependson="plate_functions"}
 
 # list Targets / Probes
-TargetIDs <- c(
+target_id_levels <- c(
   "HOR7", "HSP12", "HSP26", "HSP78",
   "HSP104", "RTC3", "SSA4", "PGK1",
   "ALG9", " HHT2", "HTB2", "RPS3",
@@ -76,7 +76,7 @@ TargetIDs <- c(
 
 rowkey <- tibble(
   WellR = LETTERS[1:16],
-  TargetID = factor(TargetIDs, levels = TargetIDs)
+  target_id = factor(target_id_levels, levels = target_id_levels)
 )
 
 # Set up experimental samples
@@ -104,10 +104,10 @@ Display the plate plan using display_plate.
 
 ```{r display_plates,fig.height=9,fig.width=10,dependson="label_plates"}
 display_plate(plateplan %>%
-  mutate(SampleID = Condition))
+  mutate(sample_id = Condition))
 ```
 
-Note that display_plate requires a column called `SampleID`, which here we had to make from the `Condition` varilable using `mutate(SampleID=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
+Note that display_plate requires a column called `sample_id`, which here we had to make from the `Condition` variable using `mutate(sample_id=Condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
 
 ## Load and summarize data
 
@@ -126,7 +126,7 @@ plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plat
   mutate(BiolRep = "2", Plate = "2")
 
 plates <- bind_rows(plate1, plate2) %>%
-  unite(SampleID, Condition, BiolRep, sep = "", remove = FALSE)
+  unite(sample_id, Condition, BiolRep, sep = "", remove = FALSE)
 
 summary(plates)
 ```
@@ -139,7 +139,7 @@ summary(plates)
 
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=8}
 ggplot(data = plates) +
-  geom_point(aes(x = TargetID, y = Cq, shape = Condition, colour = Condition),
+  geom_point(aes(x = target_id, y = Cq, shape = Condition, colour = Condition),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(
@@ -165,23 +165,23 @@ ggplot(data = plates) +
 ```{r normalize_counts,dependson="load_plates"}
 platesnorm <- plates %>%
   filter(Type == "+RT") %>%
-  calculate_deltacq_bysampleid(normTargetIDs = "PGK1")
+  calculate_deltacq_bysampleid(norm_target_ids = "PGK1")
 
 platesmed <- platesnorm %>%
-  group_by(SampleID, Condition, BiolRep, HS, Drug, TargetID) %>%
+  group_by(sample_id, Condition, BiolRep, HS, Drug, target_id) %>%
   summarize(
-    Cq = median(Value.norm, na.rm = TRUE),
-    Abund = median(Value.normexp, na.rm = TRUE)
+    Cq = median(value_norm, na.rm = TRUE),
+    Abund = median(value_normexp, na.rm = TRUE)
   )
 
-filter(platesmed, TargetID == "HSP26")
+filter(platesmed, target_id == "HSP26")
 ```
 
 ## Plot normalized data, all reps
 
 ```{r plot_normalized,dependson="normalize_counts",fig.height=6,fig.width=6}
 ggplot(data = platesnorm) +
-  geom_point(aes(x = TargetID, y = Value.norm, shape = Condition, colour = Condition),
+  geom_point(aes(x = target_id, y = value_norm, shape = Condition, colour = Condition),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(y = "Cq relative to PGK1") +
@@ -196,7 +196,7 @@ ggplot(data = platesnorm) +
   )
 ```
 
-## Plot normalized data, summarized vs TargetID
+## Plot normalized data, summarized vs target_id
 
 ### All on same axes
 
@@ -204,7 +204,7 @@ This plot shows all the summarized data on the same axes, but it is hard to pick
 
 ```{r plot_normalizedsummarized1,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data = platesmed) +
-  geom_point(aes(x = TargetID, y = Abund, shape = BiolRep, colour = Condition),
+  geom_point(aes(x = target_id, y = Abund, shape = BiolRep, colour = Condition),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   scale_shape_manual(values = c(15:18, 5:6)) +
@@ -224,7 +224,7 @@ This plot shows all the summarized data "faceted" on different axes for differen
 
 ```{r plot_normalizedsummarizedbyHS,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data = platesmed) +
-  geom_point(aes(x = TargetID, y = Abund, shape = BiolRep, colour = HS),
+  geom_point(aes(x = target_id, y = Abund, shape = BiolRep, colour = HS),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   facet_wrap(~Drug, ncol = 3) +
@@ -245,7 +245,7 @@ By contrast, this plot shows all the summarized data "faceted" on different axes
 
 ```{r plot_normalizedsummarizedbyDrug,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data = platesmed) +
-  geom_point(aes(x = TargetID, y = Abund, shape = BiolRep, colour = Drug),
+  geom_point(aes(x = target_id, y = Abund, shape = BiolRep, colour = Drug),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   facet_wrap(~HS, ncol = 3) +
@@ -310,7 +310,7 @@ ggplot(
     filter(TechRep == 1, BiolRep == 1),
   aes(x = Temperature, y = dRdT, linetype = Type)
 ) +
-  facet_grid(Condition ~ TargetID) +
+  facet_grid(Condition ~ target_id) +
   geom_line() +
   scale_linetype_manual(values = c("-RT" = "dashed", "+RT" = "solid")) +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
@@ -326,7 +326,7 @@ ggplot(
     filter(TechRep == 1, BiolRep == 2),
   aes(x = Temperature, y = dRdT, linetype = Type)
 ) +
-  facet_grid(Condition ~ TargetID) +
+  facet_grid(Condition ~ target_id) +
   geom_line() +
   scale_linetype_manual(values = c("-RT" = "dashed", "+RT" = "solid")) +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
@@ -343,7 +343,7 @@ ggplot(
     filter(TechRep == 1, BiolRep == 1),
   aes(x = Cycle, y = Signal, linetype = Type)
 ) +
-  facet_grid(Condition ~ TargetID) +
+  facet_grid(Condition ~ target_id) +
   geom_line() +
   scale_linetype_manual(values = c("-RT" = "dashed", "+RT" = "solid")) +
   expand_limits(y = 0) +
@@ -357,7 +357,7 @@ ggplot(
     filter(TechRep == 1, BiolRep == 2),
   aes(x = Cycle, y = Signal, linetype = Type)
 ) +
-  facet_grid(Condition ~ TargetID) +
+  facet_grid(Condition ~ target_id) +
   geom_line() +
   scale_linetype_manual(values = c("-RT" = "dashed", "+RT" = "solid")) +
   expand_limits(y = 0) +

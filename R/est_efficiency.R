@@ -9,8 +9,8 @@
 #'
 #' Must have columns Cq, Dilution.
 #'
-#' Assumes data are only for 1 probe/TargetID, i.e. all values in cq_df_1 are
-#' fit with the same slope.
+#' Assumes data are only for 1 probe/primer set/target_id, i.e. all values in
+#' cq_df_1 are fit with the same slope.
 #'
 #' @param formula formula to use for log-log regression fit.
 #'
@@ -28,8 +28,8 @@
 #' @importFrom tibble tibble
 #'
 est_efficiency <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
-    if (length(unique(cq_df_1$TargetID)) > 1 ) {
-            warning("multiple TargetIDs, did you mean to run est_efficiency_plate?")
+    if (length(unique(cq_df_1$target_id)) > 1 ) {
+            warning("multiple target_ids, did you mean to run est_efficiency_plate?")
     }
     slopefit <- stats::lm(formula = formula, data = cq_df_1)
     slopefitsummary <- summary(slopefit)
@@ -46,7 +46,7 @@ est_efficiency <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
 #'
 #' @param cq_df a data frame with Cq (quantification cycle) data, 1 row per well
 #'
-#' Must have columns Type, TargetID, Cq, Dilution.
+#' Must have columns Type, target_id, Cq, Dilution.
 #' Only Type=="+RT" columns are used.
 #'
 #' @param formula formula to use for log-log regression fit.
@@ -55,7 +55,7 @@ est_efficiency <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
 #' Cq ~ log2(Dilution) + BioRep.
 #'
 #' If only a single Biological Replicate, change to Cq ~ log2(Dilution).
-#' If multiple SampleIDs, change to Cq ~ log2(Dilution) + SampleID.
+#' If multiple sample_ids, change to Cq ~ log2(Dilution) + sample_id.
 #'
 #' See ?formula for background and help.
 #'
@@ -68,7 +68,7 @@ est_efficiency <- function(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep) {
 #'
 #'
 #' @return data frame with columns:
-#' TargetID, efficiency, efficiency.sd, r.squared.
+#' target_id, efficiency, efficiency.sd, r.squared.
 #'
 #' @seealso est_efficiency
 #'
@@ -82,6 +82,6 @@ est_efficiency_bytargetid <- function(cq_df,
         cq_df <- dplyr::filter(cq_df, Type %in% usetypes)
     }
     cq_df %>%
-        dplyr::group_by(TargetID) %>%
+        dplyr::group_by(target_id) %>%
         dplyr::do(est_efficiency(., formula = formula))
 }

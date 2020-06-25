@@ -13,8 +13,8 @@ est_efficiency(cq_df_1, formula = Cq ~ log2(Dilution) + BioRep)
 
 Must have columns Cq, Dilution.
 
-Assumes data are only for 1 probe/TargetID, i.e. all values in cq_df_1 are
-fit with the same slope.}
+Assumes data are only for 1 probe/primer set/target_id, i.e. all values in
+cq_df_1 are fit with the same slope.}
 
 \item{formula}{formula to use for log-log regression fit.
 
