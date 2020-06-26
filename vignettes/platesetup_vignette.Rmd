@@ -197,9 +197,9 @@ What if we want to measure more than one condition, beyond replicates? For examp
 In our example, let us do this explicitly. For the rowkey we can use the `rep` function to measure each target in conditions `Ctrl` and `Drug`, repeating each 4 times. 
 
 ```{r conditions2rep,results="show",echo=TRUE}
-Conditions <- c("Ctrl", "Drug")
-ConditionsRep <- rep(Conditions, each = 4)
-print(ConditionsRep)
+condition_levels <- c("Ctrl", "Drug")
+condition_values <- rep(condition_levels, each = 4)
+print(condition_values)
 ```
 
 
@@ -219,7 +219,7 @@ Now combine this into a rowkey:
 rowkey8 <- tibble(
   well_row = LETTERS[1:8],
   target_id = target_id_levels_rep,
-  Condition = ConditionsRep
+  condition = condition_values
 )
 print(rowkey8)
 ```
@@ -268,12 +268,12 @@ plate_plan96 <- label_plate_rowcol(
   rowkey = rowkey8,
   colkey = colkey12_twocondition
 ) %>%
-  unite(sample_id, Condition, biol_rep, remove = FALSE)
+  unite(sample_id, condition, biol_rep, remove = FALSE)
 
 print(plate_plan96)
 ```
 
-Again, check the help file with `?unite`. The line `unite(sample_id, Condition, biol_rep, remove = FALSE)` means that we create a new variable `sample_id` from existing variables `Condition` and `biol_rep`, and `remove = FALSE` means that we keep the original variables in the table as well. The syntax `%>%` from the magrittr package is a way to chain functions together.
+Again, check the help file with `?unite`. The line `unite(sample_id, condition, biol_rep, remove = FALSE)` means that we create a new variable `sample_id` from existing variables `condition` and `biol_rep`, and `remove = FALSE` means that we keep the original variables in the table as well. The syntax `%>%` from the magrittr package is a way to chain functions together.
 
 Now we display the plate to check that we have everything in place:
 
@@ -305,6 +305,6 @@ The functions `unite` and `separate` have visual descriptions on the [RStudio da
 
 ## Hints and Tips
 
-* In tidyqpcr we chose to give all variables capitalized (CamelCase) names, such as `sample_id`, because R functions are often lower-case, such as `sample`. Keeping variable names capitalized avoids some bugs and confusion.
+* In tidyqpcr we chose to give all variables snake_case names, such as `sample_id`, `prep_type`, following the tidyverse style guide.
 * What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same sample_id/target_id in two adjacent rows, using `rep(sample_id, each = 2)` might help.
-* If your experiment spans multiple plates, it can be helpful to re-use `colkey` and `rowkey` in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the sample_id name includes replicate information and so is unique for the analysis.
+* If your experiment spans multiple plates, it can be helpful to re-use `colkey` and `rowkey` in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the `sample_id` name includes replicate information and so is unique for the analysis.

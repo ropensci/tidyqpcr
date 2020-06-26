@@ -51,3 +51,19 @@ read_lightcycler_1colour_raw <- function(
                     col_types = col_types,
                     ...)
 }
+
+read_lightcycler_1colour_cq <- function(
+    filename,
+    skip = 2,
+    col_names = c(
+        "well", "sample_info", "program_no", "segment_no",
+        "cycle", "time", "temperature", "fluor_raw"
+    ), 
+    col_types = "ccffinnn",
+    ...) {
+    readr::read_tsv(file = filename,
+                    skip = skip,
+                    col_names = col_names,
+                    col_types = col_types,
+                    ...)
+}

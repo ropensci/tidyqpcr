@@ -6,7 +6,7 @@
 \usage{
 calculate_efficiency_bytargetid(
   cq_df,
-  formula = cq ~ log2(dilution) + BioRep,
+  formula = cq ~ log2(dilution) + biol_rep,
   use_prep_types = "+RT"
 )
 }
@@ -19,7 +19,7 @@ Only prep_type=="+RT" columns are used.}
 \item{formula}{formula to use for log-log regression fit.
 
 Default value assumes multiple biological replicates,
-cq ~ log2(dilution) + BioRep.
+cq ~ log2(dilution) + biol_rep.
 
 If only a single Biological Replicate, change to cq ~ log2(dilution).
 If multiple sample_ids, change to cq ~ log2(dilution) + sample_id.

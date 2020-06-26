@@ -11,8 +11,8 @@ create_rowkey_4in16(...)
 probe.}
 }
 \value{
-tibble (data frame) with 16 rows, and variables well_row, prep_type, tech_rep,
-  and supplied values.
+tibble (data frame) with 16 rows, and variables well_row, prep_type,
+  tech_rep, and supplied values.
 }
 \description{
 Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4

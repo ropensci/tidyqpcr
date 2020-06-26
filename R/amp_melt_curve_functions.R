@@ -22,7 +22,8 @@
 #' @return platemap with additional columns per well:
 #' \tabular{ll}{
 #'   fluor_base      \tab baseline /background value  \cr
-#'   fluor_signal    \tab normalized fluorescence signal, i.e. fluor_raw - fluor_base
+#'   fluor_signal    \tab normalized fluorescence signal, 
+#'   i.e. fluor_raw - fluor_base
 #'   }
 #'
 #'

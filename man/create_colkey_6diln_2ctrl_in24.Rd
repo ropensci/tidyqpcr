@@ -17,18 +17,18 @@ create_colkey_6diln_2ctrl_in24(
 \item{dilution_nice}{Character vector of length 8 with nice labels for sample
 dilutions}
 
-\item{prep_type}{Character vector of length 8 describing type of sample (+RT, -RT,
-NT)}
+\item{prep_type}{Character vector of length 8 describing type of sample (+RT,
+-RT, NT)}
 
-\item{TechRep}{Character vector of length 8 describing technical replicates}
+\item{tech_rep}{Character vector of length 8 describing technical replicates}
 }
 \value{
 tibble (data frame) with 24 rows, and variables well_col, dilution,
-  dilution_nice, prep_type, BioRep, TechRep.
+  dilution_nice, prep_type, biol_rep, tech_rep.
 }
 \description{
-Creates a 24-column key for primer calibration, with 1x BioReps and 3x
-TechReps, and 5-fold dilution until 5^6 of +RT; then -RT (no reverse
+Creates a 24-column key for primer calibration, with 1x biol_reps and 3x
+tech_reps, and 5-fold dilution until 5^6 of +RT; then -RT (no reverse
 transcriptase), NT (no template) negative controls. That is a total of 8
 versions of each replicate.
 }

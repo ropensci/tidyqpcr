@@ -27,10 +27,10 @@ create_blank_plate_1536well(
 \item{well_col}{Vector of Column labels, usually numbers}
 }
 \value{
-tibble (data frame) with columns well_row, well_col, well. This contains
-  all pairwise combinations of well_row and well_col, as well as individual well
-  names. Both well_row and well_col are coerced to factors (even if well_col
-  is supplied as numbers), to ensure order is consistent.
+tibble (data frame) with columns well_row, well_col, well. This
+  contains all pairwise combinations of well_row and well_col, as well as
+  individual well names. Both well_row and well_col are coerced to factors
+  (even if well_col is supplied as numbers), to ensure order is consistent.
 
   However, well is a character vector as that is the default behaviour of
   "unite", and display order doesn't matter.

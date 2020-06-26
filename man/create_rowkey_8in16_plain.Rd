@@ -11,8 +11,8 @@ create_rowkey_8in16_plain(...)
 probe.}
 }
 \value{
-tibble (data frame) with 16 rows, and variables well_col, and supplied
-  values.
+tibble (data frame) with 16 rows, and variables well_col, and
+  supplied values.
 }
 \description{
 Create a 16-row key with 8 values repeated over 16 plate rows. No other

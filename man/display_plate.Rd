@@ -7,8 +7,8 @@
 display_plate(plate)
 }
 \arguments{
-\item{plate}{tibble with variables well_col, well_row, sample_id, target_id, prep_type.
-Output from label_plate_rowcol.}
+\item{plate}{tibble with variables well_col, well_row, sample_id, target_id,
+prep_type. Output from label_plate_rowcol.}
 }
 \value{
 ggplot object; major output is to plot it

@@ -15,7 +15,7 @@
 #' @param formula formula to use for log-log regression fit.
 #'
 #' Default value assumes multiple biological replicates,
-#' cq ~ log2(dilution) + BioRep.
+#' cq ~ log2(dilution) + biol_rep.
 #'
 #' If only a single Biological Replicate, change to cq ~ log2(dilution).
 #'
@@ -27,7 +27,7 @@
 #' @export
 #' @importFrom tibble tibble
 #'
-calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + BioRep) {
+calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + biol_rep) {
     if (length(unique(cq_df_1$target_id)) > 1) {
             warning("multiple target_ids, did you mean calculate_efficiency_plate?")
     }
@@ -52,7 +52,7 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + BioRep
 #' @param formula formula to use for log-log regression fit.
 #'
 #' Default value assumes multiple biological replicates,
-#' cq ~ log2(dilution) + BioRep.
+#' cq ~ log2(dilution) + biol_rep.
 #'
 #' If only a single Biological Replicate, change to cq ~ log2(dilution).
 #' If multiple sample_ids, change to cq ~ log2(dilution) + sample_id.
@@ -76,7 +76,7 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + BioRep
 #' @importFrom magrittr %>%
 #'
 calculate_efficiency_bytargetid <- function(cq_df,
-                           formula = cq ~ log2(dilution) + BioRep,
+                           formula = cq ~ log2(dilution) + biol_rep,
                            use_prep_types="+RT") {
     if (!is.na(use_prep_types)) {
         cq_df <- dplyr::filter(cq_df, .data$prep_type %in% use_prep_types)

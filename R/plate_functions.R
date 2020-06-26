@@ -6,10 +6,10 @@
 #'
 #' @param well_row Vector of Row labels, usually LETTERS
 #' @param well_col Vector of Column labels, usually numbers
-#' @return tibble (data frame) with columns well_row, well_col, well. This contains
-#'   all pairwise combinations of well_row and well_col, as well as individual well
-#'   names. Both well_row and well_col are coerced to factors (even if well_col
-#'   is supplied as numbers), to ensure order is consistent.
+#' @return tibble (data frame) with columns well_row, well_col, well. This
+#'   contains all pairwise combinations of well_row and well_col, as well as
+#'   individual well names. Both well_row and well_col are coerced to factors
+#'   (even if well_col is supplied as numbers), to ensure order is consistent.
 #'
 #'   However, well is a character vector as that is the default behaviour of
 #'   "unite", and display order doesn't matter.
@@ -74,7 +74,7 @@ create_blank_plate_1536well <- function(
 #' @param ... Vectors of length 6 describing well contents,
 #' e.g. sample or probe.
 #' @return tibble (data frame) with 24 rows, and columns
-#' well_col, prep_type, TechRep, and supplied values.
+#' well_col, prep_type, tech_rep, and supplied values.
 #'
 #' @examples
 #' create_colkey_6in24(sample_id=LETTERS[1:6])
@@ -88,7 +88,7 @@ create_colkey_6in24 <- function(...) {
     colkey <- tibble(well_col   = factor(1:24),
                      prep_type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
                          factor(levels = c("+RT", "-RT")),
-                     TechRep = rep(c(1, 2, 3, 1), each = 6) %>%
+                     tech_rep = rep(c(1, 2, 3, 1), each = 6) %>%
                          factor(levels = 1:3)
                      )
     if (!missing(...)) {
@@ -102,20 +102,20 @@ create_colkey_6in24 <- function(...) {
 
 #' Create a 4-dilution column key for primer calibration
 #'
-#' Creates a 24-column key for primer calibration, with 2x BioReps and 2x
-#' TechReps, and 5-fold dilution until 5^4 of +RT; then -RT (no reverse
+#' Creates a 24-column key for primer calibration, with 2x biol_reps and 2x
+#' tech_reps, and 5-fold dilution until 5^4 of +RT; then -RT (no reverse
 #' transcriptase), NT (no template) negative controls. That is a total of 6
 #' versions of each sample replicate.
 #'
 #' @param dilution Numeric vector of length 6 describing sample dilutions
 #' @param dilution_nice Character vector of length 6 with nice labels for sample
 #'   dilutions
-#' @param prep_type Character vector of length 6 describing type of sample (+RT, -RT,
-#'   NT)
-#' @param BioRep Character vector of length 6 describing biological replicates
-#' @param TechRep Character vector of length 6 describing technical replicates
+#' @param prep_type Character vector of length 6 describing type of sample (+RT,
+#'   -RT, NT)
+#' @param biol_rep Character vector of length 6 describing biological replicates
+#' @param tech_rep Character vector of length 6 describing technical replicates
 #' @return tibble (data frame) with 24 rows, and columns well_col, dilution,
-#'   dilution_nice, prep_type, BioRep, TechRep.
+#'   dilution_nice, prep_type, biol_rep, tech_rep.
 #' @examples
 #' create_colkey_4diln_2ctrl_in24()
 #' @family plate creation functions
@@ -127,9 +127,9 @@ create_colkey_4diln_2ctrl_in24 <- function(
                      dilution      = c(5 ^ (0:-3), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
                      prep_type         = c(rep("+RT", 4), "-RT", "NT"),
-                     BioRep       = rep(c("A", "B"), each = 12,
+                     biol_rep       = rep(c("A", "B"), each = 12,
                                         length.out = 24),
-                     TechRep      = rep(1:2, each = 6,
+                     tech_rep      = rep(1:2, each = 6,
                                         length.out = 24)
                      ) {
     tibble(well_col = factor(1:24),
@@ -137,26 +137,26 @@ create_colkey_4diln_2ctrl_in24 <- function(
            dilution_nice = rep(dilution_nice, 4),
            prep_type = factor(rep(prep_type, 4),
                          levels = c("+RT", "-RT", "NT")),
-           BioRep = factor(BioRep),
-           TechRep = factor(TechRep)
+           biol_rep = factor(biol_rep),
+           tech_rep = factor(tech_rep)
     )
 }
 
 #' Create a 6-dilution column key for primer calibration
 #'
-#' Creates a 24-column key for primer calibration, with 1x BioReps and 3x
-#' TechReps, and 5-fold dilution until 5^6 of +RT; then -RT (no reverse
+#' Creates a 24-column key for primer calibration, with 1x biol_reps and 3x
+#' tech_reps, and 5-fold dilution until 5^6 of +RT; then -RT (no reverse
 #' transcriptase), NT (no template) negative controls. That is a total of 8
 #' versions of each replicate.
 #'
 #' @param dilution Numeric vector of length 8 describing sample dilutions
 #' @param dilution_nice Character vector of length 8 with nice labels for sample
 #'   dilutions
-#' @param prep_type Character vector of length 8 describing type of sample (+RT, -RT,
-#'   NT)
-#' @param TechRep Character vector of length 8 describing technical replicates
+#' @param prep_type Character vector of length 8 describing type of sample (+RT,
+#'   -RT, NT)
+#' @param tech_rep Character vector of length 8 describing technical replicates
 #' @return tibble (data frame) with 24 rows, and variables well_col, dilution,
-#'   dilution_nice, prep_type, BioRep, TechRep.
+#'   dilution_nice, prep_type, biol_rep, tech_rep.
 #' @examples
 #' create_colkey_6diln_2ctrl_in24()
 #' @family plate creation functions
@@ -186,8 +186,8 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #'
 #' @param ... Vectors of length 4 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and variables well_row, prep_type, tech_rep,
-#'   and supplied values.
+#' @return tibble (data frame) with 16 rows, and variables well_row, prep_type,
+#'   tech_rep, and supplied values.
 #' @examples
 #' create_rowkey_4in16(sample_id=c("sheep","goat","cow","chicken"))
 #' @family plate creation functions
@@ -218,8 +218,8 @@ create_rowkey_4in16 <- function(...) {
 #'
 #' @param ... Vectors of length 8 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and variables well_col, and supplied
-#'   values.
+#' @return tibble (data frame) with 16 rows, and variables well_col, and
+#'   supplied values.
 #' @examples
 #' create_rowkey_8in16_plain(sample_id=c("me","you","them","him",
 #'                                    "her","dog","cat","monkey"))
@@ -244,32 +244,34 @@ create_rowkey_8in16_plain <- function(...) {
 #'
 #' See vignettes for further examples
 #'
-#' @param plate tibble (data frame) with variables well_row, well_col, well. This
-#'   would usually be produced by create_blank_plate(). It is possible to
+#' @param plate tibble (data frame) with variables well_row, well_col, well.
+#'   This would usually be produced by create_blank_plate(). It is possible to
 #'   include other information in additional variables.
-#' @param rowkey tibble (data frame) describing plate rows, with variables well_row
-#'   and others.
+#' @param rowkey tibble (data frame) describing plate rows, with variables
+#'   well_row and others.
 #' @param colkey tibble (data frame) describing plate columns, with variables
 #'   well_col and others.
-#' @param coercefactors if TRUE, coerce well_row in rowkey and well_col in colkey
-#' to factors
+#' @param coercefactors if TRUE, coerce well_row in rowkey and well_col in
+#'   colkey to factors
 #'
-#' @return tibble (data frame) with variables well_row, well_col, well, and others.
+#' @return tibble (data frame) with variables well_row, well_col, well, and
+#'   others.
 #'
-#'   This tibble contains all combinations of well_row and well_col found in the input
-#'   plate, and all information supplied in rowkey and colkey distributed across
-#'   every well of the plate. Return plate is ordered by row well_row then column
-#'   well_col.
+#'   This tibble contains all combinations of well_row and well_col found in the
+#'   input plate, and all information supplied in rowkey and colkey distributed
+#'   across every well of the plate. Return plate is ordered by row well_row
+#'   then column well_col.
 #'
-#'   Note this ordering may cause a problem if well_col is supplied as a character
-#'   (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
-#'   the function by default converts well_row in `rowkey`, and well_col in `colkey`,
-#'   to factors, taking factor levels from `plate`, and warns the user.
+#'   Note this ordering may cause a problem if well_col is supplied as a
+#'   character (1,10,11,...), instead of a factor or integer (1,2,3,...). For
+#'   this reason, the function by default converts well_row in `rowkey`, and
+#'   well_col in `colkey`, to factors, taking factor levels from `plate`, and
+#'   warns the user.
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
-#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if any of
-#'   these are missing. This is a warning, not an error, because these variables
-#'   can be added by users later.
+#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
+#'   any of these are missing. This is a warning, not an error, because these
+#'   variables can be added by users later.
 #'
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
@@ -287,10 +289,11 @@ label_plate_rowcol <- function(plate,
         # coerce_column_to_factor(df, col, warn=TRUE)?
         if (!is.factor(colkey$well_col) & coercefactors) {
             warning("coercing well_col to a factor with levels from plate$well_col")
-            colkey <- dplyr::mutate(colkey,
-                                    well_col = factor(well_col,
-                                                   levels = levels(plate$well_col))
-                                    )
+            colkey <- dplyr::mutate(
+                colkey,
+                well_col = factor(well_col,
+                                  levels = levels(plate$well_col))
+            )
         }
         plate <- dplyr::left_join(plate, colkey, by = "well_col")
     }
@@ -298,10 +301,11 @@ label_plate_rowcol <- function(plate,
         assertthat::assert_that(assertthat::has_name(rowkey, "well_row"))
         if (!is.factor(rowkey$well_row) & coercefactors) {
             warning("coercing well_row to a factor with levels from plate$well_row")
-            rowkey <- dplyr::mutate(rowkey,
-                                    well_row = factor(well_row,
-                                                   levels = levels(plate$well_row))
-                                    )
+            rowkey <- dplyr::mutate(
+                rowkey,
+                well_row = factor(well_row,
+                                  levels = levels(plate$well_row))
+            )
         }
         plate <- dplyr::left_join(plate, rowkey, by = "well_row")
     }
@@ -321,8 +325,8 @@ label_plate_rowcol <- function(plate,
 
 #' Display plate plan with sample_id, target_id, prep_type per well
 #'
-#' @param plate tibble with variables well_col, well_row, sample_id, target_id, prep_type.
-#'   Output from label_plate_rowcol.
+#' @param plate tibble with variables well_col, well_row, sample_id, target_id,
+#'   prep_type. Output from label_plate_rowcol.
 #'
 #' @return ggplot object; major output is to plot it
 #'

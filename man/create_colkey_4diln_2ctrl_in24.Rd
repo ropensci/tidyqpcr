@@ -8,8 +8,8 @@ create_colkey_4diln_2ctrl_in24(
   dilution = c(5^(0:-3), 1, 1),
   dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
   prep_type = c(rep("+RT", 4), "-RT", "NT"),
-  BioRep = rep(c("A", "B"), each = 12, length.out = 24),
-  TechRep = rep(1:2, each = 6, length.out = 24)
+  biol_rep = rep(c("A", "B"), each = 12, length.out = 24),
+  tech_rep = rep(1:2, each = 6, length.out = 24)
 )
 }
 \arguments{
@@ -18,20 +18,20 @@ create_colkey_4diln_2ctrl_in24(
 \item{dilution_nice}{Character vector of length 6 with nice labels for sample
 dilutions}
 
-\item{prep_type}{Character vector of length 6 describing type of sample (+RT, -RT,
-NT)}
+\item{prep_type}{Character vector of length 6 describing type of sample (+RT,
+-RT, NT)}
 
-\item{BioRep}{Character vector of length 6 describing biological replicates}
+\item{biol_rep}{Character vector of length 6 describing biological replicates}
 
-\item{TechRep}{Character vector of length 6 describing technical replicates}
+\item{tech_rep}{Character vector of length 6 describing technical replicates}
 }
 \value{
 tibble (data frame) with 24 rows, and columns well_col, dilution,
-  dilution_nice, prep_type, BioRep, TechRep.
+  dilution_nice, prep_type, biol_rep, tech_rep.
 }
 \description{
-Creates a 24-column key for primer calibration, with 2x BioReps and 2x
-TechReps, and 5-fold dilution until 5^4 of +RT; then -RT (no reverse
+Creates a 24-column key for primer calibration, with 2x biol_reps and 2x
+tech_reps, and 5-fold dilution until 5^4 of +RT; then -RT (no reverse
 transcriptase), NT (no template) negative controls. That is a total of 6
 versions of each sample replicate.
 }

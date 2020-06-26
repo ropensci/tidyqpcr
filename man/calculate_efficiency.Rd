@@ -5,7 +5,7 @@
 \title{Calibrate primer sets / probes by calculating detection efficiency and
 R squared}
 \usage{
-calculate_efficiency(cq_df_1, formula = cq ~ log2(dilution) + BioRep)
+calculate_efficiency(cq_df_1, formula = cq ~ log2(dilution) + biol_rep)
 }
 \arguments{
 \item{cq_df_1}{data frame with cq (quantification cycle) data,
@@ -19,7 +19,7 @@ cq_df_1 are fit with the same slope.}
 \item{formula}{formula to use for log-log regression fit.
 
 Default value assumes multiple biological replicates,
-cq ~ log2(dilution) + BioRep.
+cq ~ log2(dilution) + biol_rep.
 
 If only a single Biological Replicate, change to cq ~ log2(dilution).}
 }
