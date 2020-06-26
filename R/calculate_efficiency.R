@@ -73,7 +73,8 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + biol_r
 #' @seealso calculate_efficiency
 #'
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
+#' @importFrom rlang .data
 #'
 calculate_efficiency_bytargetid <- function(cq_df,
                            formula = cq ~ log2(dilution) + biol_rep,
@@ -82,6 +83,6 @@ calculate_efficiency_bytargetid <- function(cq_df,
         cq_df <- dplyr::filter(cq_df, .data$prep_type %in% use_prep_types)
     }
     cq_df %>%
-        dplyr::group_by(target_id) %>%
+        dplyr::group_by(.data$target_id) %>%
         dplyr::do(calculate_efficiency(., formula = formula))
 }

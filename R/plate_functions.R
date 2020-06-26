@@ -1,4 +1,3 @@
-
 #' Create a blank plate template as a tibble
 #'
 #' For more help, examples and explanations, see the plate setup vignette:
@@ -24,14 +23,16 @@
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' @importFrom forcats as_factor
+#' @importFrom rlang .data
 #'
 create_blank_plate <- function(well_row = LETTERS[1:16], well_col = 1:24) {
     tidyr::crossing(well_row = as_factor(well_row),
-                             well_col = as_factor(well_col)) %>%
+                    well_col = as_factor(well_col)) %>%
         as_tibble() %>%
-        tidyr::unite(well, well_row, well_col, sep = "", remove = FALSE)
+        tidyr::unite(well, .data$well_row, .data$well_col, 
+                     sep = "", remove = FALSE)
 }
 
 #' @describeIn create_blank_plate create blank 96-well plate
@@ -82,7 +83,7 @@ create_blank_plate_1536well <- function(
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #'
 create_colkey_6_in_24 <- function(...) {
     colkey <- tibble(well_col   = factor(1:24),
@@ -194,7 +195,7 @@ create_colkey_6diln_2ctrl_in_24 <- function(
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #'
 create_rowkey_4_in_16 <- function(...) {
     rowkey <- tibble(well_row = LETTERS[1:16],
@@ -227,7 +228,7 @@ create_rowkey_4_in_16 <- function(...) {
 #'
 #' @export
 #' @importFrom tibble tibble
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #'
 create_rowkey_8_in_16_plain <- function(...) {
     rowkey <- tibble(well_row = LETTERS[1:16])
@@ -279,6 +280,8 @@ create_rowkey_8_in_16_plain <- function(...) {
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 label_plate_rowcol <- function(plate,
                                rowkey = NULL,
                                colkey = NULL,
@@ -291,7 +294,7 @@ label_plate_rowcol <- function(plate,
             warning("coercing well_col to a factor with levels from plate$well_col")
             colkey <- dplyr::mutate(
                 colkey,
-                well_col = factor(well_col,
+                well_col = factor(.data$well_col,
                                   levels = levels(plate$well_col))
             )
         }
@@ -303,7 +306,7 @@ label_plate_rowcol <- function(plate,
             warning("coercing well_row to a factor with levels from plate$well_row")
             rowkey <- dplyr::mutate(
                 rowkey,
-                well_row = factor(well_row,
+                well_row = factor(.data$well_row,
                                   levels = levels(plate$well_row))
             )
         }
@@ -335,21 +338,24 @@ label_plate_rowcol <- function(plate,
 #'
 #' @export
 #' @importFrom forcats as_factor
+#' @importFrom rlang .data
 #'
 display_plate <- function(plate) {
-    rowlevels <- plate %>%
-        dplyr::pull(well_row) %>%
+    rowlevels <- 
+        dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
         levels()
     #
     ggplot2::ggplot(data = plate,
-                    aes(x = as_factor(well_col),
-                        y = as_factor(well_row))) +
-        ggplot2::geom_tile(aes(fill = target_id), alpha = 0.3) +
-        ggplot2::geom_text(aes(label = paste(target_id,
-                                             sample_id,
-                                             prep_type,
-                                             sep = "\n")),
+                    aes(x = as_factor(.data$well_col),
+                        y = as_factor(.data$well_row))) +
+        ggplot2::geom_tile(aes(fill = .data$target_id), 
+                           alpha = 0.3) +
+        ggplot2::geom_text(aes(label = 
+                                   paste(.data$target_id,
+                                         .data$sample_id,
+                                         .data$prep_type,
+                                         sep = "\n")),
                            size = 2.5, lineheight = 1) +
         ggplot2::scale_x_discrete(expand = c(0, 0)) +
         ggplot2::scale_y_discrete(expand = c(0, 0),

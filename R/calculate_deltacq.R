@@ -7,7 +7,7 @@
 #' Default function is median, alternatively could use mean.
 #'
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #' @importFrom stats median
 #'
 calculate_normcq <- function(cq_df,
@@ -46,7 +46,7 @@ calculate_normcq <- function(cq_df,
 #'   value_normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)} }
 #'
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #'
 calculate_deltacq_bysampleid <- function(cq_df,
                                          norm_target_ids,

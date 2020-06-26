@@ -8,7 +8,7 @@
 #' BETA function version because:
 #'
 #' - assumes Roche Lightcycler format,
-#' we should ideally replace "program_no==2" by something more generic?
+#' we should ideally replace "program_no == 2" by something more generic?
 #'
 #' - the rule-of thumb "baseline is median of initial 10 cycles"
 #' has not been tested robustly
@@ -28,12 +28,13 @@
 #'
 #'
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
+#' @importFrom rlang .data
 #'
 debaseline <- function(plateamp, maxcycle = 10) {
     baseline <-
         plateamp %>%
-        dplyr::group_by(well) %>%
+        dplyr::group_by(.data$well) %>%
         dplyr::filter(.data$program_no == 2,
                       .data$cycle <= maxcycle) %>%
         dplyr::summarize(fluor_base = stats::median(.data$fluor_raw))
@@ -100,17 +101,17 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #' @family melt_curve_functions
 #'
 #' @export
-#' @importFrom magrittr %>%
+#' @importFrom tidyr %>%
 #'
 calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
     platemelt %>%
         dplyr::arrange(.data$well, .data$temperature) %>%
         # @ewallace: doesn't group by plate, only by well,
         # so will fail strangely if used on data from multiple plates
-        dplyr::group_by(well) %>%
+        dplyr::group_by(.data$well) %>%
         dplyr::mutate(dRdT =
-                          calculate_dydx_1(x = temperature,
-                                           y = fluor_raw,
+                          calculate_dydx_1(x = .data$temperature,
+                                           y = .data$fluor_raw,
                                            method = method,
                                            ...)
                       ) %>%

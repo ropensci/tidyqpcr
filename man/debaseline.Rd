@@ -30,7 +30,7 @@ by subtracting median of initial cycles.
 BETA function version because:
 
 - assumes Roche Lightcycler format,
-we should ideally replace "program_no==2" by something more generic?
+we should ideally replace "program_no == 2" by something more generic?
 
 - the rule-of thumb "baseline is median of initial 10 cycles"
 has not been tested robustly
