@@ -72,19 +72,19 @@ create_blank_plate_1536well <- function(
 #' Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
 #'
 #' @param ... Vectors of length 6 describing well contents,
-#' e.g. sample or probe.
+#' e.g. sample_id or target_id
 #' @return tibble (data frame) with 24 rows, and columns
 #' well_col, prep_type, tech_rep, and supplied values.
 #'
 #' @examples
-#' create_colkey_6in24(sample_id=LETTERS[1:6])
+#' create_colkey_6_in_24(sample_id=LETTERS[1:6])
 #' @family plate creation functions
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
 #' @importFrom magrittr %>%
 #'
-create_colkey_6in24 <- function(...) {
+create_colkey_6_in_24 <- function(...) {
     colkey <- tibble(well_col   = factor(1:24),
                      prep_type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
                          factor(levels = c("+RT", "-RT")),
@@ -117,13 +117,13 @@ create_colkey_6in24 <- function(...) {
 #' @return tibble (data frame) with 24 rows, and columns well_col, dilution,
 #'   dilution_nice, prep_type, biol_rep, tech_rep.
 #' @examples
-#' create_colkey_4diln_2ctrl_in24()
+#' create_colkey_4diln_2ctrl_in_24()
 #' @family plate creation functions
 #'
 #' @export
 #' @importFrom tibble tibble
 #'
-create_colkey_4diln_2ctrl_in24 <- function(
+create_colkey_4diln_2ctrl_in_24 <- function(
                      dilution      = c(5 ^ (0:-3), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
                      prep_type         = c(rep("+RT", 4), "-RT", "NT"),
@@ -158,13 +158,13 @@ create_colkey_4diln_2ctrl_in24 <- function(
 #' @return tibble (data frame) with 24 rows, and variables well_col, dilution,
 #'   dilution_nice, prep_type, biol_rep, tech_rep.
 #' @examples
-#' create_colkey_6diln_2ctrl_in24()
+#' create_colkey_6diln_2ctrl_in_24()
 #' @family plate creation functions
 #'
 #' @export
 #' @importFrom tibble tibble
 #'
-create_colkey_6diln_2ctrl_in24 <- function(
+create_colkey_6diln_2ctrl_in_24 <- function(
                      dilution = c(5 ^ (0:-5), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x",
                                     "625x", "3125x", "-RT", "NT"),
@@ -184,19 +184,19 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #' Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4
 #' values is repeated over 3x +RT Techreps and 1x -RT.
 #'
-#' @param ... Vectors of length 4 describing well contents, e.g. sample or
-#'   probe.
+#' @param ... Vectors of length 4 describing well contents, e.g. sample_id or
+#'   target_id
 #' @return tibble (data frame) with 16 rows, and variables well_row, prep_type,
 #'   tech_rep, and supplied values.
 #' @examples
-#' create_rowkey_4in16(sample_id=c("sheep","goat","cow","chicken"))
+#' create_rowkey_4_in_16(sample_id=c("sheep","goat","cow","chicken"))
 #' @family plate creation functions
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
 #' @importFrom magrittr %>%
 #'
-create_rowkey_4in16 <- function(...) {
+create_rowkey_4_in_16 <- function(...) {
     rowkey <- tibble(well_row = LETTERS[1:16],
                      prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
                                    levels = c("+RT", "-RT")),
@@ -221,7 +221,7 @@ create_rowkey_4in16 <- function(...) {
 #' @return tibble (data frame) with 16 rows, and variables well_col, and
 #'   supplied values.
 #' @examples
-#' create_rowkey_8in16_plain(sample_id=c("me","you","them","him",
+#' create_rowkey_8_in_16_plain(sample_id=c("me","you","them","him",
 #'                                    "her","dog","cat","monkey"))
 #' @family plate creation functions
 #'
@@ -229,7 +229,7 @@ create_rowkey_4in16 <- function(...) {
 #' @importFrom tibble tibble
 #' @importFrom magrittr %>%
 #'
-create_rowkey_8in16_plain <- function(...) {
+create_rowkey_8_in_16_plain <- function(...) {
     rowkey <- tibble(well_row = LETTERS[1:16])
     if (!missing(...)) {
         pieces8 <- list(...) %>% as_tibble()

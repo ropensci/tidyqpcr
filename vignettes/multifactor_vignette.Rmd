@@ -87,7 +87,7 @@ drug_values <- factor(rep(drug_levels, times = 2), levels = drug_levels)
 condition_levels <- paste0(drug_levels, rep(heat_levels, each = 3))
 condition_values <- factor(condition_levels, levels = condition_levels)
 
-colkey <- create_colkey_6in24(
+colkey <- create_colkey_6_in_24(
   heat = heat_values,
   drug = drug_values,
   condition = condition_values

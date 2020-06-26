@@ -88,7 +88,7 @@ plate1plan <-
   label_plate_rowcol(
     create_blank_plate(),
     rowkey,
-    create_colkey_4diln_2ctrl_in24()
+    create_colkey_4diln_2ctrl_in_24()
   ) %>%
   mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
 ```
