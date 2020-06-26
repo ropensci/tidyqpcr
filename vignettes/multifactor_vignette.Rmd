@@ -114,14 +114,16 @@ Note that display_plate requires a column called `sample_id`, which here we had 
 ```{r load_plates,dependson="label_plates",results="show"}
 # read my plates
 
-plate1 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt", skip = 1) %>%
-  mutate(well = Pos, cq = Cp) %>%
+plate1 <- read_lightcycler_1colour_cq(
+  "../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Ct.txt"
+  ) %>%
   left_join(plateplan) %>%
   mutate(biol_rep = "1", plate = "1")
 
 
-plate2 <- read_tsv("../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt", skip = 1) %>%
-  mutate(well = Pos, cq = Cp) %>%
+plate2 <- read_lightcycler_1colour_cq(
+  "../inst/extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Ct.txt"
+  ) %>%
   left_join(plateplan) %>%
   mutate(biol_rep = "2", plate = "2")
 

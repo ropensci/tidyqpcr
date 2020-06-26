@@ -53,3 +53,9 @@ This is the data from "export in text format" from the Lightcycler software.
 The other data format, .ixo, can be converted to .txt format by the
 Lightcycler software.
 }
+\details{
+This function is a thin wrapper around readr::read_tsv.
+}
+\seealso{
+read_lightcycler_1colour_cq
+}

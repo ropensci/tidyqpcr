@@ -5,6 +5,8 @@
 #' The other data format, .ixo, can be converted to .txt format by the
 #' Lightcycler software.
 #'
+#' This function is a thin wrapper around readr::read_tsv.
+#'
 #' @param filename file name
 #' @param skip number of lines to skip, defaults to 2
 #' @param col_names names to give to columns
@@ -35,6 +37,7 @@
 #'   would be 483nm excitation, 533nm emission.
 #'   
 #' @export
+#' @seealso read_lightcycler_1colour_cq
 #'
 read_lightcycler_1colour_raw <- function(
     filename,
@@ -52,18 +55,35 @@ read_lightcycler_1colour_raw <- function(
                     ...)
 }
 
+#' Reads quantification cycle (cq) data in 1 colour from Roche Lightcyclers
+#'
+#' This is the data from "export in text format" from the analysis tab in the
+#' Lightcycler software. That software calls cq, "Cp".
+#'
+#' This function is a thin wrapper around readr::read_tsv.
+#'
+#' @param filename file name
+#' @param skip number of lines to skip, defaults to 2
+#' @param col_names names to give to columns
+#' @param col_types data types of columns
+#' @param ... other arguments to pass to read_tsv, if needed
+#'
+#' @return tibble containing cq data
+#' @export
+#' @seealso read_lightcycler_1colour_raw
+#'
 read_lightcycler_1colour_cq <- function(
     filename,
     skip = 2,
     col_names = c(
-        "well", "sample_info", "program_no", "segment_no",
-        "cycle", "time", "temperature", "fluor_raw"
+        "include", "color", "well", "sample_info",
+        "cq", "concentration", "standard", "status"
     ), 
-    col_types = "ccffinnn",
+    col_types = "liccnnil",
     ...) {
     readr::read_tsv(file = filename,
-                    skip = skip,
-                    col_names = col_names,
-                    col_types = col_types,
+                    skip = 2,
+                    col_names=col_names,
+                    col_types=col_types,
                     ...)
 }

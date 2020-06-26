@@ -122,13 +122,9 @@ display_plate(plate1plan)
 ## Load and summarize data
 
 ```{r load_plates,dependson="label_plates",results="show"}
-
-# read my plates
-
-plates <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt",
-  skip = 1
-) %>%
-  mutate(well = Pos, cq = Cp) %>%
+plates <- read_lightcycler_1colour_cq(
+  "../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt"
+  ) %>%
   right_join(plate1plan)
 ```
 
