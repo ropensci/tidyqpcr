@@ -169,14 +169,14 @@ create_colkey_6diln_2ctrl_in24 <- function(
                      dilution_nice = c("1x", "5x", "25x", "125x",
                                     "625x", "3125x", "-RT", "NT"),
                      prep_type=c(rep("+RT", 6), "-RT", "NT"),
-                     TechRep = rep(1:3, each = 8, length.out = 24)
+                     tech_rep = rep(1:3, each = 8, length.out = 24)
                      ) {
     tibble(well_col = factor(1:24),
            dilution = rep(dilution, 3),
            dilution_nice = rep(dilution_nice, 3),
            prep_type = factor(rep(prep_type, 3),
                          levels = c("+RT", "-RT", "NT")),
-           TechRep = factor(TechRep))
+           tech_rep = factor(tech_rep))
 }
 
 #' Create a 4-value, 16-row key for plates
@@ -186,7 +186,7 @@ create_colkey_6diln_2ctrl_in24 <- function(
 #'
 #' @param ... Vectors of length 4 describing well contents, e.g. sample or
 #'   probe.
-#' @return tibble (data frame) with 16 rows, and variables well_row, prep_type, TechRep,
+#' @return tibble (data frame) with 16 rows, and variables well_row, prep_type, tech_rep,
 #'   and supplied values.
 #' @examples
 #' create_rowkey_4in16(sample_id=c("sheep","goat","cow","chicken"))
@@ -200,7 +200,7 @@ create_rowkey_4in16 <- function(...) {
     rowkey <- tibble(well_row = LETTERS[1:16],
                      prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
                                    levels = c("+RT", "-RT")),
-                     TechRep = factor(rep(c(1, 2, 3, 1), each = 4),
+                     tech_rep = factor(rep(c(1, 2, 3, 1), each = 4),
                                       levels = 1:3))
     if (!missing(...)) {
         pieces4 <- list(...) %>% as_tibble()

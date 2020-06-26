@@ -88,7 +88,7 @@ plate1plan <-
     rowkey,
     create_colkey_4diln_2ctrl_in24()
   ) %>%
-  mutate(sample_id = paste(BioRep, dilution_nice, sep = "_"))
+  mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
 ```
 
 ## Spot-check the plate plan 
@@ -97,10 +97,10 @@ Checks that for selected techrep/probe/dilution combinations, the plate contains
 
 ```{r print_techreps,results="show",echo=TRUE,cache=FALSE}
 plate1plan %>%
-  filter(TechRep == "1", target_id == target_id_levels[1], dilution_nice == "1x")
+  filter(tech_rep == "1", target_id == target_id_levels[1], dilution_nice == "1x")
 
 plate1plan %>%
-  filter(TechRep == "2", target_id == target_id_levels[4])
+  filter(tech_rep == "2", target_id == target_id_levels[4])
 ```
 
 ## Display the plate plan
@@ -148,7 +148,7 @@ ggplot(data = plates) +
     y = "Cycle count to threshold",
     title = "All reps, unnormalized"
   ) +
-  facet_wrap(~BioRep) +
+  facet_wrap(~biol_rep) +
   panel_border() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
@@ -177,7 +177,7 @@ ggplot(data = filter(plates, prep_type == "+RT"), aes(x = dilution, y = cq)) +
     title = "All reps, unnormalized",
     colour = "Dilution", linetype = "Dilution"
   ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -215,7 +215,7 @@ ggplot(
     title = "All reps, unnormalized",
     colour = "Dilution", linetype = "Dilution"
   ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -227,25 +227,21 @@ ggplot(
 
 ```{r load_amp,dependson="label_plates",results="show"}
 
-plate1curve <- read_tsv("../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt",
-  skip = 2,
-  col_names = c(
-    "well", "SID", "Program", "Segment",
-    "Cycle", "Time", "Temperature", "Fluor"
-  )
-) %>%
+plate1curve <- read_lightcycler_1colour_raw(
+  "../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt"
+  ) %>%
   debaseline() %>%
   left_join(plate1plan)
 
 # amplification curve is program 2
 platesamp <- plate1curve %>%
-  filter(Program == 2)
+  filter(program_no == 2)
 
-# melt curve is program 3 or 4, depending on cycle
+# melt curve is program 3 or 4, depending on cycler setting
 platesmelt <- plate1curve %>%
-  filter(Program > 2) %>%
+  filter(program_no == 3 ) %>%
   calculate_drdt_plate() %>%
-  filter(Temperature >= 61)
+  filter(temperature >= 61)
 ```
 
 
@@ -254,7 +250,7 @@ platesmelt <- plate1curve %>%
 ```{r plotamp_A1,dependson="load_amp",fig.width=4,fig.height=3}
 ggplot(
   data = platesamp %>% filter(well == "A1"),
-  aes(x = Cycle, y = Signal)
+  aes(x = cycle, y = fluor_signal)
 ) +
   geom_line() +
   scale_y_continuous(expand = c(0.01, 0.01))
@@ -267,25 +263,25 @@ Broken up by technical replicate here, to avoid overplotting.
 ```{r plotamp_all,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(
   data = platesamp %>%
-    filter(TechRep == "1"),
-  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = prep_type)
+    filter(tech_rep == "1"),
+  aes(x = cycle, y = fluor_signal, colour = factor(dilution), linetype = prep_type)
 ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
-  labs(title = "All Amp Curves, TechRep A")
+  labs(title = "All Amp Curves, Tech. Rep. A")
 
 ggplot(
   data = platesamp %>%
-    filter(TechRep == "2"),
-  aes(x = Cycle, y = Signal, colour = factor(dilution), linetype = prep_type)
+    filter(tech_rep == "2"),
+  aes(x = cycle, y = fluor_signal, colour = factor(dilution), linetype = prep_type)
 ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
-  labs(title = "All Amp Curves, TechRep B")
+  labs(title = "All Amp Curves, Tech. Rep. B")
 ```
 
 ## Plot melt curve for single well
@@ -294,7 +290,7 @@ ggplot(
 ggplot(
   data = platesmelt %>%
     filter(well == "A1"),
-  aes(x = Temperature, y = dRdT)
+  aes(x = temperature, y = dRdT)
 ) +
   facet_wrap(~target_id) +
   geom_line() +
@@ -309,25 +305,25 @@ Again broken up by technical replicate.
 ```{r plotmelt_all,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(
   data = platesmelt %>%
-    filter(TechRep == "1"),
-  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = prep_type)
+    filter(tech_rep == "1"),
+  aes(x = temperature, y = dRdT, colour = factor(dilution), linetype = prep_type)
 ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
-  labs(title = "All Melt Curves, TechRep A")
+  labs(title = "All Melt Curves, Tech. Rep. A")
 
 ggplot(
   data = platesmelt %>%
-    filter(TechRep == "2"),
-  aes(x = Temperature, y = dRdT, colour = factor(dilution), linetype = prep_type)
+    filter(tech_rep == "2"),
+  aes(x = temperature, y = dRdT, colour = factor(dilution), linetype = prep_type)
 ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   scale_linetype_manual(values = c("+RT" = "solid", "-RT" = "dashed", "NT" = "dotted")) +
   geom_line() +
   scale_x_continuous(breaks = seq(60, 100, 10), minor_breaks = seq(60, 100, 5)) +
-  labs(title = "All Melt Curves, TechRep B")
+  labs(title = "All Melt Curves, Tech. Rep. B")
 ```
 
 
@@ -336,16 +332,16 @@ ggplot(
 ```{r plotmelt_zoomed,dependson="load_amp",fig.height=11,fig.width=7}
 ggplot(
   data = platesmelt %>%
-    filter(TechRep == "1", prep_type == "+RT"),
-  aes(x = Temperature, y = dRdT, colour = factor(dilution))
+    filter(tech_rep == "1", prep_type == "+RT"),
+  aes(x = temperature, y = dRdT, colour = factor(dilution))
 ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   geom_line() +
   scale_x_continuous(
     breaks = seq(60, 100, 5), minor_breaks = seq(60, 100, 1),
     limits = c(73, 87)
   ) +
-  labs(title = "Melt curves, zoomed, TechRep A") +
+  labs(title = "Melt curves, zoomed, Tech. Rep. A") +
   theme(
     panel.grid.major.x = element_line(colour = "grey50", size = 0.4),
     panel.grid.minor.x = element_line(colour = "grey70", size = 0.1)
@@ -353,16 +349,16 @@ ggplot(
 
 ggplot(
   data = platesmelt %>%
-    filter(TechRep == "2", prep_type == "+RT"),
-  aes(x = Temperature, y = dRdT, colour = factor(dilution))
+    filter(tech_rep == "2", prep_type == "+RT"),
+  aes(x = temperature, y = dRdT, colour = factor(dilution))
 ) +
-  facet_grid(target_id ~ BioRep, scales = "free_y") +
+  facet_grid(target_id ~ biol_rep, scales = "free_y") +
   geom_line() +
   scale_x_continuous(
     breaks = seq(60, 100, 5), minor_breaks = seq(60, 100, 1),
     limits = c(73, 87)
   ) +
-  labs(title = "Melt curves, zoomed, TechRep B") +
+  labs(title = "Melt curves, zoomed, Tech. Rep. B") +
   theme(
     panel.grid.major.x = element_line(colour = "grey50", size = 0.4),
     panel.grid.minor.x = element_line(colour = "grey70", size = 0.1)
@@ -377,10 +373,10 @@ target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4", "NRD1_1", "R
 ggplot(
   data = platesmelt %>%
     filter(
-      TechRep == "1", prep_type == "+RT", dilution_nice == "1x",
+      tech_rep == "1", prep_type == "+RT", dilution_nice == "1x",
       target_id %in% target_id_levels_nice
     ),
-  aes(x = Temperature, y = dRdT, colour = BioRep)
+  aes(x = temperature, y = dRdT, colour = biol_rep)
 ) +
   facet_grid(target_id ~ ., scales = "free_y") +
   geom_line() +
@@ -388,7 +384,7 @@ ggplot(
     breaks = seq(60, 100, 5), minor_breaks = seq(60, 100, 1),
     limits = c(73, 87)
   ) +
-  labs(title = "Nice probes, TechRep A") +
+  labs(title = "Nice probes, Tech. Rep. A") +
   theme(
     panel.grid.major.x = element_line(colour = "grey50", size = 0.4),
     panel.grid.minor.x = element_line(colour = "grey70", size = 0.1)

@@ -8,7 +8,7 @@ create_colkey_6diln_2ctrl_in24(
   dilution = c(5^(0:-5), 1, 1),
   dilution_nice = c("1x", "5x", "25x", "125x", "625x", "3125x", "-RT", "NT"),
   prep_type = c(rep("+RT", 6), "-RT", "NT"),
-  TechRep = rep(1:3, each = 8, length.out = 24)
+  tech_rep = rep(1:3, each = 8, length.out = 24)
 )
 }
 \arguments{

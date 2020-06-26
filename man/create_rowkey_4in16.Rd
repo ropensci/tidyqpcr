@@ -11,7 +11,7 @@ create_rowkey_4in16(...)
 probe.}
 }
 \value{
-tibble (data frame) with 16 rows, and variables well_row, prep_type, TechRep,
+tibble (data frame) with 16 rows, and variables well_row, prep_type, tech_rep,
   and supplied values.
 }
 \description{

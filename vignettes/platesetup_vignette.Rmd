@@ -230,11 +230,11 @@ To make this into a plate, we also need a column key. What's changed is that, ea
 If we kept `colkey12` from above, then the variable `sample_id` would no longer point uniquely to a single sample.
 
 ```{r twocondition_96_cols,results="show",echo=TRUE}
-Bioreps <- c("rep1", "rep2", "rep3")
+biol_rep_levels <- c("rep1", "rep2", "rep3")
 
 colkey12_twocondition <- tibble(
   well_col = 1:12,
-  Biorep = rep(Bioreps, times = 4),
+  biol_rep = rep(biol_rep_levels, times = 4),
   prep_type = prep_type_vector
 )
 print(colkey12_twocondition)
@@ -268,12 +268,12 @@ plate_plan96 <- label_plate_rowcol(
   rowkey = rowkey8,
   colkey = colkey12_twocondition
 ) %>%
-  unite(sample_id, Condition, Biorep, remove = FALSE)
+  unite(sample_id, Condition, biol_rep, remove = FALSE)
 
 print(plate_plan96)
 ```
 
-Again, check the help file with `?unite`. The line `unite(sample_id, Condition, Biorep, remove = FALSE)` means that we create a new variable `sample_id` from existing variables `Condition` and `Biorep`, and `remove = FALSE` means that we keep the original variables in the table as well. The syntax `%>%` from the magrittr package is a way to chain functions together.
+Again, check the help file with `?unite`. The line `unite(sample_id, Condition, biol_rep, remove = FALSE)` means that we create a new variable `sample_id` from existing variables `Condition` and `biol_rep`, and `remove = FALSE` means that we keep the original variables in the table as well. The syntax `%>%` from the magrittr package is a way to chain functions together.
 
 Now we display the plate to check that we have everything in place:
 
@@ -298,7 +298,7 @@ The plate plan should contain:
 
 For example, suppose you are testing multiple primer sets against the same target, your favourite gene `YFG1`, and you have primer sets A, B, and C. Then you might want a variable called `Gene` with value `YFG1` for all of these, in addition to the variable `target_id` with values `YFG1_A`, `YFG1_B`, and `YFG1_C`.
 
-This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify sample_id as `WT_25C_10min_rep1`, and then use `separate(col = sample_id, into = c("Strain", "Temperature", "Time", "Biorep"), remove = FALSE)` to create individual columns with copies of that information. 
+This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify sample_id as `WT_25C_10min_rep1`, and then use `separate(col = sample_id, into = c("strain", "temperature", "time_min", "biol_rep"), remove = FALSE)` to create individual columns with copies of that information. 
 The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly
 
 The functions `unite` and `separate` have visual descriptions on the [RStudio data wrangling cheat sheat](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Another useful tidyr function is `crossing`, which creates a table with all combinations of the variables that you supply, say if you want to measure all strains in all conditions.
