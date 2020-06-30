@@ -129,7 +129,4 @@ We will be following the [code of conduct from the tidyverse](https://dplyr.tidy
 
 ## Code style
 
-tidyqpcr *mostly* follows the [tidyverse style guide](https://style.tidyverse.org/), with one exception:
-
-* Variable names are mostly CamelCase, which we have found useful in differentiating data frame variables, for example called *Time* from functions called *time*. This means fewer problems in dealing with time-course experimental data
-* Function names are all snake_case
+tidyqpcr follows the [tidyverse style guide](https://style.tidyverse.org/).
