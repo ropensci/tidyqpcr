@@ -38,7 +38,7 @@ We want to promote reproducible research so collaborators, reviewers or students
 
 tidyqpcr follows the 'tidy' data paradigm to ensure scalability and adaptability.
 
-We want to create a tool that is flexible enough to analyse high or low throughput experimental data whilst integrating easily into multi-omic data analyses. tidyqpcr uses powerful generic data science tools from [the tidyverse](https://www.tidyverse.org/) R package, lightly overlaid with qPCR-specific scripts. Manipulating and plotting qPCR data without creating bespoke data structures allows tidyqpcr scripts to be easily integrated and scaled according to the needs of your experiments.
+We want to create a tool that is flexible enough to analyse high or low throughput experimental data whilst integrating easily into other data analyses. tidyqpcr uses powerful generic data science tools from [the tidyverse](https://www.tidyverse.org/) R package, lightly overlaid with qPCR-specific scripts. As far as possible, every object in tidyqpcr is stored as a generic tibble / data frame. Manipulating and plotting qPCR data without creating bespoke data structures allows tidyqpcr scripts to be easily integrated and scaled according to the needs of your experiments.
 
 ### Best-practice compliant
 
@@ -52,26 +52,28 @@ As of April 2020, this software is in development. [Edward Wallace](https://gith
 
 ## News
 
-* 20 April 2020, upgrades that break previous code, commit #cda1742 changes variable and function names to use SampleID for nucleic acid sample (replaces Sample), Target ID for primer set/ probe (replaces Probe), and Cq for quantification cycle (replaces Ct). 
+* June 2020, upgrades that break previous code. All function and variable names have been changed to snake case, i.e. lower case with underscore. Commits up to #ee6d192 change variable and function names. tidyqpcr now uses `sample_id` for nucleic acid sample (replaces Sample or SampleID), `target_id` for primer set/ probe (replaces TargetID or Probe), `prep_type` for nucleic acid preparation type (replaces Type), and `cq` for quantification cycle (replaces Cq or Ct). 
 It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
-Alternatively, pre-change analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
+Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
 
 
 # Features 
 
 ## Current features
 
-* lay out and display 96/384-well plates for easy experimental setup
-* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence
-* calibration of primer sets including estimating efficiencies and visualization of curves
-* visualization of amplification and melt curves
-* normalization of Cq data to one or more reference probe sets by delta delta count method
-* flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/)
+* every object is a tibble / data frame, no special data classes to learn
+* lay out and display 96/384-well plates for easy experimental setup (`label_plate_rowcol`, `create_blank_plate`, ...)
+* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`)
+* calibration of primer sets including estimating efficiencies and visualization of curves (`calculate_efficiency`, )
+* visualization of amplification and melt curves (`calculate_drdt_plate`, and see vignettes)
+* normalization of Cq data to one or more reference probe sets by delta count method (`calculate_normcq`, `calculate_deltacq_bysampleid`)
+* flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/) (see vignettes)
 
 ## Future priorities
 
 * including primer efficiencies in quantification
 * an open-source and tested Cq calculation algorithm
+* multi-colour (hydrolysis probe) detection
 * extend to 1536-well plates 
 * metadata handling compatible with RDML format
 * files for automatic plate loading with [Opentrons](https://opentrons.com/) and [Labcyte Echo](https://www.labcyte.com/products/liquid-handling/echo-liquid-handlers) liquid handlers.
