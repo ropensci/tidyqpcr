@@ -1,0 +1,170 @@
+---
+title: "Delta Cq 96-well plate qPCR analysis example"
+author: "Stuart McKellar and Edward Wallace"
+date: "July 2020"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{DeltaCq96wellExample}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Summary: an example 96-well qPCR experiment.
+
+This vignette shows how to use tidyqpcr functions to normalize and plot data from a single experiment on a 96-well plate.
+
+This is real RT-qPCR data by Stuart McKellar:
+
+Aim: to measure expression of two mRNAs and one reference control in two strains across various OD measurements (0.5, 1.5, 3, 6, overnight culture ('ODON'))
+
+Method: measured expression of GlyS and SpoVG in WT and a mutant strain ('dAgr') across said ODs. 5S rRNA used as a reference control.
+
+The sample information is specified in the input data file.
+
+
+```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
+
+## knitr options for report generation
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE, echo = TRUE, cache = FALSE,
+  results = "show"
+)
+library(tidyverse)
+library(cowplot)
+library(tidyqpcr)
+
+# set default theme for graphics
+theme_set(theme_cowplot(font_size = 11) %+replace%
+  theme(
+    panel.border = element_rect(
+      colour = "grey50",
+      linetype = "solid", size = 0.5
+    ),
+    strip.background = element_blank()
+  ))
+```
+
+
+
+
+Note that display_plate requires a column called `sample_id`, which here we had to make from the `condition` variable using `mutate(sample_id=condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
+
+## Load and summarize data
+
+```{r load_plates,dependson="label_plates",results="show"}
+# read my plates
+
+plate_cq_extdata <- read_lightcycler_1colour_cq(
+  "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt"
+  )
+
+summary(plate_cq_extdata)
+```
+
+## Add sample and target data to the plate
+
+```{r add_sample_target_data,dependson="load_plates",results="show"}
+wells_exclude <- c("D10","D11","D12", "H10","H11","H12") # these wells are blank
+
+plate_cq_data <- 
+  create_blank_plate_96well() %>% # row and columnfor each well
+  left_join(plate_cq_extdata) %>% # join that info to loaded data
+  filter(! well %in% wells_exclude ) %>% # exclude blank wells
+  select(well, well_row, well_col, sample_info, cq) %>% # select only useful columns
+  # next move around the sample and target information for future data analysis
+  separate(sample_info,
+           into = c("strain","OD","target_id"), 
+           sep = " ",
+           remove = FALSE) %>%
+  unite("sample_id",strain, OD, remove = FALSE) %>%
+  mutate(prep_type = "+RT") # add information on prep type
+
+summary(plate_cq_data)
+```
+
+## Display the plate layout
+
+Display the plate plan using display_plate. 
+
+```{r display_plates,fig.height=6,fig.width=9,dependson="add_sample_target_data"}
+display_plate(plate_cq_data)
+```
+
+# Plot unnormalized data
+
+
+```{r plot_unnormalized,dependson="load_plates",fig.height=3,fig.width=4}
+ggplot(data = plate_cq_data) +
+  geom_point(aes(x = target_id, y = cq, shape = strain, colour = strain),
+    position = position_jitter(width = 0.2, height = 0)
+  ) +
+  labs(
+    y = "Cycle count to threshold",
+    title = "All reps, unnormalized"
+  ) +
+  facet_wrap(~OD,ncol=5) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+
+## Normalize Cq to 5S rRNA, within Sample only 
+
+
+
+```{r normalize_counts,dependson="load_plates"}
+plate_norm <- plate_cq_data %>%
+  calculate_deltacq_bysampleid(norm_target_ids = "5S")
+
+plate_med <- plate_norm %>%
+  group_by(sample_info, sample_id, strain, OD, target_id) %>%
+  summarize(
+    deltacq = median(value_norm, na.rm = TRUE),
+    abund = median(value_normexp, na.rm = TRUE)
+  )
+
+filter(plate_med, target_id == "glyS")
+```
+
+## Plot normalized data, all reps
+
+```{r plot_normalized,dependson="normalize_counts",fig.height=3,fig.width=4}
+ggplot(data = plate_norm) +
+  geom_point(aes(x = target_id, y = value_norm, shape = strain, colour = strain),
+    position = position_jitter(width = 0.2, height = 0)
+  ) +
+  labs(
+    y = "normalised Cq",
+    title = "All reps, unnormalized"
+  ) +
+  facet_wrap(~OD,ncol=5) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+## Plot normalized deltacq for each OD separately across genes
+
+```{r plot_deltacq_vs_gene,dependson="normalize_counts",fig.height=3,fig.width=4}
+ggplot(data = filter(plate_med, target_id != "5S") ) + 
+  geom_point(aes(x = target_id, y = abund, shape = strain, colour = strain) ) + 
+  labs(
+    y = "RNA abundance relative to baseline"
+  ) +
+  facet_wrap(~OD,ncol=5) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+## Plot normalized deltacq for each gene separately across ODs
+
+```{r plot_deltacq_vs_OD,dependson="normalize_counts",fig.height=3,fig.width=4}
+ggplot(data = filter(plate_med, target_id != "5S") ) + 
+  geom_line(aes(x = OD, y = abund, shape = strain, colour = strain, group = strain)) + 
+  geom_point(aes(x = OD, y = abund, shape = strain, colour = strain)) + 
+  labs(
+    y = "RNA relative abundance"
+  ) +
+  facet_wrap(~target_id,ncol=2) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+## Next let us estimate delta delta cq
