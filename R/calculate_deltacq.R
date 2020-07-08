@@ -18,7 +18,7 @@ calculate_normcq <- function(cq_df,
     # make subset of cq_df where gene is one or more norm_target_ids
     value_to_norm_by <- dplyr::filter(cq_df,
                              !!dplyr::sym(tid_name) %in% norm_target_ids) %>%
-        .[[value_name]] %>%
+        dplyr::pull(!!dplyr::sym(value_name)) %>%
         norm_function(na.rm = TRUE)
     #
     # assign summary (median) value to cq_df$value_to_norm_by
