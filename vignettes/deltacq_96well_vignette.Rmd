@@ -101,7 +101,7 @@ ggplot(data = plate_cq_data) +
     position = position_jitter(width = 0.2, height = 0)
   ) +
   labs(
-    y = "Cycle count to threshold",
+    y = "Quantification cycle (Cq)",
     title = "All reps, unnormalized"
   ) +
   facet_wrap(~OD,ncol=5) + 
@@ -115,13 +115,13 @@ ggplot(data = plate_cq_data) +
 
 ```{r normalize_counts,dependson="load_plates"}
 plate_norm <- plate_cq_data %>%
-  calculate_deltacq_bysampleid(norm_target_ids = "5S")
+  calculate_deltacq_bysampleid(ref_target_ids = "5S")
 
 plate_med <- plate_norm %>%
   group_by(sample_info, sample_id, strain, OD, target_id) %>%
   summarize(
-    deltacq = median(value_norm, na.rm = TRUE),
-    abund = median(value_normexp, na.rm = TRUE)
+    delta_cq  = median(delta_cq, na.rm = TRUE),
+    rel_abund = median(rel_abund, na.rm = TRUE)
   )
 
 filter(plate_med, target_id == "glyS")
@@ -131,13 +131,10 @@ filter(plate_med, target_id == "glyS")
 
 ```{r plot_normalized,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data = plate_norm) +
-  geom_point(aes(x = target_id, y = value_norm, shape = strain, colour = strain),
+  geom_point(aes(x = target_id, y = delta_cq, shape = strain, colour = strain),
     position = position_jitter(width = 0.2, height = 0)
   ) +
-  labs(
-    y = "normalised Cq",
-    title = "All reps, unnormalized"
-  ) +
+  labs(y = "delta Cq") +
   facet_wrap(~OD,ncol=5) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
@@ -146,9 +143,9 @@ ggplot(data = plate_norm) +
 
 ```{r plot_deltacq_vs_gene,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data = filter(plate_med, target_id != "5S") ) + 
-  geom_point(aes(x = target_id, y = abund, shape = strain, colour = strain) ) + 
+  geom_point(aes(x = target_id, y = rel_abund, shape = strain, colour = strain) ) + 
   labs(
-    y = "RNA abundance relative to baseline"
+    y = "RNA relative abundance"
   ) +
   facet_wrap(~OD,ncol=5) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
@@ -158,8 +155,8 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
 
 ```{r plot_deltacq_vs_OD,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data = filter(plate_med, target_id != "5S") ) + 
-  geom_line(aes(x = OD, y = abund, shape = strain, colour = strain, group = strain)) + 
-  geom_point(aes(x = OD, y = abund, shape = strain, colour = strain)) + 
+  geom_line(aes(x = OD, y = rel_abund, colour = strain, group = strain)) + 
+  geom_point(aes(x = OD, y = rel_abund, shape = strain, colour = strain)) + 
   labs(
     y = "RNA relative abundance"
   ) +
@@ -167,4 +164,4 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
-## Next let us estimate delta delta cq
+## Next estimate delta delta cq

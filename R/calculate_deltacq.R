@@ -1,29 +1,40 @@
 
-#' @describeIn calculate_deltacq_bysampleid get the median value of a set of
-#'   normalization (reference) probes, for a single sample.
+#' Calculate a normalized value for a subset of reference ids
 #'
-#' @param norm_function Function to use to calculate the value to
-#' normalise by on log2/cq scale.
-#' Default function is median, alternatively could use mean.
+#' This is used to calculate the normalized `cq` values for reference
+#' `target_ids` (genes), to use in `delta_cq` calculation for each `sample_id`.
+#'
+#' Also used to calculate the normalized `delta_cq` values for reference
+#' `sample_ids`, to use in `deltadelta_cq` calculation for each `target_id`.
+#'
+#' @param value_df data frame containing relevant columns.
+#' @param ref_ids values of reference ids, that are used to calculated
+#'   normalized reference value.
+#' @param value_name name of column containing values.
+#'   This column should be numeric.
+#' @param id_name name of column containing ids.
+#' @param norm_function Function to use to calculate the value to normalize by.
+#'   Default function is median, alternatively could use mean, geometric mean,
+#'   etc.
 #'
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom stats median
 #'
-calculate_normcq <- function(cq_df,
-                      value_name = "cq",
-                      norm_target_ids = "ALG9",
-                      tid_name = "target_id",
+calculate_normvalue <- function(value_df,
+                      ref_ids,
+                      value_name = "value",
+                      id_name = "id",
                       norm_function = median) {
-    # make subset of cq_df where gene is one or more norm_target_ids
-    value_to_norm_by <- dplyr::filter(cq_df,
-                             !!dplyr::sym(tid_name) %in% norm_target_ids) %>%
+    # make subset of value_df where gene is one or more ref_ids
+    value_to_norm_by <- dplyr::filter(value_df,
+                             !!dplyr::sym(id_name) %in% ref_ids) %>%
         dplyr::pull(!!dplyr::sym(value_name)) %>%
         norm_function(na.rm = TRUE)
     #
-    # assign summary (median) value to cq_df$value_to_norm_by
+    # assign summary (median) value to value_df$value_to_norm_by
     # note this is the same value for every row, a waste of space technically
-    dplyr::mutate(cq_df, value_to_norm_by = value_to_norm_by)
+    dplyr::mutate(value_df, value_to_norm_by = value_to_norm_by)
 }
 
 #' Calculate delta cq to normalize quantification cycle (log2-fold) data within
@@ -34,52 +45,38 @@ calculate_normcq <- function(cq_df,
 #'   the same for different technical replicates measuring identical reactions
 #'   in different wells of the plate, but differ for different biological and
 #'   experimental replicates.
-#' @param value_name the column name of the value that will be normalized
-#' @param norm_target_ids names of PCR probes (or primer sets) to normalize by,
+#' @param ref_target_ids names of PCR probes (or primer sets) to normalize by,
 #'   i.e. reference genes
-#' @param tid_name the column name for probe sets
+#' @param norm_function Function to use to calculate the value to
+#' normalize by on given scale.
+#' Default is median, alternatively could use mean.
 #'
 #' @return data frame like cq_df with three additional columns:
 #'
-#'   \tabular{ll}{ value_to_norm_by       \tab the median value of the reference
-#'   probes \cr value_norm    \tab the normalized value, \eqn{\Delta Cq} \cr
-#'   value_normexp \tab the normalized ratio, \eqn{2^(-\Delta Cq)} }
+#'   \tabular{ll}{
+#'    ref_cq \tab the median cq value for reference target ids \cr
+#'    delta_cq    \tab the normalized value, \eqn{\Delta Cq} \cr
+#'    rel_abund \tab the normalized ratio, \eqn{2^(-\Delta Cq)}
+#'    }
 #'
 #' @export
 #' @importFrom tidyr %>%
+#' @importFrom stats median
 #'
 calculate_deltacq_bysampleid <- function(cq_df,
-                                         norm_target_ids,
-                                         value_name = "cq",
-                                         tid_name = "target_id") {
+                                         ref_target_ids,
+                                         norm_function = median) {
     cq_df %>%
         dplyr::group_by(sample_id) %>%
-        dplyr::do(calculate_normcq(.,
-                                   value_name,
-                                   norm_target_ids,
-                                   tid_name)) %>%
+        dplyr::do(calculate_normvalue(.,
+                                   ref_ids = ref_target_ids,
+                                   value_name = "cq",
+                                   id_name = "target_id",
+                                   norm_function = norm_function)) %>%
+        dplyr::rename(ref_cq = value_to_norm_by) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(.value = !!dplyr::sym(value_name), # a tidyeval trick
-               value_norm    = .value - value_to_norm_by,
-               value_normexp = 2^-value_norm) %>%
-        dplyr::select(-.value) %>%
+        dplyr::mutate(
+               delta_cq    = cq - ref_cq,
+               rel_abund   = 2^-delta_cq) %>%
         return()
-}
-
-#' @describeIn calculate_deltacq_bysampleid Synonym for
-#'   calculate_deltacq_plates.
-#'
-#' @export
-#'
-normalizeqPCR <- function(cq_df,
-                          value_name = "cq",
-                          norm_target_ids = "ALG9",
-                          tid_name = "target_id") {
-    lifecycle::deprecate_warn("0.2", "normalizeqPCR()",
-                              "calculate_deltacq_bysampleid()",
-        details = "Replaced with more descriptive name")
-    calculate_deltacq_bysampleid(cq_df = cq_df,
-                  norm_target_ids = norm_target_ids,
-                  value_name = value_name,
-                  tid_name = tid_name)
 }
