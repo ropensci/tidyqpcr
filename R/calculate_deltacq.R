@@ -62,21 +62,22 @@ calculate_normvalue <- function(value_df,
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom stats median
+#' @importFrom rlang .data
 #'
 calculate_deltacq_bysampleid <- function(cq_df,
                                          ref_target_ids,
                                          norm_function = median) {
     cq_df %>%
-        dplyr::group_by(sample_id) %>%
-        dplyr::do(calculate_normvalue(.,
+        dplyr::group_by(.data$sample_id) %>%
+        dplyr::do(calculate_normvalue(.data,
                                    ref_ids = ref_target_ids,
                                    value_name = "cq",
                                    id_name = "target_id",
                                    norm_function = norm_function)) %>%
-        dplyr::rename(ref_cq = value_to_norm_by) %>%
+        dplyr::rename(ref_cq = .data$value_to_norm_by) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(
-               delta_cq    = cq - ref_cq,
-               rel_abund   = 2^-delta_cq) %>%
+               delta_cq    = .data$cq - .data$ref_cq,
+               rel_abund   = 2^-.data$delta_cq) %>%
         return()
 }
