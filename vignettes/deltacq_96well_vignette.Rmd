@@ -163,4 +163,15 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
 
 ## Next estimate delta delta cq
 
-Our goal here is to compare the normalised levels of glyS and spoVG in one growth condition to another growth condition, i.e. delta delta Cq. (in progress)
+Our goal here is to compare the normalised levels of glyS and spoVG in one growth condition to another growth condition, i.e. delta delta Cq.
+
+This relies on a function, `calculate_deltadeltacq_bytargetid`... 
+
+```{r normalize_deltacounts,dependson="load_plates"}
+plate_deltanorm <- plate_norm %>%
+  calculate_deltadeltacq_bytargetid(ref_sample_ids = "WT_OD0.5")
+
+plate_deltanorm
+```
+
+TO DO: Next we need to test the function and to make informative plots...

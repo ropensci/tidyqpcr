@@ -25,9 +25,9 @@ Default is median, alternatively could use mean.}
 data frame like cq_df with three additional columns:
 
   \tabular{ll}{
-   ref_cq \tab the median cq value for reference target ids \cr
-   delta_cq    \tab the normalized value, \eqn{\Delta Cq} \cr
-   rel_abund \tab the normalized ratio, \eqn{2^(-\Delta Cq)}
+   ref_cq    \tab summary (median/mean) cq value for reference target ids \cr
+   delta_cq  \tab normalized value, \eqn{\Delta Cq} \cr
+   rel_abund \tab normalized ratio, \eqn{2^(-\Delta Cq)}
    }
 }
 \description{
