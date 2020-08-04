@@ -13,7 +13,7 @@ vignette: >
 
 # Summary: an example 96-well qPCR experiment.
 
-This vignette shows how to use tidyqpcr functions to normalize and plot data from a single experiment on a 96-well plate.
+This vignette shows how to use tidyqpcr functions to normalize and plot data from a single RT-qPCR experiment on a 96-well plate. We include relative quantification, calculations of delta Cq (within-sample normalisation) and delta delta Cq (between-sample normalisation).
 
 This is real RT-qPCR data by Stuart McKellar:
 
@@ -23,6 +23,7 @@ Method: measured expression of GlyS and SpoVG in WT and a mutant strain ('dAgr')
 
 The sample information is specified in the input data file.
 
+Note that this data does not include negative controls that detect background DNA contamination, such as no reverse transcriptase (-RT) or no template (NT).
 
 ```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
 
@@ -49,18 +50,14 @@ theme_set(theme_cowplot(font_size = 11) %+replace%
 
 
 
-Note that display_plate requires a column called `sample_id`, which here we had to make from the `condition` variable using `mutate(sample_id=condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
-
 ## Load and summarize data
 
 ```{r load_plates,dependson="label_plates",results="show"}
-# read my plates
-
 plate_cq_extdata <- read_lightcycler_1colour_cq(
   "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt"
   )
 
-summary(plate_cq_extdata)
+plate_cq_extdata
 ```
 
 ## Add sample and target data to the plate
@@ -81,7 +78,7 @@ plate_cq_data <-
   unite("sample_id",strain, OD, remove = FALSE) %>%
   mutate(prep_type = "+RT") # add information on prep type
 
-summary(plate_cq_data)
+plate_cq_data
 ```
 
 ## Display the plate layout
@@ -165,3 +162,16 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
 ```
 
 ## Next estimate delta delta cq
+
+Our goal here is to compare the normalised levels of glyS and spoVG in one growth condition to another growth condition, i.e. delta delta Cq.
+
+This relies on a function, `calculate_deltadeltacq_bytargetid`... 
+
+```{r normalize_deltacounts,dependson="load_plates"}
+plate_deltanorm <- plate_norm %>%
+  calculate_deltadeltacq_bytargetid(ref_sample_ids = "WT_OD0.5")
+
+plate_deltanorm
+```
+
+TO DO: Next we need to test the function and to make informative plots...

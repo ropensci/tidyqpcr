@@ -54,9 +54,9 @@ calculate_normvalue <- function(value_df,
 #' @return data frame like cq_df with three additional columns:
 #'
 #'   \tabular{ll}{
-#'    ref_cq \tab the median cq value for reference target ids \cr
-#'    delta_cq    \tab the normalized value, \eqn{\Delta Cq} \cr
-#'    rel_abund \tab the normalized ratio, \eqn{2^(-\Delta Cq)}
+#'    ref_cq    \tab summary (median/mean) cq value for reference target ids \cr
+#'    delta_cq  \tab normalized value, \eqn{\Delta Cq} \cr
+#'    rel_abund \tab normalized ratio, \eqn{2^(-\Delta Cq)}
 #'    }
 #'
 #' @export
@@ -79,5 +79,58 @@ calculate_deltacq_bysampleid <- function(cq_df,
         dplyr::mutate(
                delta_cq    = .data$cq - .data$ref_cq,
                rel_abund   = 2^-.data$delta_cq) %>%
+        return()
+}
+
+
+#' Calculate delta delta cq (\eqn{\Delta \Delta Cq}) to globally normalize
+#' quantification cycle (log2-fold) data across sample_id.
+#'
+#' This function does a global normalization, where all samples are compared to
+#' a single sample or set of reference samples. There are other experimental
+#' designs that require comparing samples in pairs or small groups, e.g. a time
+#' course comparing `delta_cq` values against a reference strain at each time
+#' point. For those situations, instead we recommend adapting this code to use
+#' `dplyr::group_by` to draw the contrasts appropriate for the experiment.
+#'
+#' @param deltacq_df a data frame containing columns `sample_id`, value_name
+#'   (default `delta_cq`) and tid_name (default `target_id`). Crucially,
+#'   sample_id should be the same for different technical replicates measuring
+#'   identical reactions in different wells of the plate, but differ for
+#'   different biological and experimental replicates.
+#'
+#'   Usually this will be a data frame that was output by
+#'   `calculate_deltacq_bysampleid`.
+#'
+#' @param ref_sample_ids reference sample_ids to normalize by
+#' @param norm_function Function to use to calculate the value to normalize by
+#'   on given scale. Default is median, alternatively could use mean.
+#'
+#' @return data frame like cq_df with three additional columns:
+#'
+#'   \tabular{ll}{ ref_delta_cq  \tab summary (median/mean) \eqn{\Delta Cq}
+#'   value for target_id in reference sample ids \cr deltadelta_cq \tab the
+#'   normalized value, \eqn{\Delta \Delta Cq} \cr fold_change   \tab the
+#'   normalized fold-change ratio, \eqn{2^(-\Delta \Delta Cq)} }
+#'
+#' @export
+#' @importFrom tidyr %>%
+#' @importFrom stats median
+#'
+calculate_deltadeltacq_bytargetid <- function(deltacq_df,
+                                         ref_sample_ids,
+                                         norm_function = median) {
+    deltacq_df %>%
+        dplyr::group_by(target_id) %>%
+        dplyr::do(calculate_normvalue(.,
+                                   ref_ids = ref_sample_ids,
+                                   value_name = "delta_cq",
+                                   id_name = "target_id",
+                                   norm_function = norm_function)) %>%
+        dplyr::rename(ref_delta_cq = value_to_norm_by) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(
+               deltadelta_cq = delta_cq - ref_delta_cq,
+               fold_change   = 2^-deltadelta_cq) %>%
         return()
 }
