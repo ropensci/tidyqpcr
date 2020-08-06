@@ -121,16 +121,16 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
                                          ref_sample_ids,
                                          norm_function = median) {
     deltacq_df %>%
-        dplyr::group_by(target_id) %>%
-        dplyr::do(calculate_normvalue(.,
+        dplyr::group_by(.data$target_id) %>%
+        dplyr::do(calculate_normvalue(.data,
                                    ref_ids = ref_sample_ids,
                                    value_name = "delta_cq",
-                                   id_name = "target_id",
+                                   id_name = "sample_id",
                                    norm_function = norm_function)) %>%
-        dplyr::rename(ref_delta_cq = value_to_norm_by) %>%
+        dplyr::rename(ref_delta_cq = .data$value_to_norm_by) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(
-               deltadelta_cq = delta_cq - ref_delta_cq,
-               fold_change   = 2^-deltadelta_cq) %>%
+               deltadelta_cq = .data$delta_cq - .data$ref_delta_cq,
+               fold_change   = 2^-.data$deltadelta_cq) %>%
         return()
 }
