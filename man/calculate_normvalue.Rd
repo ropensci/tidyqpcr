@@ -13,13 +13,14 @@ calculate_normvalue(
 )
 }
 \arguments{
-\item{value_df}{data frame containing relevant columns.}
+\item{value_df}{data frame containing relevant columns, those named in
+`value_name` and `id_name` parameters.}
 
-\item{ref_ids}{values of reference ids, that are used to calculated
+\item{ref_ids}{values of reference ids, that are used to calculate
 normalized reference value.}
 
-\item{value_name}{name of column containing values.
-This column should be numeric.}
+\item{value_name}{name of column containing values. This column should be
+numeric.}
 
 \item{id_name}{name of column containing ids.}
 
@@ -29,7 +30,8 @@ etc.}
 }
 \description{
 This is used to calculate the normalized `cq` values for reference
-`target_ids` (genes), to use in `delta_cq` calculation for each `sample_id`.
+`target_ids` (e.g. genes), to use in `delta_cq` calculation for each
+`sample_id`.
 }
 \details{
 Also used to calculate the normalized `delta_cq` values for reference
