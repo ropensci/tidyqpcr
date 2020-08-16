@@ -42,13 +42,21 @@ calculate_normvalue <- function(value_df,
 #' Calculate delta cq (\eqn{\Delta Cq}) to normalize quantification cycle
 #' (log2-fold) data within sample_id.
 #'
+#' This function implements relative quantification by the delta Cq method. For
+#' each sample, the Cq values of all targets (e.g. genes, probes, primer sets)
+#' are compared to one or more reference target ids specified in
+#' `ref_target_ids`.
+#'
 #' @param cq_df a data frame containing columns `sample_id`, value_name (default
 #'   `cq`) and tid_name (default `target_id`). Crucially, sample_id should be
 #'   the same for different technical replicates measuring identical reactions
 #'   in different wells of the plate, but differ for different biological and
 #'   experimental replicates. See tidyqpcr vignettes for examples.
-#' @param ref_target_ids names of PCR probes (or primer sets) to normalize by,
-#'   i.e. reference genes
+#' @param ref_target_ids names of targetss to normalize by, i.e. reference
+#'   genes, hydrolysis probes, or primer sets. This can be one reference target
+#'   id, a selection of multiple target ids, or even all measured target ids. In
+#'   the case of all of them, the delta Cq value would be calculated relative to
+#'   the median (or other `norm_function`) of all measured targets.
 #' @param norm_function Function to use to calculate the value to normalize by
 #'   on given scale. Default is median, alternatively could use mean.
 #'
