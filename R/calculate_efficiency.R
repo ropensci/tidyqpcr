@@ -84,5 +84,5 @@ calculate_efficiency_bytargetid <- function(cq_df,
     }
     cq_df %>%
         dplyr::group_by(.data$target_id) %>%
-        dplyr::do(calculate_efficiency(., formula = formula))
+        dplyr::do(calculate_efficiency(.data, formula = formula))
 }

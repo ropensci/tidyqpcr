@@ -31,7 +31,7 @@ create_blank_plate <- function(well_row = LETTERS[1:16], well_col = 1:24) {
     tidyr::crossing(well_row = as_factor(well_row),
                     well_col = as_factor(well_col)) %>%
         as_tibble() %>%
-        tidyr::unite(well, .data$well_row, .data$well_col, 
+        tidyr::unite("well", .data$well_row, .data$well_col, 
                      sep = "", remove = FALSE)
 }
 
@@ -347,11 +347,11 @@ display_plate <- function(plate) {
         levels()
     #
     ggplot2::ggplot(data = plate,
-                    aes(x = as_factor(.data$well_col),
+                    ggplot2::aes(x = as_factor(.data$well_col),
                         y = as_factor(.data$well_row))) +
-        ggplot2::geom_tile(aes(fill = .data$target_id), 
+        ggplot2::geom_tile(ggplot2::aes(fill = .data$target_id), 
                            alpha = 0.3) +
-        ggplot2::geom_text(aes(label = 
+        ggplot2::geom_text(ggplot2::aes(label = 
                                    paste(.data$target_id,
                                          .data$sample_id,
                                          .data$prep_type,
