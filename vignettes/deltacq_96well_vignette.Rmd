@@ -13,15 +13,15 @@ vignette: >
 
 # Summary: an example 96-well qPCR experiment.
 
-This vignette shows how to use tidyqpcr functions to normalize and plot data from a single RT-qPCR experiment on a 96-well plate. We include relative quantification, calculations of delta Cq (within-sample normalization) and delta delta Cq (between-sample normalization), with some plotting.
+This vignette shows how to use tidyqpcr functions to normalize and plot data from a single RT-qPCR experiment on a 96-well plate. We include relative quantification, calculations of delta Cq (within-sample normalization) and delta delta Cq (between-sample normalization), with some example plots.
 
 This is real RT-qPCR data by Stuart McKellar:
 
-Aim: to measure expression of two mRNAs and one reference control in two strains of bacteria at various growth stages (measured by OD: 0.5, 1.5, 3, 6, and overnight culture ('ODON')).
+Aim: to measure expression of two mRNAs and one reference control in two strains of bacteria at various growth stages (measured by OD: 0.5, 1.5, 3, 6, and overnight culture, 'ODON').
 
 mRNAs: GlyS and SpoVG with 5S rRNA used as a reference control. 
 
-Bacterial strains: wild-type (WT) and mutant (dAgr)
+Bacterial strains: wild-type (WT) and mutant (dAgr).
 
 Equipment: Data were collected on a Roche Lightcycler 480, and Lightcycler software used to estimate Cq/Ct values and export that as a text-format table. The sample information is specified in this input data file.
 
@@ -50,47 +50,65 @@ theme_set(theme_cowplot(font_size = 11) %+replace%
 
 # Loading, organizing, and sanity-checking data.
 
+```{r cleanup_platedata,dependson="label_plates",echo=FALSE,eval=FALSE}
+# hidden code block that preprocesses lightcycler data 
+# in order to remove parts not relevant to main message of vignette
+wells_exclude <- c("D10","D11","D12", "H10","H11","H12") # these wells are blank
+
+plate_cq_extdata <- read_lightcycler_1colour_cq(
+  "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt"
+  ) %>%
+  dplyr::filter(! well %in% wells_exclude ) %>% # exclude blank wells
+  dplyr::select(well, sample_info, cq)
+
+readr::write_tsv(
+  x = plate_cq_extdata,
+  path = "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt"
+  )
+
+plate_cq_extdata
+```
+  
+
 ## Load data from machine output file
 
 We start by loading data from the experiment. We print the data to screen here, it is always a good idea to look at the data to find out if it has loaded correctly and behaves as expected, or not.
 
 ```{r load_plates,dependson="label_plates",results="show"}
-plate_cq_extdata <- read_lightcycler_1colour_cq(
-  "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt"
+plate_cq_extdata <- read_tsv(
+  "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt"
   )
 
 plate_cq_extdata
 ```
 
-Printing the data here shows that the `sample_info` column contains information on the sample. In other vignettes [add link(s) here??] we describe how to "set up" a plate plan to put sample information in. Here, we need to organize the information that is already associated with the data.
+Printing the data here shows that the `sample_info` column contains information on the sample. We still need to organize this information that is already associated with the data.
 
-## Add sample and target data to the plate
+The [plate setup vignette](platesetup_vignette.html) describes how to "set up" a plate plan to put sample information in, if your input data does not already contain sample information.
 
-The `sample_info` column contains values like `WT OD0.5 glyS`, where `WT` describes the strain, `OD0.5` describes the growth stage (optical density), and `glyS` describes the target gene that is detected. These three pieces of information are delimited by spaces. We use the `separate` function, from the `tidyr` package, to separate the three pieces of information in `sample_info` into three columns, each of which contains a single piece of information. 
+Note that we "cleaned up" the data file for this vignette, to remove irrelevant rows and columns. For information about how to load Cq data directly from Lightcycler outputs, see `?read_lightcycler_1colour_cq`.
+
+## Organize sample and target data on the plate
+
+The `sample_info` column contains values like `WT OD0.5 glyS`, where `WT` describes the strain, `OD0.5` describes the growth stage (optical density), and `glyS` describes the target gene that is detected. These three pieces of information are delimited by spaces. We use the `separate` function, from the `tidyr` package, to separate the three pieces of information in `sample_info` into three columns, (`strain`, `OD`, `target_id`), each of which contains a single piece of information. Note that tidyqpcr insistently refers to the targets detected in a qPCR experiment as `target_id`, as they could be primer sets or hydrolysis probes targeting distinct gene regions, RNA isoforms, SNPs, or chromosomal locations for ChIP studies. In this experiment we have three amplicons, each from a different RNA. 
 
 However, tidyqpcr expects a column called `sample_id` that identifies the unique sample - here, that would be identified by a strain (e.g. `WT`) and growth stage (e.g. `OD0.5`). So we use the `unite` function, from the `tidyr` package, to create a new column `sample_id` that unites strain and OD.
 
-Before these, we have to do a little organisation. First, we add row and column labels for each well, so that we can later draw the plate plan and check the description. We use the tidyqpcr function `create_blank_plate_96well` to make a "blank" plate plan, then join that information to the data. Second, we filter the to keep only wells containing samples (exclude blank wells), and select to keep only columns that we need for the data analysis. These functions, `left_join` `filter`, `select`, are in the `dplyr` package.
+Before these, we have to do a little organization. Wee add row and column labels for each well, so that we can later draw the plate plan and check the description. We use the tidyqpcr function `create_blank_plate_96well` to make a "blank" plate plan, then join that information to the data. The join function `inner_join` is in the `dplyr` package.
 
 We use the tidyverse pipe operator `%>%` to do all these transformations in a row, with one on each line.
 
-[Could you edit the data (since you're providing it with the package) and remove the unused wells so you can skip that part of the code below? or is that necessary because of how `create_blank_plate_96well()` works? Same for the columns that you're selecting, ie just delete the non-useful columns from the data ahead of time. Just to simplify for the reader and focus on the content you're teaching here (setting up the `sample_id` column)]
-
 ```{r add_sample_target_data,dependson="load_plates",results="show"}
-wells_exclude <- c("D10","D11","D12", "H10","H11","H12") # these wells are blank
-
 plate_cq_data <- 
   create_blank_plate_96well() %>% # row and column labels for each well
-  left_join(plate_cq_extdata) %>% # join that info to loaded data
-  filter(! well %in% wells_exclude ) %>% # exclude blank wells
-  select(well, well_row, well_col, sample_info, cq) %>% # select only useful columns
+  inner_join(plate_cq_extdata) %>% # join that info to loaded data
   # next separate the sample and target information for future data analysis
   separate(sample_info,
            into = c("strain","OD","target_id"), 
            sep = " ",
            remove = FALSE) %>%
-  unite("sample_id",strain, OD, remove = FALSE) %>%
-  mutate(prep_type = "+RT") # add information on prep type
+  unite("sample_id",strain, OD, remove = FALSE) %>% # put sample_id together
+  mutate(prep_type = "+RT") # add information on cDNA prep type
 
 plate_cq_data
 ```
@@ -113,8 +131,6 @@ Next we plot all the data to visualise the unnormalised data points. These visua
 
 Here we use functions from `ggplot` to plot the data. The interesting output is Cq values, which go on the y axis. The data measures three target genes in two strains in five different growth conditions. So the first plot we make has one plot panel or facet for each growth condition. Each facet shows values for all three targets and two strains, with the targets on the x-axis and strains indicated by colour and shape. 
 
-[The text I deleted from the above paragraph was thoughtful, but I felt that it was not crucial to the overall message or understanding. I tend to think shorter is better for this kind of thing. I don't mean to say that there was something wrong with it.] 
-
 ```{r plot_unnormalized,dependson="load_plates",fig.height=3,fig.width=4}
 ggplot(data = plate_cq_data) +
   geom_point(aes(x = target_id, y = cq, shape = strain, colour = strain),
@@ -136,13 +152,14 @@ More generally, the plot shows that the technical replicates are very close toge
 
 ## Normalize Cq to 5S rRNA, within Sample only 
 
-Next we "normalize" by calculating delta Cq for each target in each sample. We treat the 5S rRNA as a reference gene, and for other mRNA targets estimate a `delta_cq` value of the difference against the median value for 5S rRNA within the same sample. This normalisation is performed by the `calculate_deltacq_bysampleid` function. This function works as follows: 
+Next we "normalize" by calculating delta Cq (\eqn{\Delta Cq)}) for each target in each sample. We treat the 5S rRNA as a reference gene, and for other mRNA targets estimate a `delta_cq` value of the difference against the median value for 5S rRNA within the same sample. This normalisation is performed by the `calculate_deltacq_bysampleid` function. This function works as follows: 
 
 * You provide the data and the name of the reference gene (i.e. `ref_target_ids = "5S"`)
 * The function will calculate the median Cq of the reference gene separately for each sample
-* Then the function will subtract that value from the Cq for every other measured gene, again separately for each sample
+* Then the function will subtract that value from the Cq for every other measured gene, again separately for each sample, adding a `delta_cq` column to its output data
+* The function also calculates relative abundance or normalized ratio to the reference targets, \eqn{2^(-\Delta Cq)}, adding a `rel_abund` column to its output data.
 
-[I may have some details wrong above, but you get the idea. I think here it's helpful to explain the function in detail because the reader's goal is to learn how to use this function and what it does. Also describe what happens if you use multiple reference genes.]
+If you use *multiple* reference target ids, the function will take the median across Cq values of *all* the reference target ids. You can also ask the function to use a different summary, e.g. mean instead of median. See the help file `?calculate_deltacq_bysampleid` for more details.
 
 As ever, we print the data to screen as a sanity check.
 
@@ -171,7 +188,7 @@ This looks quite similar to the unnormalized data plot, except as expected the r
 
 ## Calculate a summary value for each sample-target combination
 
-Having made normalized values, we use `group_by` and `summarize` from the `dplyr` package to calculate the median values for each sample [this could possibly be a function provided by your package?]. This makes a smaller table by collapsing 3 technical replicates into a single summary value for each `sample_id`-`target_id` combination.
+Having made normalized values, we use `group_by` and `summarize` from the `dplyr` package to calculate the median values of `delta_cq` and `rel_abund` for each sample. This makes a smaller table by collapsing 3 technical replicates into a single summary value for each `sample_id`-`target_id` combination.
 
 ```{r median_counts,dependson="load_plates"}
 plate_med <- plate_norm %>%
@@ -190,10 +207,11 @@ It can be easier to focus on a smaller subset of the data. Here we print just th
 filter(plate_med, target_id == "glyS")
 ```
 
+This table confirms that `glyS` summary Cq values are similar for both strains at a given OD value, and higher at `ODON`.
 
 ## Plot delta Cq for each OD separately across genes
 
-Here we plot the summarised delta Cq one way: each OD on a separate facet panel. This emphasizes comparisons between target genes at the same OD. We exclude the reference target gene, 5S, because for that delta Cq is always zero.
+Here we plot the summarized delta Cq, which now has a single point for each `sample_id`-`target_id` combination (representing the summary of the three technical replicates). As above, we plot OD on a separate facet panel to emphasizes comparisons between target genes at the same OD. We exclude the reference target gene, 5S, because for that delta Cq is always zero.
 
 ```{r plot_deltacq_vs_gene,dependson="median_counts",fig.height=3,fig.width=4}
 ggplot(data = filter(plate_med, target_id != "5S") ) + 
@@ -205,13 +223,9 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
-[Possibly omit the above graph, not sure how important it is for the reader. You've already shown plots of `delta_cq` above so the point about how delta Cq changes the data has already been made]
-
 ## Plot relative abundance for each OD separately across genes
 
-The normalization and summary calculations also report abundance relative to reference target, 5S rRNA. Precisely, this is \eqn{2^(-\Delta Cq)}. Now we plot the relative abundance, again with each OD on a separate facet panel, which emphasizes comparisons between target genes at the same OD.
-
-[I don't see where `rel_abund` is calculated, is it in `calculate_deltacq_bysampleid`? If so, mention that above. I guess it must be calculated there, looking back. I think it's a nice idea to have it automatically calculated in that function! I would mention it and the definition of relative abundance at that point. The graphs can still go here]
+The `calculate_deltacq_bysampleid` function also reports abundance relative to reference target, 5S rRNA. Precisely, this is \eqn{2^(-\Delta Cq)}. Now we plot the relative abundance, again with each OD on a separate facet panel, which emphasizes comparisons between target genes at the same OD.
 
 ```{r plot_relabund_vs_gene,dependson="median_counts",fig.height=3,fig.width=4}
 ggplot(data = filter(plate_med, target_id != "5S") ) + 
@@ -225,7 +239,7 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
 
 ## Plot relative abundance for each gene separately across ODs
 
-Here we plot the relative abundance a different way: each target gene on a separate facet panel. This emphasizes changes in each target genes across ODs.
+Here we plot the summarized relative abundance a different way: each target gene on a separate facet panel. This emphasizes changes in each target genes across ODs.
 
 ```{r plot_relabund_vs_OD,dependson="median_counts",fig.height=3,fig.width=4}
 ggplot(data = filter(plate_med, target_id != "5S") ) + 
@@ -238,17 +252,23 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
-[again I think this plot can be omitted]
+We included this alternate plot to emphasize that the flexibility of ggplot enables trying of many different plotting strategies, to find one that is most appropriate for your data.
+
 
 # Doubly normalized data: delta delta Cq
 
 ## Calculate delta delta cq against a chosen reference sample
 
-Our goal here is to compare the normalized levels of glyS and spoVG in one growth condition to another growth condition, i.e. delta delta Cq. This is an estimate of log2 fold change. In this case, the reference growth conditon is the wild-type strain at OD 0.5.
+Our goal here is to compare the normalized levels of glyS and spoVG in one growth condition to another growth condition, i.e. delta delta Cq (\eqn{\Delta \Delta Cq}). This is an estimate of log2 fold change. In this case, the reference growth condition is the wild-type strain at OD 0.5.
 
 This relies on a function in tidyqpcr, `calculate_deltadeltacq_bytargetid`.
 
-[explain this function in detail (how to use and what it does), as I suggested for `calculate_deltacq_bysampleid` above]
+* You provide data with `delta_cq` already calculated, and the name of the reference samples (i.e. `ref_sample_ids = "WT_OD0.5"`)
+* The function will calculate the median delta_cq of the reference samples separately for each target.
+* Then the function will subtract that value from the `delta_cq` for every other measured gene, again separately for each sample, adding a `deltadelta_cq` column to its output data
+* The function also calculates fold change of targets with respect to the reference samples, \eqn{2^(-\Delta \Delta Cq)}, adding a `fold_change` column to its output data.
+
+If you use *multiple* reference sample ids, the function will take the median across Cq values of *all* the reference target ids. For example, you might use multiple biological replicate samples of a single set of conditions. You can also ask the function to use a different summary, e.g. mean instead of median. See the help file `?calculate_deltadeltacq_bytargetid` for more details.
 
 ```{r calculate_deltadeltacq,dependson="normalize_counts"}
 plate_deltanorm <- plate_norm %>%
@@ -285,7 +305,7 @@ ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) +
 
 ## Plot fold change for each target gene
 
-NOTE: needs explanation.
+Here we plot the fold change for each target gene, time-course style against OD.
 
 ```{r plot_foldchange_bytarget,dependson="calculate_deltadeltacq",fig.height=3,fig.width=4}
 ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) + 
@@ -303,8 +323,8 @@ ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) +
 In this vignette, you have learned the basic workflow for analyzing qPCR data: 
 
 * Create the `sample_id` column to uniquely identify each biological sample
-* Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalises gene levels to the levels of a reference gene within each sample.
-* Calculate delta delta Cq and fold change using `calculate_deltadeltacq_bytargetid`. This process normalises each gene levels for each sample to levels of the same gene in a control sample. 
+* Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalizes gene levels to the levels of a reference gene within each sample.
+* Calculate delta delta Cq and fold change using `calculate_deltadeltacq_bytargetid`. This process normalizes each gene levels for each sample to levels of the same gene in a control sample. 
 
 # Notes on normalization, reference targets, and reference samples
 
@@ -312,7 +332,7 @@ In this section, we discuss the process of normalization and the choices of refe
 
 Normalization is a tool for making specific comparisons in specific experimental designs.
 
-Tidyqpcr automatically implements one common approach, the `delta Cq` method, in `calculate_deltacq_bysampleid`. The user picks one or more reference targets, and then within each sample the function the median Cq of the reference targets from all other Cqs. The user can also choose a different summary function such as mean. If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested. The MIQE guidelines [link?] are clear, and correct, that reliable quantification usually requires at least three reference genes.
+Tidyqpcr automatically implements one common approach, the `delta Cq` method, in `calculate_deltacq_bysampleid`. The user picks one or more reference targets, and then within each sample the function the median Cq of the reference targets from all other Cqs. The user can also choose a different summary function such as mean. If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested. The [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) are clear, and correct, that reliable quantification usually requires at least three reference genes.
 
 The next step is to calculate the delta delta Cq, normalising each sample to a control sample. Specifically, `calculate_deltadeltacq_bytargetid` estimates the relative change in individual target id delta Cq values, compared to their values in one of more reference sample ids. If a single sample id were chosen as reference, then values in that sample will be given summary delta delta Cq of zero. Usually, an experiment would have multiple biological replicates, and so at least those replicates for a single condition would be chosen as reference sample ids.
 
