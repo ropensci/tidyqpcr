@@ -88,6 +88,7 @@ The [plate setup vignette](platesetup_vignette.html) describes how to "set up" a
 
 Note that we "cleaned up" the data file for this vignette, to remove irrelevant rows and columns. For information about how to load Cq data directly from Lightcycler outputs, see `?read_lightcycler_1colour_cq`.
 
+
 ## Organize sample and target data on the plate
 
 The `sample_info` column contains values like `WT OD0.5 glyS`, where `WT` describes the strain, `OD0.5` describes the growth stage (optical density), and `glyS` describes the target gene that is detected. These three pieces of information are delimited by spaces. We use the `separate` function, from the `tidyr` package, to separate the three pieces of information in `sample_info` into three columns, (`strain`, `OD`, `target_id`), each of which contains a single piece of information. Note that tidyqpcr insistently refers to the targets detected in a qPCR experiment as `target_id`, as they could be primer sets or hydrolysis probes targeting distinct gene regions, RNA isoforms, SNPs, or chromosomal locations for ChIP studies. In this experiment we have three amplicons, each from a different RNA. 
@@ -254,7 +255,6 @@ ggplot(data = filter(plate_med, target_id != "5S") ) +
 
 We included this alternate plot to emphasize that the flexibility of ggplot enables trying of many different plotting strategies, to find one that is most appropriate for your data.
 
-
 # Doubly normalized data: delta delta Cq
 
 ## Calculate delta delta cq against a chosen reference sample
@@ -320,11 +320,11 @@ ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) +
 
 # Conclusion
 
-In this vignette, you have learned the basic workflow for analyzing qPCR data: 
+In this vignette, you have learned the basic workflow for analyzing Cq values from qPCR data: 
 
-* Create the `sample_id` column to uniquely identify each biological sample
-* Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalizes gene levels to the levels of a reference gene within each sample.
-* Calculate delta delta Cq and fold change using `calculate_deltadeltacq_bytargetid`. This process normalizes each gene levels for each sample to levels of the same gene in a control sample. 
+* Create the `sample_id` column to uniquely identify each biological sample.
+* Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalizes target gene values to the values of one or more reference targets within each sample.
+* Calculate delta delta Cq and fold change using `calculate_deltadeltacq_bytargetid`. This process normalizes each target gene value for each sample to values of the same target in one or more reference samples. 
 
 # Notes on normalization, reference targets, and reference samples
 
@@ -332,7 +332,7 @@ In this section, we discuss the process of normalization and the choices of refe
 
 Normalization is a tool for making specific comparisons in specific experimental designs.
 
-Tidyqpcr automatically implements one common approach, the `delta Cq` method, in `calculate_deltacq_bysampleid`. The user picks one or more reference targets, and then within each sample the function the median Cq of the reference targets from all other Cqs. The user can also choose a different summary function such as mean. If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested. The [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) are clear, and correct, that reliable quantification usually requires at least three reference genes.
+Tidyqpcr automatically implements one common approach, the `delta Cq` method, in `calculate_deltacq_bysampleid`. The user picks one or more reference targets, and then within each sample the function the median Cq of the reference targets from all other Cqs. The user can also choose a different summary function such as mean. If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested. The [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) are clear, and correct, that reliable quantification usually requires at least three carefully chosen reference targets.
 
 The next step is to calculate the delta delta Cq, normalising each sample to a control sample. Specifically, `calculate_deltadeltacq_bytargetid` estimates the relative change in individual target id delta Cq values, compared to their values in one of more reference sample ids. If a single sample id were chosen as reference, then values in that sample will be given summary delta delta Cq of zero. Usually, an experiment would have multiple biological replicates, and so at least those replicates for a single condition would be chosen as reference sample ids.
 
