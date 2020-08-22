@@ -79,7 +79,7 @@ read_lightcycler_1colour_cq <- function(
         "include", "color", "well", "sample_info",
         "cq", "concentration", "standard", "status"
     ), 
-    col_types = "liccnnil",
+    col_types = "liccddil",
     ...) {
     readr::read_tsv(file = filename,
                     skip = 2,
