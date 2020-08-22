@@ -59,12 +59,14 @@ plate_cq_extdata <- read_lightcycler_1colour_cq(
   "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt"
   ) %>%
   dplyr::filter(! well %in% wells_exclude ) %>% # exclude blank wells
-  dplyr::select(well, sample_info, cq)
+  dplyr::select(well, sample_info, cq) 
 
+# the call to format prints all values of cq with 2 decimal places
 readr::write_tsv(
-  x = plate_cq_extdata,
+  x = plate_cq_extdata %>%
+    mutate(cq = format(cq,nsmall=2)),
   path = "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt"
-  )
+)
 
 plate_cq_extdata
 ```
