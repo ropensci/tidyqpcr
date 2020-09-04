@@ -60,7 +60,10 @@ Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, 
 
 # Features 
 
+tidyqpcr can be used to analyse qPCR data from any nucleic acid source - DNA for qPCR or ChIP-qPCR, RNA for RT-qPCR.
+
 Currently tidyqpcr has functions that support relative quantification, but not yet absolute quantification.
+
 
 ## Current features
 
