@@ -2,8 +2,8 @@
 % Please edit documentation in R/calculate_deltacq.R
 \name{calculate_deltacq_bysampleid}
 \alias{calculate_deltacq_bysampleid}
-\title{Calculate delta cq to normalize quantification cycle (log2-fold) data within
-sample_id.}
+\title{Calculate delta cq (\eqn{\Delta Cq}) to normalize quantification cycle
+(log2-fold) data within sample_id.}
 \usage{
 calculate_deltacq_bysampleid(cq_df, ref_target_ids, norm_function = median)
 }
@@ -12,25 +12,27 @@ calculate_deltacq_bysampleid(cq_df, ref_target_ids, norm_function = median)
 `cq`) and tid_name (default `target_id`). Crucially, sample_id should be
 the same for different technical replicates measuring identical reactions
 in different wells of the plate, but differ for different biological and
-experimental replicates.}
+experimental replicates. See tidyqpcr vignettes for examples.}
 
-\item{ref_target_ids}{names of PCR probes (or primer sets) to normalize by,
-i.e. reference genes}
+\item{ref_target_ids}{names of targetss to normalize by, i.e. reference
+genes, hydrolysis probes, or primer sets. This can be one reference target
+id, a selection of multiple target ids, or even all measured target ids. In
+the case of all of them, the delta Cq value would be calculated relative to
+the median (or other `norm_function`) of all measured targets.}
 
-\item{norm_function}{Function to use to calculate the value to
-normalize by on given scale.
-Default is median, alternatively could use mean.}
+\item{norm_function}{Function to use to calculate the value to normalize by
+on given scale. Default is median, alternatively could use mean.}
 }
 \value{
 data frame like cq_df with three additional columns:
 
-  \tabular{ll}{
-   ref_cq    \tab summary (median/mean) cq value for reference target ids \cr
-   delta_cq  \tab normalized value, \eqn{\Delta Cq} \cr
-   rel_abund \tab normalized ratio, \eqn{2^(-\Delta Cq)}
-   }
+  \tabular{ll}{ ref_cq    \tab summary (median/mean) cq value for reference
+  target ids \cr delta_cq  \tab normalized value, \eqn{\Delta Cq} \cr
+  rel_abund \tab normalized ratio, \eqn{2^(-\Delta Cq)} }
 }
 \description{
-Calculate delta cq to normalize quantification cycle (log2-fold) data within
-sample_id.
+This function implements relative quantification by the delta Cq method. For
+each sample, the Cq values of all targets (e.g. genes, probes, primer sets)
+are compared to one or more reference target ids specified in
+`ref_target_ids`.
 }

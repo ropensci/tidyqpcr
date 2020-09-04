@@ -48,10 +48,11 @@ We want to make it easier for scientists to produce reliable and interpretable r
 
 # Status
 
-As of April 2020, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+As of August 2020, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
 
 ## News
 
+* August 2020, relative quantification (delta delta Cq) added with function `calculate_deltadeltacq_bytargetid`, and a vignette illustrationg this with small data from a 96-well plate.
 * June 2020, upgrades that break previous code. All function and variable names have been changed to snake case, i.e. lower case with underscore. Commits up to #ee6d192 change variable and function names. tidyqpcr now uses `sample_id` for nucleic acid sample (replaces Sample or SampleID), `target_id` for primer set/ probe (replaces TargetID or Probe), `prep_type` for nucleic acid preparation type (replaces Type), and `cq` for quantification cycle (replaces Cq or Ct). 
 It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
 Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
@@ -59,20 +60,23 @@ Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, 
 
 # Features 
 
+Currently tidyqpcr has functions that support relative quantification, but not yet absolute quantification.
+
 ## Current features
 
 * every object is a tibble / data frame, no special data classes to learn
 * lay out and display 96/384-well plates for easy experimental setup (`label_plate_rowcol`, `create_blank_plate`, ...)
-* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`)
-* calibration of primer sets including estimating efficiencies and visualization of curves (`calculate_efficiency`, )
-* visualization of amplification and melt curves (`calculate_drdt_plate`, and see vignettes)
-* normalization of Cq data to one or more reference probe sets by delta count method (`calculate_normcq`, `calculate_deltacq_bysampleid`)
 * flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/) (see vignettes)
+* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`)
+* calibration of primer sets including estimating efficiencies and visualization of curves (`calculate_efficiency`, and see vignettes)
+* visualization of amplification and melt curves (`calculate_drdt_plate`, and see vignettes)
+* delta Cq: normalization/ relative quantification of Cq data to one or more reference targets by delta count method (`calculate_normcq`, `calculate_deltacq_bysampleid`)
+* delta delta Cq: normalization of delta Cq data across multiple samples (`calculate_deltadeltacq_bytargetid`)
 
 ## Future priorities
 
 * including primer efficiencies in quantification
-* an open-source and tested Cq calculation algorithm
+* an open-source and tested Cq calculation function, from amplification curves
 * multi-colour (hydrolysis probe) detection
 * extend to 1536-well plates 
 * metadata handling compatible with RDML format
@@ -111,7 +115,8 @@ library(tidyqpcr)
 The best place to start is the vignettes, which offer tutorials and example data analyses including figures. Currently there are 3 vignettes:
 
 * [IntroDesignPlatesetup](vignettes/platesetup_vignette.Rmd) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
-* [MultifactorialExample](vignettes/multifactor_vignette.Rmd) - Example design and analysis of a (real) multifactorial qPCR experiment.
+* [DeltaCq96wellExample](vignettes/deltacq_96well_vignette.Rmd) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
+* [MultifactorialExample](vignettes/multifactor_vignette.Rmd) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
 * [PrimerCalibration](vignettes/calibration_vignette.Rmd) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
 
 To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
@@ -136,5 +141,5 @@ If you want to fix bugs or add features yourself, that's great. tidyqpcr develop
 * follow the [tidyverse style guide](https://style.tidyverse.org/).
 * document functions with [roxygen2](https://roxygen2.r-lib.org/), as described in [the R packages book](http://r-pkgs.had.co.nz/man.html).
 * check the package with `R CMD check` / `devtools::check()`, as explained in [the R packages book](http://r-pkgs.had.co.nz/check.html).
-* including, check that all the vignettes run
-* put in a pull request to the main repository, we will review
+* including, check that all the vignettes run.
+* put in a pull request to the main repository, we will review, then we will accept or suggest changes.

@@ -16,10 +16,12 @@ Imports:
     forcats,
     assertthat,
     lifecycle
-Suggests: knitr, 
-    rmarkdown, 
+Suggests: 
+    knitr,
+    rmarkdown,
     tidyverse,
-    cowplot
+    cowplot,
+    testthat
 VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true

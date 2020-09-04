@@ -36,9 +36,10 @@ data frame like cq_df with three additional columns:
 }
 \description{
 This function does a global normalization, where all samples are compared to
-a single sample or set of reference samples. There are other experimental
-designs that require comparing samples in pairs or small groups, e.g. a time
-course comparing `delta_cq` values against a reference strain at each time
-point. For those situations, instead we recommend adapting this code to use
+one or more reference samples specified in `ref_sample_ids`. There are other
+experimental designs that require comparing samples in pairs or small groups,
+e.g. a time course comparing `delta_cq` values against a reference strain at
+each time point. For those situations, instead we recommend adapting code
+from this function, changing the grouping variables used in to
 `dplyr::group_by` to draw the contrasts appropriate for the experiment.
 }
