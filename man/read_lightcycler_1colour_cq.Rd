@@ -9,7 +9,7 @@ read_lightcycler_1colour_cq(
   skip = 2,
   col_names = c("include", "color", "well", "sample_info", "cq", "concentration",
     "standard", "status"),
-  col_types = "liccnnil",
+  col_types = "liccddil",
   ...
 )
 }

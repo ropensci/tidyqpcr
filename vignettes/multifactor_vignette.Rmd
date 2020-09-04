@@ -167,13 +167,13 @@ ggplot(data = plates) +
 ```{r normalize_counts,dependson="load_plates"}
 platesnorm <- plates %>%
   filter(prep_type == "+RT") %>%
-  calculate_deltacq_bysampleid(norm_target_ids = "PGK1")
+  calculate_deltacq_bysampleid(ref_target_ids = "PGK1")
 
 platesmed <- platesnorm %>%
   group_by(sample_id, condition, biol_rep, heat, drug, target_id) %>%
   summarize(
-    cq = median(value_norm, na.rm = TRUE),
-    Abund = median(value_normexp, na.rm = TRUE)
+    delta_cq = median(delta_cq, na.rm = TRUE),
+    rel_abund = median(rel_abund, na.rm = TRUE)
   )
 
 filter(platesmed, target_id == "HSP26")
@@ -184,7 +184,7 @@ filter(platesmed, target_id == "HSP26")
 ```{r plot_normalized,dependson="normalize_counts",fig.height=6,fig.width=6}
 ggplot(data = platesnorm) +
   geom_point(aes(x = target_id,
-                 y = value_norm,
+                 y = delta_cq,
                  shape = condition,
                  colour = condition),
     position = position_jitter(width = 0.2, height = 0)
@@ -210,7 +210,7 @@ This plot shows all the summarized data on the same axes, but it is hard to pick
 ```{r plot_normalizedsummarized1,dependson="normalize_counts",fig.height=3,fig.width=4}
 ggplot(data = platesmed) +
   geom_point(aes(x = target_id,
-                 y = Abund,
+                 y = rel_abund,
                  shape = biol_rep,
                  colour = condition),
     position = position_jitter(width = 0.2, height = 0)
@@ -232,7 +232,7 @@ This plot shows all the summarized data "faceted" on different axes for differen
 
 ```{r plot_normalizedsummarizedbyheat,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data = platesmed) +
-  geom_point(aes(x = target_id, y = Abund, shape = biol_rep, colour = heat),
+  geom_point(aes(x = target_id, y = rel_abund, shape = biol_rep, colour = heat),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   facet_wrap(~drug, ncol = 3) +
@@ -253,7 +253,7 @@ By contrast, this plot shows all the summarized data "faceted" on different axes
 
 ```{r plot_normalizedsummarizedbydrug,dependson="normalize_counts",fig.height=3,fig.width=9}
 ggplot(data = platesmed) +
-  geom_point(aes(x = target_id, y = Abund, shape = biol_rep, colour = drug),
+  geom_point(aes(x = target_id, y = rel_abund, shape = biol_rep, colour = drug),
     position = position_jitter(width = 0.2, height = 0)
   ) +
   facet_wrap(~heat, ncol = 3) +
