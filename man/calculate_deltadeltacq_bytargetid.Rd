@@ -35,6 +35,11 @@ data frame like cq_df with three additional columns:
   normalized fold-change ratio, \eqn{2^(-\Delta \Delta Cq)} }
 }
 \description{
+Here, \eqn{\Delta \Delta Cq} is positive if a target is more highly
+detected in the relevant sample, compared to reference samples. The
+fold change, \eqn{2^{\Delta \Delta Cq}}, is also reported.
+}
+\details{
 This function does a global normalization, where all samples are compared to
 one or more reference samples specified in `ref_sample_ids`. There are other
 experimental designs that require comparing samples in pairs or small groups,

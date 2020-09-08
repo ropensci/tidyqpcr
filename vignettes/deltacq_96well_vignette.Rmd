@@ -292,7 +292,7 @@ Note that in the summarised table `plate_deltanorm_med`, the reference target `5
 
 ## Plot delta delta Cq (log2-fold change) for each target gene
 
-NOTE: is this meant to be upside-down here? Or need we reverse the sign on delta delta Cq??
+Here, delta delta Cq is positive when a target is more highly detected in the relevant sample, compared to reference samples.
 
 ```{r plot_deltadeltacq_bytarget,dependson="calculate_deltadeltacq",fig.height=3,fig.width=4.25}
 ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) + 

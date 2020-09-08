@@ -93,6 +93,10 @@ calculate_deltacq_bysampleid <- function(cq_df,
 #' Calculate delta delta cq (\eqn{\Delta \Delta Cq}) to globally normalize
 #' quantification cycle (log2-fold) data across sample_id.
 #'
+#' Here, \eqn{\Delta \Delta Cq} is positive if a target is more highly
+#' detected in the relevant sample, compared to reference samples. The
+#' fold change, \eqn{2^{\Delta \Delta Cq}}, is also reported.
+#'
 #' This function does a global normalization, where all samples are compared to
 #' one or more reference samples specified in `ref_sample_ids`. There are other
 #' experimental designs that require comparing samples in pairs or small groups,
@@ -138,7 +142,7 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
         dplyr::rename(ref_delta_cq = .data$value_to_norm_by) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(
-               deltadelta_cq = .data$delta_cq - .data$ref_delta_cq,
-               fold_change   = 2^-.data$deltadelta_cq) %>%
+               deltadelta_cq = -.data$delta_cq + .data$ref_delta_cq,
+               fold_change   = 2^.data$deltadelta_cq) %>%
         return()
 }
