@@ -11,9 +11,8 @@ Depends:
 Imports:
     rlang,
     dplyr,
-    ggplot2
-Imports:
     readr,
+    ggplot2,
     forcats,
     assertthat,
     lifecycle

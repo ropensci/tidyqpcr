@@ -29,13 +29,8 @@ export(scale_x_log2nice)
 export(scale_y_log10nice)
 export(scale_y_log2nice)
 importFrom(forcats,as_factor)
-<<<<<<< HEAD
-||||||| 53deb8e
-importFrom(magrittr,"%>%")
-=======
 importFrom(rlang,.data)
 importFrom(stats,median)
->>>>>>> 721f3758e35f2a2ea76fec0b13d7996802b9ff57
 importFrom(tibble,as_tibble)
 importFrom(tibble,tibble)
 importFrom(tidyr,"%>%")
