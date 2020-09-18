@@ -7,13 +7,16 @@ Description: This package is for reproducible quantitative PCR (qPCR) analysis u
 Depends: 
     R (>= 3.1.0),
     tibble,
-    tidyr,
+    tidyr
+Imports:
+    rlang,
     dplyr,
     ggplot2
 Imports:
     readr,
     forcats,
-    assertthat
+    assertthat,
+    lifecycle
 Suggests: knitr, 
     rmarkdown, 
     tidyverse,
@@ -21,4 +24,5 @@ Suggests: knitr,
 VignetteBuilder: knitr
 License: Apache License 2.0
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
+Encoding: UTF-8
