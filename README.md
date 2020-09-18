@@ -57,7 +57,6 @@ As of August 2020, this software is in development. [Edward Wallace](https://git
 It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
 Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
 
-
 # Features 
 
 tidyqpcr can be used to analyse qPCR data from any nucleic acid source - DNA for qPCR or ChIP-qPCR, RNA for RT-qPCR.
