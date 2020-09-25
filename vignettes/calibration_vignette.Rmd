@@ -77,7 +77,7 @@ target_id_levels <- paste(gene_name_values,
 )
 
 
-rowkey <- data.frame(
+rowkey <- tibble(
   well_row = LETTERS[1:16],
   gene_name = gene_name_values,
   target_id = factor(target_id_levels, levels = target_id_levels)
