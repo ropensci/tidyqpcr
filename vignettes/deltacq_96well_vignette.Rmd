@@ -77,9 +77,11 @@ plate_cq_extdata
 We start by loading data from the experiment. We print the data to screen here, it is always a good idea to look at the data to find out if it has loaded correctly and behaves as expected, or not.
 
 ```{r load_plates,dependson="label_plates",results="show"}
+library(tidyverse)
+
 plate_cq_extdata <- read_tsv(
-  "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt"
-  )
+    system.file("extdata", "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt", package = "tidyqpcr")
+    )
 
 plate_cq_extdata
 ```
