@@ -3,35 +3,38 @@
 \name{create_blank_plate}
 \alias{create_blank_plate}
 \alias{create_blank_plate_96well}
-\alias{make_row_names_LC_1536}
-\alias{make_row_names_Echo_1536}
+\alias{make_row_names_lc1536}
+\alias{make_row_names_echo1536}
 \alias{create_blank_plate_1536well}
 \title{Create a blank plate template as a tibble}
 \usage{
-create_blank_plate(WellR = LETTERS[1:16], WellC = 1:24)
+create_blank_plate(well_row = LETTERS[1:16], well_col = 1:24)
 
 create_blank_plate_96well()
 
-make_row_names_LC_1536()
+make_row_names_lc1536()
 
-make_row_names_Echo_1536()
+make_row_names_echo1536()
 
-create_blank_plate_1536well(WellR = make_row_names_LC_1536(), WellC = 1:48)
+create_blank_plate_1536well(
+  well_row = make_row_names_lc1536(),
+  well_col = 1:48
+)
 }
 \arguments{
-\item{WellR}{Vector of Row labels, usually LETTERS}
+\item{well_row}{Vector of Row labels, usually LETTERS}
 
-\item{WellC}{Vector of Column labels, usually numbers}
+\item{well_col}{Vector of Column labels, usually numbers}
 }
 \value{
-tibble (data frame) with columns WellR, WellC, Well. This contains
-  all pairwise combinations of WellR and WellC, as well as individual Well
-  names. Both WellR and WellC are coerced to factors (even if WellC
-  is supplied as numbers), to ensure order is consistent.
-  
-  However, Well is a character vector as that is the default behaviour of 
+tibble (data frame) with columns well_row, well_col, well. This
+  contains all pairwise combinations of well_row and well_col, as well as
+  individual well names. Both well_row and well_col are coerced to factors
+  (even if well_col is supplied as numbers), to ensure order is consistent.
+
+  However, well is a character vector as that is the default behaviour of
   "unite", and display order doesn't matter.
-  
+
   Default value describes a full 384-well plate.
 }
 \description{
@@ -42,25 +45,27 @@ For more help, examples and explanations, see the plate setup vignette:
 \itemize{
 \item \code{create_blank_plate_96well}: create blank 96-well plate
 
-\item \code{make_row_names_LC_1536}: Row names for 1536-well plates on Lightcycler 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+\item \code{make_row_names_lc1536}: Row names for 1536-well plates on
+Roche Lightcycler (tm) 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
 
-\item \code{make_row_names_Echo_1536}: Row names for 1536-well plates on Labcyte Echo A,B,...,Z,AA,AB,...,AF.
+\item \code{make_row_names_echo1536}: Row names for 1536-well plates on
+Labcyte Echo A,B,...,Z,AA,AB,...,AF.
 
 \item \code{create_blank_plate_1536well}: create blank 1536-well plate
 }}
 
 \examples{
-create_blank_plate(WellR=LETTERS[1:2],WellC=1:3)
+create_blank_plate(well_row=LETTERS[1:2],well_col=1:3)
 create_blank_plate_96well()
 
 }
 \seealso{
 Other plate creation functions: 
-\code{\link{create_colkey_4dilutions_mRTNT_in24}()},
-\code{\link{create_colkey_6dilutions_mRTNT_in24}()},
-\code{\link{create_colkey_6in24}()},
-\code{\link{create_rowkey_4in16}()},
-\code{\link{create_rowkey_8in16_plain}()},
+\code{\link{create_colkey_4diln_2ctrl_in_24}()},
+\code{\link{create_colkey_6_in_24}()},
+\code{\link{create_colkey_6diln_2ctrl_in_24}()},
+\code{\link{create_rowkey_4_in_16}()},
+\code{\link{create_rowkey_8_in_16_plain}()},
 \code{\link{display_plate}()},
 \code{\link{label_plate_rowcol}()}
 }

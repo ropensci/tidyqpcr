@@ -7,35 +7,38 @@
 label_plate_rowcol(plate, rowkey = NULL, colkey = NULL, coercefactors = TRUE)
 }
 \arguments{
-\item{plate}{tibble (data frame) with variables WellR, WellC, Well. This
-would usually be produced by create_blank_plate(). It is possible to
+\item{plate}{tibble (data frame) with variables well_row, well_col, well.
+This would usually be produced by create_blank_plate(). It is possible to
 include other information in additional variables.}
 
-\item{rowkey}{tibble (data frame) describing plate rows, with variables WellR
-and others.}
+\item{rowkey}{tibble (data frame) describing plate rows, with variables
+well_row and others.}
 
 \item{colkey}{tibble (data frame) describing plate columns, with variables
-WellC and others.}
+well_col and others.}
 
-\item{coercefactors}{if TRUE, coerce WellR in rowkey and WellC in colkey to factors}
+\item{coercefactors}{if TRUE, coerce well_row in rowkey and well_col in
+colkey to factors}
 }
 \value{
-tibble (data frame) with variables WellR, WellC, Well, and others. 
-  
-  This tibble contains all combinations of WellR and WellC found in the input
-  plate, and all information supplied in rowkey and colkey distributed across
-  every well of the plate. Return plate is ordered by row WellR then column
-  WellC.
-  
-  Note this ordering may cause a problem if WellC is supplied as a character
-  (1,10,11,...), instead of a factor or integer (1,2,3,...). For this reason,
-  the function by default converts WellR in `rowkey`, and WellC in `colkey`,
-  to factors, taking factor levels from `plate`, and warns the user.
-  
-  Other tidyqpcr functions require plate plans to contain variables SampleID,
-  TargetID, and Type, so `label_plate_rowcol` will warn if any of these are
-  missing. This is a warning, not an error, because these variables can be
-  added by users later.
+tibble (data frame) with variables well_row, well_col, well, and
+  others.
+
+  This tibble contains all combinations of well_row and well_col found in the
+  input plate, and all information supplied in rowkey and colkey distributed
+  across every well of the plate. Return plate is ordered by row well_row
+  then column well_col.
+
+  Note this ordering may cause a problem if well_col is supplied as a
+  character (1,10,11,...), instead of a factor or integer (1,2,3,...). For
+  this reason, the function by default converts well_row in `rowkey`, and
+  well_col in `colkey`, to factors, taking factor levels from `plate`, and
+  warns the user.
+
+  Other tidyqpcr functions require plate plans to contain variables
+  sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
+  any of these are missing. This is a warning, not an error, because these
+  variables can be added by users later.
 }
 \description{
 See vignettes for further examples
@@ -46,11 +49,11 @@ label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
 \seealso{
 Other plate creation functions: 
 \code{\link{create_blank_plate}()},
-\code{\link{create_colkey_4dilutions_mRTNT_in24}()},
-\code{\link{create_colkey_6dilutions_mRTNT_in24}()},
-\code{\link{create_colkey_6in24}()},
-\code{\link{create_rowkey_4in16}()},
-\code{\link{create_rowkey_8in16_plain}()},
+\code{\link{create_colkey_4diln_2ctrl_in_24}()},
+\code{\link{create_colkey_6_in_24}()},
+\code{\link{create_colkey_6diln_2ctrl_in_24}()},
+\code{\link{create_rowkey_4_in_16}()},
+\code{\link{create_rowkey_8_in_16_plain}()},
 \code{\link{display_plate}()}
 }
 \concept{plate creation functions}
