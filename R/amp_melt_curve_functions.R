@@ -71,6 +71,7 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
     assertthat::assert_that(is.numeric(x))
     assertthat::assert_that(is.numeric(y))
     assertthat::assert_that(length(x) == length(y))
+    assertthat::assert_that(method %in% c("diff", "spline"))
     if (method == "diff") {
        return(-c(diff(y) / diff(x), NA))
     } else if (method == "spline") {

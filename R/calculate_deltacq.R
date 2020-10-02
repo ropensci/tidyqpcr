@@ -85,8 +85,7 @@ calculate_deltacq_bysampleid <- function(cq_df,
         dplyr::ungroup() %>%
         dplyr::mutate(
                delta_cq    = .data$cq - .data$ref_cq,
-               rel_abund   = 2^-.data$delta_cq) %>%
-        return()
+               rel_abund   = 2^-.data$delta_cq)
 }
 
 #' Calculate delta delta cq (\eqn{\Delta \Delta Cq}) to globally normalize
@@ -138,6 +137,5 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
         dplyr::ungroup() %>%
         dplyr::mutate(
                deltadelta_cq = .data$delta_cq - .data$ref_delta_cq,
-               fold_change   = 2^-.data$deltadelta_cq) %>%
-        return()
+               fold_change   = 2^-.data$deltadelta_cq)
 }
