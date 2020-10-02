@@ -31,7 +31,7 @@ test_that("Check calculate_dydx_1 uses correct method or prints an error", {
     expect_error(calculate_dydx_1(c(1,5,8,10),c(4,12,11,9), method = "line"))
 })
 
-calculate_drdt_plate("Check calculate_drdt_plate runs across all wells", {
+test_that("Check calculate_drdt_plate runs across all wells", {
     
     plate_fluor_data <- tibble(well =rep(c("A1","B2","C5"), each = 20), 
            program_no = 2, 
@@ -49,7 +49,7 @@ calculate_drdt_plate("Check calculate_drdt_plate runs across all wells", {
     expect_equal(calculate_drdt_plate(plate_fluor_data), plate_dRdT_data)
 })
 
-calculate_drdt_plate("Check getdRdTall calls calculate_drdt_plate correctly", {
+test_that("Check getdRdTall calls calculate_drdt_plate correctly", {
     
     plate_fluor_data <- tibble(well =rep(c("A1","B2","C5"), each = 20), 
                                program_no = 2, 
