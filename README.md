@@ -1,3 +1,12 @@
+---
+uses: emibcn/badge-action@v1
+with:
+  label: 'Test coverage'
+  status: '53.4%'
+  color: 'blue,555,daf'
+  path: '.github/badges/coverage.svg'
+---
+
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
