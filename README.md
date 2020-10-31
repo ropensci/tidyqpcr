@@ -55,6 +55,7 @@ As of August 2020, this software is in development. [Edward Wallace](https://git
 * August 2020, relative quantification (delta delta Cq) added with function `calculate_deltadeltacq_bytargetid`, and a vignette illustrationg this with small data from a 96-well plate.
 * June 2020, upgrades that break previous code. All function and variable names have been changed to snake case, i.e. lower case with underscore. Commits up to #ee6d192 change variable and function names. tidyqpcr now uses `sample_id` for nucleic acid sample (replaces Sample or SampleID), `target_id` for primer set/ probe (replaces TargetID or Probe), `prep_type` for nucleic acid preparation type (replaces Type), and `cq` for quantification cycle (replaces Cq or Ct). 
 It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
+
 Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
 
 # Features 
@@ -111,6 +112,8 @@ Then load tidyqpcr as a standard package:
 ```
 library(tidyqpcr)
 ```
+**Note**
+tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2. This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded. Restarting the R session and loading tidyqpcr separately may solve such issues.
 
 ## Using tidyqpcr
 
