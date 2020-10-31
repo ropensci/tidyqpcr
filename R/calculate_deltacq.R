@@ -136,7 +136,7 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
                                          ref_sample_ids,
                                          norm_function = median,
                                          ddcq_positive = TRUE) {
-    ddcq_factor <- (-1) ^ (ddcq_positive + 1)
+    ddcq_factor <- (-1) ^ ddcq_positive
     deltacq_df %>%
         dplyr::group_by(.data$target_id) %>%
         dplyr::do(calculate_normvalue(.data,
@@ -148,6 +148,6 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
         dplyr::ungroup() %>%
         dplyr::mutate(
                deltadelta_cq = ddcq_factor *
-                   (.data$delta_cq + .data$ref_delta_cq),
-               fold_change   = 2 ^ (ddcq_factor * .data$deltadelta_cq))
+                   (.data$delta_cq - .data$ref_delta_cq),
+               fold_change   = 2 ^ .data$deltadelta_cq)
 }
