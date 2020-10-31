@@ -30,8 +30,8 @@ calculate_normvalue <- function(value_df,
                       norm_function = median) {
     # make subset of value_df where gene is one or more ref_ids
     value_to_norm_by <- dplyr::filter(value_df,
-                             !!dplyr::sym(id_name) %in% ref_ids) %>%
-        dplyr::pull(!!dplyr::sym(value_name)) %>%
+                             .data[[id_name]] %in% ref_ids) %>%
+        dplyr::pull({{value_name}}) %>%
         norm_function(na.rm = TRUE)
     #
     # assign summary (median) value to value_df$value_to_norm_by
