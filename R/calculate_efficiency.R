@@ -29,7 +29,7 @@
 #'
 calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + biol_rep) {
     if (length(unique(cq_df_1$target_id)) > 1) {
-            warning("multiple target_ids, did you mean calculate_efficiency_plate?")
+            warning("multiple target_ids, did you mean calculate_efficiency_bytargetid?")
     }
     slopefit <- stats::lm(formula = formula, data = cq_df_1)
     slopefitsummary <- summary(slopefit)
@@ -84,5 +84,6 @@ calculate_efficiency_bytargetid <- function(cq_df,
     }
     cq_df %>%
         dplyr::group_by(.data$target_id) %>%
-        dplyr::do(calculate_efficiency(.data, formula = formula))
+        dplyr::do(calculate_efficiency(.data, formula = formula)) %>%
+        dplyr::ungroup()
 }
