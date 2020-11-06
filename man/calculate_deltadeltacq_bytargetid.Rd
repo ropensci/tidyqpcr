@@ -8,7 +8,8 @@ quantification cycle (log2-fold) data across sample_id.}
 calculate_deltadeltacq_bytargetid(
   deltacq_df,
   ref_sample_ids,
-  norm_function = median
+  norm_function = median,
+  ddcq_positive = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,10 @@ calculate_deltadeltacq_bytargetid(
 
 \item{norm_function}{Function to use to calculate the value to normalize by
 on given scale. Default is median, alternatively could use mean.}
+
+\item{ddcq_positive}{(default TRUE) output \eqn{\Delta \Delta Cq} as positive
+if a target is more highly detected in the relevant sample, compared to
+reference samples.}
 }
 \value{
 data frame like cq_df with three additional columns:
@@ -35,6 +40,12 @@ data frame like cq_df with three additional columns:
   normalized fold-change ratio, \eqn{2^(-\Delta \Delta Cq)} }
 }
 \description{
+By default, \eqn{\Delta \Delta Cq} is positive if a target is more highly
+detected in the relevant sample, compared to reference samples. This can be
+flipped by setting the parameter `ddcq_positive` to `FALSE`. In either case,
+The fold change, \eqn{2^{\Delta \Delta Cq}}, is also reported.
+}
+\details{
 This function does a global normalization, where all samples are compared to
 one or more reference samples specified in `ref_sample_ids`. There are other
 experimental designs that require comparing samples in pairs or small groups,
