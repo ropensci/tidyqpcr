@@ -4,7 +4,7 @@ test_that("calculate_efficiency outputs warning to use calculate_efficiency_plat
                            biol_rep = 1,
                            dilution = c(1,0.5,0.25,1,0.5,0.25))
   
-  expect_warning(calculate_efficiency(warning_tibble), "multiple target_ids, did you mean calculate_efficiency_plate?")
+  expect_warning(calculate_efficiency(warning_tibble), "multiple target_ids, did you mean calculate_efficiency_bytargetid?")
 })
 
 test_that("calculate_efficiency calculates correct values for a given target_id", {
@@ -29,8 +29,7 @@ test_that("calculate_efficiency_bytargetid calculates correct values for a given
     test_multi_efficiency_tibble <- tibble(target_id = c("PGK1_ORF", "RPS3_ORF"),
                                      efficiency = c(`log2(dilution)` = 2.133333, `log2(dilution)` = 2.6333), # Output of lm$coefficient has underlying named list structure
                                      efficiency.sd =c(0.1442306, 0.3391),
-                                     r.squared = c(0.9733133,0.91)) %>%
-        group_by(target_id)
+                                     r.squared = c(0.9733133,0.91))
     
     expect_equal(calculate_efficiency_bytargetid(test_multi_dilution_tibble, use_prep_types=NA), test_multi_efficiency_tibble, tolerance = 0.002)
 })
