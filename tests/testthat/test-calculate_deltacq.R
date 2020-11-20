@@ -21,6 +21,7 @@ simulated_48_well_plate_with_deltacq <- simulated_48_well_plate_with_cq %>%
                         -1,0,1,0,0,0,1,0,-1,
                         1,1,5,-1,0,-1,0,-4,0),
            rel_abund = 2^-delta_cq)
+
 simulated_48_well_plate_with_deltadeltacq <- simulated_48_well_plate_with_deltacq %>%
     mutate(ref_delta_cq = rep(c(2,2,2,0,0,0,0,0,0,1,1,1), each = 3),
            deltadelta_cq = c(0,0,1,-2,-1,-1,3,3,3,
