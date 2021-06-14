@@ -109,6 +109,8 @@ devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignette
 ## Alternatively, install without building the vignetttes to remove cowplot dependency (Not recommended as vignettes contain the tutorials on using tidyqpcr)
 devtools::install_github("ewallace/tidyqpcr")
 ```
+**Note**
+Older versions of the remote package automatically convert warnings to errors during installation. Please update your remotes package to >2.3.0 in order to remove this default.
 
 Then load tidyqpcr as a standard package:
 
@@ -116,7 +118,7 @@ Then load tidyqpcr as a standard package:
 library(tidyqpcr)
 ```
 **Note**
-tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2. This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded. Restarting the R session and loading tidyqpcr separately may solve such issues. Also, older versions of the remote package automatically convert warnings to errors during installation. Please update your remotes package to >2.3.0 in order to remove this default.
+tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2. This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded. Restarting the R session and loading tidyqpcr separately may solve such issues.
 
 ## Using tidyqpcr
 
