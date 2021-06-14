@@ -104,7 +104,10 @@ Install the devtools R package, see [devtools installation instructions](https:/
 
 ```
 library(devtools)
-devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE)
+devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignettes require cowplot package
+
+## Alternatively, install without building the vignetttes to remove cowplot dependency 
+devtools::install_github("ewallace/tidyqpcr")
 ```
 
 Then load tidyqpcr as a standard package:
