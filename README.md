@@ -110,7 +110,7 @@ devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignette
 devtools::install_github("ewallace/tidyqpcr")
 ```
 **Note**
-Older versions of the remote package automatically convert warnings to errors during installation. Please update your remotes package to >2.3.0 in order to remove this default.
+older versions of the remote package automatically convert warnings to errors during installation. Please update your remotes package to >2.3.0 in order to remove this default.
 
 Then load tidyqpcr as a standard package:
 
