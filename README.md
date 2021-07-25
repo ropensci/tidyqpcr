@@ -104,8 +104,14 @@ Install the devtools R package, see [devtools installation instructions](https:/
 
 ```
 library(devtools)
-devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE)
+devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignettes require cowplot package
+
+## Alternatively, install without building the vignetttes to remove cowplot dependency 
+## (Not recommended as vignettes contain the tutorials on using tidyqpcr)
+devtools::install_github("ewallace/tidyqpcr")
 ```
+**Note**
+older versions of the remote package automatically convert warnings to errors during installation. Please update your remotes package to >2.3.0 in order to remove this default.
 
 Then load tidyqpcr as a standard package:
 

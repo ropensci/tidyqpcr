@@ -22,7 +22,7 @@
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom stats median
-#'   
+#'
 calculate_normvalue <- function(value_df,
                       ref_ids,
                       value_name = "value",
@@ -70,7 +70,7 @@ calculate_normvalue <- function(value_df,
 #' @importFrom tidyr %>%
 #' @importFrom stats median
 #' @importFrom rlang .data
-#'   
+#'
 calculate_deltacq_bysampleid <- function(cq_df,
                                          ref_target_ids,
                                          norm_function = median) {
@@ -92,6 +92,11 @@ calculate_deltacq_bysampleid <- function(cq_df,
 #' Calculate delta delta cq (\eqn{\Delta \Delta Cq}) to globally normalize
 #' quantification cycle (log2-fold) data across sample_id.
 #'
+#' By default, \eqn{\Delta \Delta Cq} is positive if a target is more highly
+#' detected in the relevant sample, compared to reference samples. This can be
+#' flipped by setting the parameter `ddcq_positive` to `FALSE`. In either case,
+#' The fold change, \eqn{2^{\Delta \Delta Cq}}, is also reported.
+#'
 #' This function does a global normalization, where all samples are compared to
 #' one or more reference samples specified in `ref_sample_ids`. There are other
 #' experimental designs that require comparing samples in pairs or small groups,
@@ -112,6 +117,9 @@ calculate_deltacq_bysampleid <- function(cq_df,
 #' @param ref_sample_ids reference sample_ids to normalize by
 #' @param norm_function Function to use to calculate the value to normalize by
 #'   on given scale. Default is median, alternatively could use mean.
+#' @param ddcq_positive (default TRUE) output \eqn{\Delta \Delta Cq} as positive
+#'   if a target is more highly detected in the relevant sample, compared to
+#'   reference samples.
 #'
 #' @return data frame like cq_df with three additional columns:
 #'
@@ -123,10 +131,12 @@ calculate_deltacq_bysampleid <- function(cq_df,
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom stats median
-#'   
+#'
 calculate_deltadeltacq_bytargetid <- function(deltacq_df,
                                          ref_sample_ids,
-                                         norm_function = median) {
+                                         norm_function = median,
+                                         ddcq_positive = TRUE) {
+    ddcq_factor <- (-1) ^ ddcq_positive
     deltacq_df %>%
         dplyr::group_by(.data$target_id) %>%
         dplyr::do(calculate_normvalue(.data,
@@ -137,6 +147,7 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
         dplyr::rename(ref_delta_cq = .data$value_to_norm_by) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(
-               deltadelta_cq = .data$delta_cq - .data$ref_delta_cq,
-               fold_change   = 2^-.data$deltadelta_cq)
+               deltadelta_cq = ddcq_factor *
+                   (.data$delta_cq - .data$ref_delta_cq),
+               fold_change   = 2 ^ .data$deltadelta_cq)
 }
