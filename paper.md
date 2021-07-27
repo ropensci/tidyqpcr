@@ -18,7 +18,8 @@ affiliations:
    index: 1
 date: 25 July 2021
 bibliography: paper.bib
-
+header-includes:
+   - \usepackage{draftwatermark}
 ---
 
 # Summary
