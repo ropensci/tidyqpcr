@@ -73,7 +73,7 @@ The ease-of-use and documentation of tidyqpcr will enable efficient best-practic
 
 We thank everyone in the eLife Innovation Leaders 2020 program for all their help developing tidyqpcr, in particular program leader Emmy Tsang and our mentor Aidan Budd.
 We thank Sander Granneman, Stefanie Butland and Sean Hughes for feedback and encouragement.
-We thank all those who have agreed to undergo user interviews, including; Flic Anderson, Jamie Auxillos, David Barrass, Rosey Bayne, Elliott Chapman, Magnus Gwynne, Liz Hughes, Chris Katanski and Stuart McKeller.
+We thank all those who have participated in interviews, including; Flic Anderson, Jamie Auxillos, David Barrass, Rosey Bayne, Elliott Chapman, Magnus Gwynne, Liz Hughes, Chris Katanski and Stuart McKellar.
 Edward Wallace is a Sir Henry Dale Fellow, jointly funded by the Wellcome Trust and the Royal Society (Grant Number 208779/Z/17/Z).
 Samuel Haynes is funded by the EASTBIO UKRI-BBSRC DTP.
 
