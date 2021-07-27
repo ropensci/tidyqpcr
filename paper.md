@@ -33,7 +33,7 @@ Overall, tidyqpcr empowers scientists to conduct reproducible, flexible, and bes
 # Statement of need
 
 Quantitative PCR is among the most common techniques in biological and biomedical research, used for the quantification of DNA and RNA.
-There is a critical need for rigorous analysis and reporting of qPCR experiments, codified  in the [minimum information for publication of quantitative real-time PCR experiments (MIQE) guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762)[@Bustin:2009].
+There is a critical need for rigorous analysis and reporting of qPCR experiments, codified  in the [minimum information for publication of quantitative real-time PCR experiments (MIQE) guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) [@Bustin:2009].
 Yet it is common for qPCR to be analysed either by closed-source software supplied by the manufacturers of PCR machines, or by highly variable, in-house analysis scripts that have not been peer-reviewed.
 Some open-source libraries for qPCR analysis are available, notably qpcR [@Spiess:2018] and pcr [@Ahmed:2018].
 qpcR is a feature rich but minimally documented qPCR analysis package relying on an object-oriented approach using S4 classes.
