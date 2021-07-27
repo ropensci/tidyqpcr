@@ -37,9 +37,9 @@ There is a critical need for rigorous analysis and reporting of qPCR experiments
 Yet it is common for qPCR to be analysed either by closed-source software supplied by the manufacturers of PCR machines, or by highly variable, in-house analysis scripts that have not been peer-reviewed.
 Some open-source libraries for qPCR analysis are available, notably qpcR [@Spiess:2018] and pcr [@Ahmed:2018].
 qpcR is a feature rich but minimally documented qPCR analysis package relying on an object-oriented approach using S4 classes.
-pcr is a more user friendly qPCR analysis package based on the tidyverse suite of generic data-science tools using the paradigm of tidy data (spreadsheet-like rectangular data frames) and generic functions that build up complex analyses in a series of simple steps.
+pcr is a more user friendly qPCR analysis package based on the tidyverse suite of generic data-science tools using the paradigm of tidy data (spreadsheet-like rectangular data frames).
 However, both packages assume extensive prior R knowledge, overlook best-practices in qPCR experiments and focus entirely on late stage analysis.
-This created a need for a qPCR analysis package that integrates the user-friendly tidyverse, the rigour of MIQE best-practice compliant experimental design and the educational resource of R vignettes.
+This has created a need for a qPCR analysis package that integrates with the user-friendly tidyverse, encourages the use of MIQE best-practice compliant experimental design and provides detailed example analysis pipelines as R vignettes.
 
 Our package, tidyqpcr, addresses the need for best-practice, novice-friendly qPCR analysis in the tidyverse paradigm. 
 tidyqpcr aims to be:
@@ -60,9 +60,9 @@ tidyqpcr's current features allow users to:
 * read in quantification cycle (Cq) and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`).
 * calibrate primer sets including estimating efficiencies and visualization of curves (`calculate_efficiency`).
 * visualize of amplification and melt curves (`calculate_drdt_plate`)
-* perform normalization and relative quantification to one or more reference targets by the $\Delta Cq$ method (`calculate_normcq`, `calculate_deltacq_bysampleid`).
+* perform normalisation and relative quantification to one or more reference targets by the $\Delta Cq$ method (`calculate_normcq`, `calculate_deltacq_bysampleid`).
 * delta delta Cq: normalization of delta Cq data across multiple samples (`calculate_deltadeltacq_bytargetid`).
-* accelerate further downstream analysis and visualization by writing tidy data frames that are fully compatible with the tidyverse suite of functions.
+* accelerate further downstream analysis and visualization by writing tidy data frames that are fully compatible with the tidyverse suite.
 
 We have conducted a series of user interviews to improve tidyqpcr's capabilities and documentation.
 The ease-of-use and documentation of tidyqpcr will enable efficient best-practice analysis of qPCR data by both novice and experienced programmers.
