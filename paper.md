@@ -32,14 +32,16 @@ Overall, tidyqpcr empowers scientists to conduct reproducible, flexible, and bes
 
 # Statement of need
 
-Quantitative PCR is among the most common techniques in biological and biomedical research, used for quantification of DNA and RNA.
-There is a critical need for rigorous analysis and reporting of qPCR experiments, codified  in the [minimum information on a qPCR experiment (MIQE) guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762).
-Yet it is still common for qPCR to be analyzed by closed-source software supplied with machines, or unreliable home-written scripts.
-Some open-source libraries for qpcr analysis are available, notably qpcR (cite) which offers many features within an object-oriented approach using S4 classes.
-Recently, the tidyverse suite of generic data-science tools democratised a user-friednly paradigm of tidy data (spreadsheet-like rectangular data frames) and generic functions that build up complex analyses in a series of simple steps.
-This created a need for qPCR analysis package that integrates easily with the tidyverse, including data visualization with ggplot2.
+Quantitative PCR is among the most common techniques in biological and biomedical research, used for the quantification of DNA and RNA.
+There is a critical need for rigorous analysis and reporting of qPCR experiments, codified  in the [minimum information for publication of quantitative real-time PCR experiments (MIQE) guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762)[@Bustin:2009].
+Yet it is common for qPCR to be analysed either by closed-source software supplied by the manufacturers of PCR machines, or by highly variable, in-house analysis scripts that have not been peer-reviewed.
+Some open-source libraries for qPCR analysis are available, notably qpcR [@Spiess:2018] and pcr [@Ahmed:2018].
+qpcR is a feature rich but minimally documented qPCR analysis package relying on an object-oriented approach using S4 classes.
+pcr is a more user friendly qPCR analysis package based on the tidyverse suite of generic data-science tools using the paradigm of tidy data (spreadsheet-like rectangular data frames) and generic functions that build up complex analyses in a series of simple steps.
+However, both packages assume extensive prior R knowledge, overlook best-practices in qPCR experiments and focus entirely on late stage analysis.
+This created a need for a qPCR analysis package that integrates the user-friendly tidyverse, the rigour of MIQE best-practice compliant experimental design and the educational resource of R vignettes.
 
-Our package, tidyqpcr, addresses the need for a user-friendly qPCR analysis in the tidyverse paradigm. 
+Our package, tidyqpcr, addresses the need for best-practice, novice-friendly qPCR analysis in the tidyverse paradigm. 
 tidyqpcr aims to be:
 
 * Empowering: tidyqpcr combines a free, open-source qPCR analysis R package with online teaching materials. 
@@ -60,7 +62,7 @@ tidyqpcr's current features allow users to:
 * visualize of amplification and melt curves (`calculate_drdt_plate`)
 * perform normalization and relative quantification to one or more reference targets by the $\Delta Cq$ method (`calculate_normcq`, `calculate_deltacq_bysampleid`).
 * delta delta Cq: normalization of delta Cq data across multiple samples (`calculate_deltadeltacq_bytargetid`).
-* accelerate downstream analysis and visualization by writing tidy data frames summarized target id (amplicon or gene), sample id, or by any other user-supplied metadata variable.
+* accelerate further downstream analysis and visualization by writing tidy data frames that are fully compatible with the tidyverse suite of functions.
 
 We have conducted a series of user interviews to improve tidyqpcr's capabilities and documentation.
 The ease-of-use and documentation of tidyqpcr will enable efficient best-practice analysis of qPCR data by both novice and experienced programmers.
@@ -70,7 +72,7 @@ The ease-of-use and documentation of tidyqpcr will enable efficient best-practic
 
 We thank everyone in the eLife Innovation Leaders 2020 program for all their help developing tidyqpcr, in particular program leader Ammy Tsang and our mentor Aidan Budd.
 We thank Stefanie Butland and Sean Hughes for feedback and encouragement.
-We thank all those who have agreed to user interviews, including Flic Anderson, Jamie Auxillos, David Barrass, Rosey Bayne, Elliott Chapman, Magnus Gwynne, Liz Hughes, Chris Katanski, .
+We thank all those who have agreed to undergo user interviews, including; Flic Anderson, Jamie Auxillos, David Barrass, Rosey Bayne, Elliott Chapman, Magnus Gwynne, Liz Hughes, Chris Katanski and Stuart McKeller.
 Edward Wallace is a Sir Henry Dale Fellow, jointly funded by the Wellcome Trust and the Royal Society (Grant Number 208779/Z/17/Z).
 Samuel Haynes is funded by the EASTBIO UKRI-BBSRC DTP.
 
