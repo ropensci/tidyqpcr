@@ -12,6 +12,7 @@
 	* [Flexible](#Flexible)
 	* [Best-practice compliant](#Best-practice-compliant)
 * [Status](#Status)
+    * [News](#News)
 * [Features](#Features)
 	* [Current features](#Current-features)
 	* [Future priorities](#Future-priorities)
@@ -21,6 +22,9 @@
 * [Contribute](#Contribute)
 
 # Motivation
+
+Quantitative Polymerase Chain Reaction (qPCR) is a highly adaptable experimental technique used across biology and medicine to measure the amounts of nucleic acids (DNA or RNA).
+tidyqpcr is a software package for qPCR data analysis that builds on the tidyverse collection of data science tools in the R programming language.
 
 ### Empowering
 
@@ -46,17 +50,20 @@ tidyqpcr encourages standardised, reliable experimental design by prioritising M
 
 We want to make it easier for scientists to produce reliable and interpretable results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
+
 # Status
 
-As of August 2020, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is helping develop as part of the [eLife Open Innovation Leaders programme](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+As of July 2021, this software is in development. [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is actively developing, initially as part of the [eLife Open Innovation Leaders programme 2020](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
 
 ## News
 
+* June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)
 * August 2020, relative quantification (delta delta Cq) added with function `calculate_deltadeltacq_bytargetid`, and a vignette illustrationg this with small data from a 96-well plate.
 * June 2020, upgrades that break previous code. All function and variable names have been changed to snake case, i.e. lower case with underscore. Commits up to #ee6d192 change variable and function names. tidyqpcr now uses `sample_id` for nucleic acid sample (replaces Sample or SampleID), `target_id` for primer set/ probe (replaces TargetID or Probe), `prep_type` for nucleic acid preparation type (replaces Type), and `cq` for quantification cycle (replaces Cq or Ct). 
 It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
 
 Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
+
 
 # Features 
 
@@ -123,7 +130,7 @@ tidyqpcr automatically imports and loads several external packages for basic fun
 
 ## Using tidyqpcr
 
-The best place to start is the vignettes, which offer tutorials and example data analyses including figures. Currently there are 3 vignettes:
+The best place to start is the vignettes, which offer tutorials and example data analyses including figures. Currently there are 4 vignettes:
 
 * [IntroDesignPlatesetup](vignettes/platesetup_vignette.Rmd) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
 * [DeltaCq96wellExample](vignettes/deltacq_96well_vignette.Rmd) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
@@ -134,6 +141,7 @@ To find these from your R session, enter `browseVignettes(package="tidyqpcr")`.
 
 
 Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
+
 
 # Contribute
 
