@@ -199,7 +199,7 @@ create_colkey_6diln_2ctrl_in_24 <- function(
 #' @importFrom tidyr %>%
 #'
 create_rowkey_4_in_16 <- function(...) {
-    rowkey <- tibble(well_row = LETTERS[1:16],
+    rowkey <- tibble(well_row = factor(LETTERS[1:16]),
                      prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
                                    levels = c("+RT", "-RT")),
                      tech_rep = factor(rep(c(1, 2, 3, 1), each = 4),
@@ -232,7 +232,7 @@ create_rowkey_4_in_16 <- function(...) {
 #' @importFrom tidyr %>%
 #'
 create_rowkey_8_in_16_plain <- function(...) {
-    rowkey <- tibble(well_row = LETTERS[1:16])
+    rowkey <- tibble(well_row = factor(LETTERS[1:16]))
     if (!missing(...)) {
         pieces8 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces8) == 8)
