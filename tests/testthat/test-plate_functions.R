@@ -14,7 +14,7 @@ simulated_colkey <- tibble(well_col = factor(1:24),
                       tech_rep = factor(rep(rep(1:2, each = 6), times = 2))) %>%
     mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
 
-simulated_rowkey <- tibble(well_row = LETTERS[1:16], target_id = c("RPS3_ORF",
+simulated_rowkey <- tibble(well_row = factor(LETTERS[1:16]), target_id = c("RPS3_ORF",
                                                      "mCherry_ORF",
                                                      "mTurquoise_ORF",
                                                      "PGK1_ORF",
@@ -108,7 +108,7 @@ simulated_colkey <- tibble(well_col = factor(1:24),
                            tech_rep = factor(rep(rep(1:3, each = 8)))) %>%
     mutate(sample_id = paste(dilution_nice, tech_rep, sep = "_"))
 
-simulated_rowkey <- tibble(well_row = LETTERS[1:16], target_id = c("RPS3_ORF",
+simulated_rowkey <- tibble(well_row = factor(LETTERS[1:16]), target_id = c("RPS3_ORF",
                                                                    "mCherry_ORF",
                                                                    "mTurquoise_ORF",
                                                                    "PGK1_ORF",
@@ -182,8 +182,6 @@ test_that("functions for creating a 384 well, primer calibration plate work with
     expect_equal(calculated_labeled_384_plate, simulated_label_plate)
 })
 
-create_colkey_6diln_2ctrl_in_24
-
 # Unit test for creating standard 24 by 16 384 well plate with tech reps across rows
 
 simulated_colkey <- tibble(well_col = 1:24,
@@ -191,7 +189,7 @@ simulated_colkey <- tibble(well_col = 1:24,
                                         levels = c("A", "B", "C", "D")),
                       sample_id = rep(c("WT", "deltaSSD1", "deltaHSP104", "deltaSUN4", "deltaPGK1", "deltaRPS3"),
                                           times = 4))
-simulated_rowkey <- tibble(well_row = LETTERS[1:16], 
+simulated_rowkey <- tibble(well_row = factor(LETTERS[1:16]), 
                       prep_type = factor(rep(c("+RT","+RT","+RT","-RT"), each = 4),
                                          levels = c("+RT","-RT")),
                       tech_rep = factor(rep(c(1,2,3,1), each = 4),
