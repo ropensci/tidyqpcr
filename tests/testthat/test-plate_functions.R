@@ -1,5 +1,7 @@
 # Units test for creating, labeling and displaying a 384 well, primer calibration plate with 4 * dilution
 
+### Create dataset of expected function outputs ###
+
 simulated_colkey <- tibble(well_col = factor(1:24),
                       dilution = rep(c(1,0.2,0.04,0.008,1,1), times = 4),
                       dilution_nice = rep(c("1x", "5x", "25x", "125x", "-RT", "NT"), times = 4),
@@ -63,6 +65,8 @@ simulated_label_plate <- tibble(well = paste0( rep(LETTERS[1:16], each = 24), re
                                              "PIR1_ORF",
                                              "HSP30_ORF"), each = 24))
 
+### Test functions give expected output ###
+
 test_that("functions for creating a 384 well, primer calibration plate work with 4 * dilution", {
     calculated_blank_384_plate <- create_blank_plate()
     
@@ -92,6 +96,8 @@ test_that("functions for creating a 384 well, primer calibration plate work with
 })
 
 # Units test for creating, labeling and displaying a 384 well, primer calibration plate with 6 * dilution
+
+### Create dataset of expected function outputs ###
 
 simulated_colkey <- tibble(well_col = factor(1:24),
                            dilution = rep(c(1,0.2,0.04,0.008,0.0016,0.00032,1,1), times = 3),
@@ -158,6 +164,8 @@ simulated_label_plate <- tibble(well = paste0( rep(LETTERS[1:16], each = 24), re
                                                   "PIR1_ORF",
                                                   "HSP30_ORF"), each = 24))
 
+### Test functions give expected output ###
+
 test_that("functions for creating a 384 well, primer calibration plate work with 6 * dilution", {
     calculated_blank_384_plate <- create_blank_plate()
     
@@ -183,6 +191,8 @@ test_that("functions for creating a 384 well, primer calibration plate work with
 })
 
 # Unit test for creating standard 24 by 16 384 well plate with tech reps across rows
+
+### Create dataset of expected function outputs ###
 
 simulated_colkey <- tibble(well_col = 1:24,
                       biol_rep = factor(rep(c("A", "B", "C", "D"), each = 6), 
@@ -212,6 +222,8 @@ simulated_label_plate <- tibble(well = paste0( rep(LETTERS[1:16], each = 24), re
                                                  "PGK1_ORF"), each = 24),
                                            times = 4))
 
+### Test functions give expected output ###
+
 test_that("functions for creating a standard 384 well with tech reps across rows", {
     target_id_levels <- c("RPS3_ORF", "mCherry_ORF", "mTurquoise_ORF", "PGK1_ORF")
     calculated_rowkey <- create_rowkey_4_in_16(target_id = target_id_levels)
@@ -225,6 +237,8 @@ test_that("functions for creating a standard 384 well with tech reps across rows
 })
 
 # Unit test for creating standard 24 by 16 384 well plate with tech reps across columns
+
+### Create dataset of expected function outputs ###
 
 simulated_colkey <- tibble(well_col = factor(1:24),
                            prep_type = factor(rep(c("+RT","+RT","+RT","-RT"), 
@@ -282,6 +296,8 @@ simulated_label_plate <- tibble(well = paste0( rep(LETTERS[1:16], each = 24), re
                                                   "TSA1_ORF",
                                                   "PIR1_ORF",
                                                   "HSP30_ORF"), each = 24))
+
+### Test functions give expected output ###
 
 test_that("functions for creating a standard 384 well with tech reps across columns", {
     sample_id_levels <- c("WT", "deltaSSD1", "deltaHSP104", "deltaSUN4", "deltaPGK1", "deltaRPS3")

@@ -1,6 +1,6 @@
-library(dplyr)
-library(tibble)
-library(tidyr)
+# Unit test for the deltacq and deltadeltacq calculation functions 
+
+### Create dataset of expected function outputs ###
 
 simulated_48_well_plate_plan <- create_blank_plate_96well() %>%
     filter(well_row %in% c("A", "B", "C", "D")) %>%
@@ -39,6 +39,8 @@ simulated_48_well_plate_with_deltadeltacq_negative <- simulated_48_well_plate_wi
                              -1,0,1,0,0,0,1,0,-1,
                              0,0,4,-2,-1,-2,-1,-5,-1),
            fold_change = 2^deltadelta_cq)
+
+### Test functions give expected output ###
 
 test_that("Unit test for the calculate_deltacq and calculate_deltadeltacq functions", {
     calculated_48_well_plate_with_deltacq <- calculate_deltacq_bysampleid(simulated_48_well_plate_with_cq %>% filter(prep_type == "+RT"), "URA3_ORF") %>% arrange(well_row, well_col)
