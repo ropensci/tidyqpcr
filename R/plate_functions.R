@@ -346,7 +346,7 @@ display_plate <- function(plate) {
         dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
         levels()
-    #
+
     ggplot2::ggplot(data = plate,
                     ggplot2::aes(x = as_factor(.data$well_col),
                         y = as_factor(.data$well_row))) +
