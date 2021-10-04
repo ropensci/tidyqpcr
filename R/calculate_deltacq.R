@@ -35,7 +35,6 @@ calculate_normvalue <- function(value_df,
         norm_function(na.rm = TRUE)
     #
     # assign summary (median) value to value_df$value_to_norm_by
-    # note this is the same value for every row, a waste of space technically
     dplyr::mutate(value_df, value_to_norm_by = value_to_norm_by)
 }
 
