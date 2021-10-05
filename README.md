@@ -2,6 +2,7 @@
 [![Codecov test coverage](https://codecov.io/gh/DimmestP/tidyqpcr/branch/function-tests-50/graph/badge.svg)](https://codecov.io/gh/DimmestP/tidyqpcr/branch/function-tests-50)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B%20%20%E2%97%8B%20%20%E2%97%8B-orange)](https://fair-software.eu)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5287/badge)](https://bestpractices.coreinfrastructure.org/projects/5287)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/tidyqpcr)](https://cran.r-project.org/package=tidyqpcr)
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
 
