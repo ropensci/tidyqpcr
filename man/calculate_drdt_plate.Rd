@@ -27,7 +27,7 @@ platemelt with additional column dRdT.
 \description{
 dR/dT, the derivative of the melt curve (of fluorescence signal R vs
 temperature T), has a maximum at the melting temperature Tm. A single peak in
-this suggests a single-liength PCR product is present in the well.
+this suggests a single-length PCR product is present in the well.
 }
 \section{Functions}{
 \itemize{
