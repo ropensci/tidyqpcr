@@ -1,6 +1,10 @@
 name: fair-software
 
-on: push
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
 jobs:
   verify:
