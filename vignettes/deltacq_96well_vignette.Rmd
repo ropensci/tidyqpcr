@@ -23,7 +23,7 @@ mRNAs: GlyS and SpoVG with 5S rRNA used as a reference control.
 
 Bacterial strains: wild-type (WT) and mutant (dAgr).
 
-Equipment: Data were collected on a Roche Lightcycler 480, and Lightcycler software used to estimate Cq/Ct values and export that as a text-format table. The sample information is specified in this input data file.
+Equipment: Data were collected on a Roche LightCycler 480, and LightCycler software used to estimate Cq/Ct values and export that as a text-format table. The sample information is specified in this input data file.
 
 ```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
 
@@ -93,7 +93,7 @@ Printing the data here shows that the `sample_info` column contains information 
 
 The [plate setup vignette](platesetup_vignette.html) describes how to "set up" a plate plan to put sample information in, if your input data does not already contain sample information.
 
-Note that we "cleaned up" the data file for this vignette, to remove irrelevant rows and columns. For information about how to load Cq data directly from Lightcycler outputs, see `?read_lightcycler_1colour_cq`.
+Note that we "cleaned up" the data file for this vignette, to remove irrelevant rows and columns. For information about how to load Cq data directly from LightCycler outputs, see `?read_lightcycler_1colour_cq`.
 
 
 ## Organize sample and target data on the plate
@@ -327,7 +327,7 @@ ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) +
 
 # Conclusion
 
-In this vignette, you have learned the basic workflow for analyzing Cq values from qPCR data: 
+In this vignette, you have learned the basic workflow for analysing Cq values from qPCR data: 
 
 * Create the `sample_id` column to uniquely identify each biological sample.
 * Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalizes target gene values to the values of one or more reference targets within each sample.

@@ -95,7 +95,7 @@ plate1plan <-
 
 ## Spot-check the plate plan 
 
-Checks that for selected techrep/probe/dilution combinations, the plate contains the right number of replicates.
+Checks that for selected technical replicate/probe/dilution combinations, the plate contains the right number of replicates.
 
 ```{r print_techreps,results="show",echo=TRUE,cache=FALSE}
 plate1plan %>%
@@ -117,7 +117,7 @@ display_plate(plate1plan)
 ```
 
 
-# Analyze Cq (quantification cycle count) data
+# Analyse Cq (quantification cycle count) data
 
 ## Load and summarize data
 
@@ -229,7 +229,7 @@ ggplot(
 ```
 
 
-# Analyze amplification and melt curve data
+# Analyse amplification and melt curve data
 
 ## Load raw data for amplification and melt curves.
 

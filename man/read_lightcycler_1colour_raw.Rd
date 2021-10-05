@@ -29,7 +29,7 @@ tibble containing raw data, with default column names:
 
   well: the well of the plate, e.g. A1
 
-  sample_info: this is the "Sample" field entered in lightcycler software,
+  sample_info: this is the "Sample" field entered in LightCycler software,
   defaults to "Sample X"
 
   program_no: the number of the cycler program, for 2-step PCR defaults to 1
@@ -49,9 +49,9 @@ tibble containing raw data, with default column names:
   would be 483nm excitation, 533nm emission.
 }
 \description{
-This is the data from "export in text format" from the Lightcycler software.
+This is the data from "export in text format" from the LightCycler software.
 The other data format, .ixo, can be converted to .txt format by the
-Lightcycler software.
+LightCycler software.
 }
 \details{
 This function is a thin wrapper around readr::read_tsv.
