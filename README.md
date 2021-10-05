@@ -1,7 +1,5 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-
 [![Codecov test coverage](https://codecov.io/gh/DimmestP/tidyqpcr/branch/function-tests-50/graph/badge.svg)](https://codecov.io/gh/DimmestP/tidyqpcr/branch/function-tests-50)
-
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B%20%20%E2%97%8B%20%20%E2%97%8B-orange)](https://fair-software.eu)
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
