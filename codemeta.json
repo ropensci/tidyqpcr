@@ -5,7 +5,7 @@
   "description": "This package is for reproducible quantitative PCR (qPCR) analysis using packages from the tidyverse, notably dplyr and ggplot2. It normalizes (by ddCq), summarizes, and plots pre-calculated Cq data, and plots raw amplification and melt curves from Roche lightcycler machines. It does NOT (yet) calculate Cq data from amplification curves.",
   "name": "tidyqpcr: Quantitative PCR Analysis with the Tidyverse",
   "codeRepository": "https://github.com/ewallace/tidyqpcr",
-  "relatedLink": "https://dimmestp.github.io/tidyqpcr/docs/index.html",
+  "relatedLink": "https://ewallace.github.io/tidyqpcr/",
   "issueTracker": "https://github.com/ewallace/tidyqpcr/issues",
   "license": "https://spdx.org/licenses/Apache-2.0",
   "version": "0.2",
