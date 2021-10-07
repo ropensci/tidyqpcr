@@ -9,7 +9,7 @@ debaseline(plateamp, maxcycle = 10)
 \arguments{
 \item{plateamp}{data frame with plate amplification data, including variables
 well, cycle, fluor_raw (raw fluorescence value), and program_no. Assume
-program 2 for amplification curves from Roche Lightcycler format data.}
+program 2 for amplification curves from Roche LightCycler format data.}
 
 \item{maxcycle}{maximum cycle value to use for baseline, before
 amplification.}
@@ -29,7 +29,7 @@ by subtracting median of initial cycles.
 \details{
 BETA function version because:
 
-- assumes Roche Lightcycler format,
+- assumes Roche LightCycler format,
 we should ideally replace "program_no == 2" by something more generic?
 
 - the rule-of thumb "baseline is median of initial 10 cycles"

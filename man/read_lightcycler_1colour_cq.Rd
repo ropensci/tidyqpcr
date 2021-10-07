@@ -29,7 +29,7 @@ tibble containing cq data
 }
 \description{
 This is the data from "export in text format" from the analysis tab in the
-Lightcycler software. That software calls cq, "Cp".
+LightCycler software. That software calls cq, "Cp".
 }
 \details{
 This function is a thin wrapper around readr::read_tsv.

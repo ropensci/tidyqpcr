@@ -46,7 +46,7 @@ For more help, examples and explanations, see the plate setup vignette:
 \item \code{create_blank_plate_96well}: create blank 96-well plate
 
 \item \code{make_row_names_lc1536}: Row names for 1536-well plates on
-Roche Lightcycler (tm) 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+Roche LightCycler (tm) 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
 
 \item \code{make_row_names_echo1536}: Row names for 1536-well plates on
 Labcyte Echo A,B,...,Z,AA,AB,...,AF.
