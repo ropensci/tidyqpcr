@@ -1,8 +1,12 @@
+<!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Codecov test coverage](https://codecov.io/gh/DimmestP/tidyqpcr/branch/main/graph/badge.svg)](https://codecov.io/gh/DimmestP/tidyqpcr/branch/main)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5287/badge)](https://bestpractices.coreinfrastructure.org/projects/5287)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/tidyqpcr)](https://cran.r-project.org/package=tidyqpcr)
+[![R-CMD-check](https://github.com/ewallace/tidyqpcr/workflows/R-CMD-check/badge.svg)](https://github.com/ewallace/tidyqpcr/actions)
+[![R-CMD-check](https://github.com/upstream/workflows/R-CMD-check/badge.svg)](https://github.com/upstream/actions)
+<!-- badges: end -->
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
 
