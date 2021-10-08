@@ -163,12 +163,4 @@ We will be following the [code of conduct from the tidyverse](https://dplyr.tidy
 
 ## How to contribute code: style, checking, development cycle
 
-If you want to fix bugs or add features yourself, that's great. tidyqpcr development aims to follow best practices:
-
-* first file an issue on the tidyqpcr github repository, then create a branch (in a fork) of the repository that references the issue number, e.g. `add-exciting-feature-55` if it were issue 55.
-* add code in the branch, continue to ask questions on the issue ticket.
-* follow the [tidyverse style guide](https://style.tidyverse.org/).
-* document functions with [roxygen2](https://roxygen2.r-lib.org/), as described in [the R packages book](http://r-pkgs.had.co.nz/man.html).
-* check the package with `R CMD check` / `devtools::check()`, as explained in [the R packages book](http://r-pkgs.had.co.nz/check.html).
-* including, check that all the vignettes run.
-* put in a pull request to the main repository, we will review, then we will accept or suggest changes.
+If you want to fix bugs or add features yourself, that's great. tidyqpcr development aims to follow best practices which we have outlined in the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file in the .github folder.
