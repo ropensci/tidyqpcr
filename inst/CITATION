@@ -1,0 +1,11 @@
+citHeader("To cite tidyqpcr in publications use:")
+
+citEntry(
+  entry    = "misc",
+  title    = "The tidyqpcr R Package: Quantitative PCR analysis in the tidyverse.",
+  author   = c(person("Edward Wallace"), person("Sam Haynes")),
+  year     = "2021",
+  url      = "https://github.com/ewallace/tidyqpcr",
+  textVersion = paste(
+ "Haynes, S., Wallace, E.W.J. (2021). The tidyqpcr R Package: Quantitative PCR analysis in the tidyverse (Version 0.3) [Software]. Available from https://github.com/ewallace/tidyqpcr.")
+  )
