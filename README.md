@@ -1,8 +1,11 @@
+<!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Codecov test coverage](https://codecov.io/gh/DimmestP/tidyqpcr/branch/main/graph/badge.svg)](https://codecov.io/gh/DimmestP/tidyqpcr/branch/main)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5287/badge)](https://bestpractices.coreinfrastructure.org/projects/5287)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/tidyqpcr)](https://cran.r-project.org/package=tidyqpcr)
+[![R-CMD-check](https://github.com/ewallace/tidyqpcr/workflows/R-CMD-check/badge.svg)](https://github.com/ewallace/tidyqpcr/actions)
+<!-- badges: end -->
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
 
@@ -160,12 +163,4 @@ We will be following the [code of conduct from the tidyverse](https://dplyr.tidy
 
 ## How to contribute code: style, checking, development cycle
 
-If you want to fix bugs or add features yourself, that's great. tidyqpcr development aims to follow best practices:
-
-* first file an issue on the tidyqpcr github repository, then create a branch (in a fork) of the repository that references the issue number, e.g. `add-exciting-feature-55` if it were issue 55.
-* add code in the branch, continue to ask questions on the issue ticket.
-* follow the [tidyverse style guide](https://style.tidyverse.org/).
-* document functions with [roxygen2](https://roxygen2.r-lib.org/), as described in [the R packages book](http://r-pkgs.had.co.nz/man.html).
-* check the package with `R CMD check` / `devtools::check()`, as explained in [the R packages book](http://r-pkgs.had.co.nz/check.html).
-* including, check that all the vignettes run.
-* put in a pull request to the main repository, we will review, then we will accept or suggest changes.
+If you want to fix bugs or add features yourself, that's great. tidyqpcr development aims to follow best practices which we have outlined in the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file in the .github folder.
