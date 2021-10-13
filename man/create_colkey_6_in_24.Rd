@@ -16,7 +16,7 @@ well_col, prep_type, tech_rep, and supplied values.
 }
 \description{
 Create a 24-column key with 6 values repeated over 24 plate columns.
-Each of the 6 values is repeated over 3x +RT technical replicates and 1x -RT.
+Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
 }
 \examples{
 create_colkey_6_in_24(sample_id=LETTERS[1:6])

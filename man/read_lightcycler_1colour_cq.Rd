@@ -29,10 +29,15 @@ tibble containing cq data
 }
 \description{
 This is the data from "export in text format" from the analysis tab in the
-LightCycler software. That software calls cq, "Cp".
+Lightcycler software. That software calls cq, "Cp".
 }
 \details{
 This function is a thin wrapper around readr::read_tsv.
+}
+\examples{
+read_lightcycler_1colour_cq(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt", 
+                                                 package = "tidyqpcr"))
+
 }
 \seealso{
 read_lightcycler_1colour_raw

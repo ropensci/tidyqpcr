@@ -36,3 +36,28 @@ each sample, the Cq values of all targets (e.g. genes, probes, primer sets)
 are compared to one or more reference target ids specified in
 `ref_target_ids`.
 }
+\examples{
+# create simple cq dataset with two samples, two targets  and 3 reps
+cq_tibble <- tibble(sample_id = rep(c("S_1","S_1","S_1", "S_2", "S_2", "S_2"), 2),
+                     target_id = rep(c("T_1",
+                                       "T_norm"), each = 6),
+                     tech_rep = rep(1:3, 4),
+                     well_row = rep(c("A",
+                                      "B"), each = 6),
+                     well_col = rep(1:6, 2),
+                     well = paste0(well_row, well_col),
+                     cq = c(10, 10, 10, 12, 12, 11,
+                             9,  9,  9,  9,  9,  9))
+                     
+# calculate deltacq using reference target_id called 'T_norm'
+
+#----- use case 1: median reference target_id value
+cq_tibble \%>\%
+    calculate_deltacq_bysampleid(ref_target_ids = "T_norm")
+
+#----- use case 2: mean reference target_id value 
+cq_tibble \%>\%
+    calculate_deltacq_bysampleid(ref_target_ids = "T_norm",
+                                 norm_function = mean)
+
+}

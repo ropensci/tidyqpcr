@@ -28,6 +28,22 @@ estimated first derivative of y with respect to x, numeric vector of
 Used in tidyqpcr to calculate dR/dT for a melt curve of fluorescence signal R
 vs temperature T.
 }
+\examples{
+# create simple curve
+x = 1:5
+y = x^2
+
+# calculate gradient of curve
+#----- use case 1 : using splines
+calculate_dydx_1(x, y)
+
+# optional arguments are passed to smooth.splines function
+calculate_dydx_1(x, y, spar = 0.5)
+
+#----- use case 2 : using difference between adjacent points
+calculate_dydx_1(x, y, method = "diff")
+
+}
 \seealso{
 Other melt_curve_functions: 
 \code{\link{calculate_drdt_plate}()}

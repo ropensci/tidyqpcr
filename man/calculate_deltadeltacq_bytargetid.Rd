@@ -54,3 +54,28 @@ each time point. For those situations, instead we recommend adapting code
 from this function, changing the grouping variables used in to
 `dplyr::group_by` to draw the contrasts appropriate for the experiment.
 }
+\examples{
+# create simple deltacq dataset with two samples, two targets and 3 reps
+deltacq_tibble <- tibble(sample_id = rep(c("S_1","S_1","S_1", "S_norm", "S_norm", "S_norm"), 2),
+                     target_id = rep(c("T_1",
+                                       "T_2"), each = 6),
+                     tech_rep = rep(1:3, 4),
+                     well_row = rep(c("A",
+                                      "B"), each = 6),
+                     well_col = rep(1:6, 2),
+                     well = paste0(well_row,well_col),
+                     delta_cq = c(1, 1, 1, 3, 3, 2,
+                                  4, 5, 4, 5, 5, 5))
+                     
+# calculate deltadeltacq using reference target_id called 'S_norm'
+
+#----- use case 1: median reference sample_id value
+deltacq_tibble \%>\%
+    calculate_deltadeltacq_bytargetid(ref_sample_ids = "S_norm")
+
+#----- use case 2: mean reference sample_id value 
+deltacq_tibble \%>\%
+    calculate_deltadeltacq_bytargetid(ref_sample_ids = "S_norm",
+                                 norm_function = mean)
+
+}

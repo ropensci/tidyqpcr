@@ -17,7 +17,20 @@ ggplot object; major output is to plot it
 Display plate plan with sample_id, target_id, prep_type per well
 }
 \examples{
-# !Needs a labeled example from label_plate_rowcol...
+library(dplyr)
+
+# create basic 384 well plate
+basic_plate <- label_plate_rowcol(create_blank_plate(), 
+                                  create_rowkey_8_in_16_plain(target_id = c("T_1", "T_2",
+                                                                            "T_3", "T_4", 
+                                                                            "T_5", "T_6",
+                                                                            "T_7", "T_8")), 
+                                  create_colkey_6diln_2ctrl_in_24() \%>\% 
+                                      mutate(sample_id = paste0(dilution_nice, "_", tech_rep)))
+
+# display full plate
+display_plate(basic_plate)
+
 }
 \seealso{
 Other plate creation functions: 

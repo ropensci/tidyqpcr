@@ -1,4 +1,3 @@
-
 #' Calibrate primer sets / probes by calculating detection efficiency and
 #' R squared
 #'
@@ -26,6 +25,23 @@
 #'
 #' @export
 #' @importFrom tibble tibble
+#' 
+#' @examples
+#' # create simple dilution dataset
+#' dilution_tibble <- tibble(dilution = rep(c(1, 0.1, 0.001, 0.0001), 2),
+#'                      cq = c(1, 3, 4, 6,
+#'                             4, 5, 6, 7),
+#'                      biol_rep = rep(c(1,2), each = 4))
+#'                      
+#' # calculate primer efficiency
+#' 
+#' #----- use case 1: include difference across replicates in model
+#' dilution_tibble %>%
+#'     calculate_efficiency()
+#' 
+#' #----- use case 2: ignore difference across replicates
+#' dilution_tibble %>%
+#'     calculate_efficiency(formula = cq ~ log2(dilution))
 #'
 calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + biol_rep) {
     if (length(unique(cq_df_1$target_id)) > 1) {
@@ -75,6 +91,31 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + biol_r
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom rlang .data
+#'
+#' @examples
+#' 
+#' # create simple dilution dataset for two target_ids with two biological reps
+#' dilution_tibble <- tibble(target_id = rep(c("T_1",
+#'                                             "T_2"), each = 8),
+#'                           well_row = rep(c("A",
+#'                                            "B"), each = 8),
+#'                           well_col = rep(1:8, 2),
+#'                           well = paste0(well_row, well_col),
+#'                           dilution = rep(c(1, 0.1, 0.001, 0.0001), 4),
+#'                           cq = c(1, 3, 4, 6, 1, 3, 5, 7,
+#'                                  4, 5, 6, 7, 3, 7, 8, 9),
+#'                           biol_rep = rep(c(1, 1, 1, 1, 2, 2, 2, 2), 2),
+#'                           prep_type = "+RT")
+#'                      
+#' # calculate primer efficiency for multiple targets
+#' 
+#' #----- use case 1: include difference across replicates in model
+#' dilution_tibble %>%
+#'     calculate_efficiency_bytargetid()
+#' 
+#' #----- use case 2: ignore difference across replicates
+#' dilution_tibble %>%
+#'     calculate_efficiency_bytargetid(formula = cq ~ log2(dilution))
 #'
 calculate_efficiency_bytargetid <- function(cq_df,
                            formula = cq ~ log2(dilution) + biol_rep,
