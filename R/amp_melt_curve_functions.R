@@ -1,5 +1,3 @@
-
-
 #' Remove baseline from amplification curves (BETA)
 #'
 #' Remove baseline from qPCR amplification curves
@@ -26,11 +24,26 @@
 #'   i.e. fluor_raw - fluor_base
 #'   }
 #'
-#'
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom rlang .data
 #'
+#' @examples
+#' # create simple dataset of raw fluorescence
+#' # with two samples over 15 cycles
+#' raw_fluor_tibble <- tibble(sample_id = rep(c("S1", "S2"), each = 15),
+#'                           target_id = "T1",
+#'                           well_row = "A",
+#'                           well_col = rep(c(1, 2), each = 15),
+#'                           well = rep(c("A1", "A2"), each = 15),
+#'                           cycle = rep(1:15,2),
+#'                           fluor_raw = c(1:15, 6:20),
+#'                           program_no = 2)
+#'
+#' # remove base fluorescence from dataset
+#' raw_fluor_tibble %>%
+#'     debaseline()
+#'     
 debaseline <- function(plateamp, maxcycle = 10) {
     baseline <-
         plateamp %>%
@@ -66,6 +79,21 @@ debaseline <- function(plateamp, maxcycle = 10) {
 #' @family melt_curve_functions
 #'
 #' @export
+#' 
+#' @examples
+#' # create simple curve
+#' x = 1:5
+#' y = x^2
+#'
+#' # calculate gradient of curve
+#' #----- use case 1 : using splines
+#' calculate_dydx_1(x, y)
+#' 
+#' # optional arguments are passed to smooth.splines function
+#' calculate_dydx_1(x, y, spar = 0.5)
+#' 
+#' #----- use case 2 : using difference between adjacent points
+#' calculate_dydx_1(x, y, method = "diff")
 #'
 calculate_dydx_1 <- function(x, y, method = "spline", ...) {
     assertthat::assert_that(is.numeric(x))
@@ -84,7 +112,8 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #'
 #' dR/dT, the derivative of the melt curve (of fluorescence signal R vs
 #' temperature T), has a maximum at the melting temperature Tm. A single peak in
-#' this suggests a single-liength PCR product is present in the well.
+#' this suggests a single-length PCR product is present in the well. getdRdTall
+#' is the old name for the same function (kept for backwards compatibility).
 #'
 #' @param platemelt data frame describing melt curves, including variables
 #'   well, temperature, fluor_raw (raw fluorescence value).
@@ -102,6 +131,30 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #'
 #' @export
 #' @importFrom tidyr %>%
+#'
+#' @examples
+#' # create simple curve
+#' # create simple dataset of raw fluorescence with two samples
+#' temp_tibble <- tibble(sample_id = rep(c("S1", "S2"), each = 10),
+#'                           target_id = "T1",
+#'                           well_row = "A",
+#'                           well_col = rep(c(1, 2), each = 10),
+#'                           well = rep(c("A1", "A2"), each = 10),
+#'                           temperature = rep(56:65,2),
+#'                           fluor_raw = c(1:10, 6:15))
+#'
+#' # calculate drdt of all melt curves
+#' #----- use case 1 : using splines
+#' temp_tibble %>%
+#'     calculate_drdt_plate()
+#' 
+#' # optional arguments are passed to smooth.splines function
+#' temp_tibble %>%
+#'     calculate_drdt_plate(spar = 0.5)
+#' 
+#' #----- use case 2 : using difference between adjacent points
+#' temp_tibble %>%
+#'     calculate_drdt_plate(method = "diff")
 #'
 calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
     platemelt %>%

@@ -27,13 +27,39 @@ platemelt with additional column dRdT.
 \description{
 dR/dT, the derivative of the melt curve (of fluorescence signal R vs
 temperature T), has a maximum at the melting temperature Tm. A single peak in
-this suggests a single-length PCR product is present in the well.
+this suggests a single-length PCR product is present in the well. getdRdTall
+is the old name for the same function (kept for backwards compatibility).
 }
 \section{Functions}{
 \itemize{
 \item \code{getdRdTall}: 
 }}
 
+\examples{
+# create simple curve
+# create simple dataset of raw fluorescence with two samples
+temp_tibble <- tibble(sample_id = rep(c("S1", "S2"), each = 10),
+                          target_id = "T1",
+                          well_row = "A",
+                          well_col = rep(c(1, 2), each = 10),
+                          well = rep(c("A1", "A2"), each = 10),
+                          temperature = rep(56:65,2),
+                          fluor_raw = c(1:10, 6:15))
+
+# calculate drdt of all melt curves
+#----- use case 1 : using splines
+temp_tibble \%>\%
+    calculate_drdt_plate()
+
+# optional arguments are passed to smooth.splines function
+temp_tibble \%>\%
+    calculate_drdt_plate(spar = 0.5)
+
+#----- use case 2 : using difference between adjacent points
+temp_tibble \%>\%
+    calculate_drdt_plate(method = "diff")
+
+}
 \seealso{
 Other melt_curve_functions: 
 \code{\link{calculate_dydx_1}()}

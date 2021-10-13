@@ -16,6 +16,17 @@ NULL
 #' @describeIn log_plot_helpers plot x axis on log2-scale with nice defaults
 #' @export
 #' 
+#' @examples 
+#' library(ggplot2)
+#' 
+#' # create example plot with ggplot2 dataset 
+#' p1 <- ggplot(mpg, aes(displ, hwy)) +
+#' geom_point()
+#' 
+#' p1 + scale_x_log2nice()
+#' 
+#' p1 + scale_y_log10nice()
+#' 
 scale_x_log2nice <- function(name=ggplot2::waiver(),
                              omag=seq(-10,10),
                              scilabels=FALSE,

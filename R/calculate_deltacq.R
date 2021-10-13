@@ -1,4 +1,3 @@
-
 #' Calculate a normalized value for a subset of reference ids
 #'
 #' This is used to calculate the normalized `cq` values for reference
@@ -22,6 +21,34 @@
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom stats median
+#'
+#' @examples
+#' # create simple cq dataset with one sample, two targets  and 3 reps
+#' cq_tibble <- tibble(sample_id = "S_1",
+#'                      target_id = rep(c("T_1",
+#'                                        "T_norm"), each = 3),
+#'                      tech_rep = rep(1:3, 2),
+#'                      well_row = rep(c("A",
+#'                                       "B"), each = 3),
+#'                      well_col = 1,
+#'                      well = paste0(well_row, well_col),
+#'                      cq = c(10, 10, 10,
+#'                             12, 12, 11))
+#'                      
+#' # normalise cq to reference target_id called 'T_norm'
+#' 
+#' #----- use case 1: median reference target_id value
+#' cq_tibble %>%
+#'     calculate_normvalue(ref_ids = "T_norm",
+#'                         value_name = "cq",
+#'                         id_name = "target_id")
+#' 
+#' #----- use case 2: mean reference target_id value 
+#' cq_tibble %>%
+#'     calculate_normvalue(ref_ids = "T_norm",
+#'                         value_name = "cq",
+#'                         id_name = "target_id",
+#'                         norm_function = mean)
 #'
 calculate_normvalue <- function(value_df,
                       ref_ids,
@@ -69,6 +96,30 @@ calculate_normvalue <- function(value_df,
 #' @importFrom tidyr %>%
 #' @importFrom stats median
 #' @importFrom rlang .data
+#' 
+#' @examples
+#' # create simple cq dataset with two samples, two targets  and 3 reps
+#' cq_tibble <- tibble(sample_id = rep(c("S_1","S_1","S_1", "S_2", "S_2", "S_2"), 2),
+#'                      target_id = rep(c("T_1",
+#'                                        "T_norm"), each = 6),
+#'                      tech_rep = rep(1:3, 4),
+#'                      well_row = rep(c("A",
+#'                                       "B"), each = 6),
+#'                      well_col = rep(1:6, 2),
+#'                      well = paste0(well_row, well_col),
+#'                      cq = c(10, 10, 10, 12, 12, 11,
+#'                              9,  9,  9,  9,  9,  9))
+#'                      
+#' # calculate deltacq using reference target_id called 'T_norm'
+#' 
+#' #----- use case 1: median reference target_id value
+#' cq_tibble %>%
+#'     calculate_deltacq_bysampleid(ref_target_ids = "T_norm")
+#' 
+#' #----- use case 2: mean reference target_id value 
+#' cq_tibble %>%
+#'     calculate_deltacq_bysampleid(ref_target_ids = "T_norm",
+#'                                  norm_function = mean)
 #'
 calculate_deltacq_bysampleid <- function(cq_df,
                                          ref_target_ids,
@@ -130,6 +181,30 @@ calculate_deltacq_bysampleid <- function(cq_df,
 #' @export
 #' @importFrom tidyr %>%
 #' @importFrom stats median
+#'
+#' @examples
+#' # create simple deltacq dataset with two samples, two targets and 3 reps
+#' deltacq_tibble <- tibble(sample_id = rep(c("S_1","S_1","S_1", "S_norm", "S_norm", "S_norm"), 2),
+#'                      target_id = rep(c("T_1",
+#'                                        "T_2"), each = 6),
+#'                      tech_rep = rep(1:3, 4),
+#'                      well_row = rep(c("A",
+#'                                       "B"), each = 6),
+#'                      well_col = rep(1:6, 2),
+#'                      well = paste0(well_row,well_col),
+#'                      delta_cq = c(1, 1, 1, 3, 3, 2,
+#'                                   4, 5, 4, 5, 5, 5))
+#'                      
+#' # calculate deltadeltacq using reference target_id called 'S_norm'
+#' 
+#' #----- use case 1: median reference sample_id value
+#' deltacq_tibble %>%
+#'     calculate_deltadeltacq_bytargetid(ref_sample_ids = "S_norm")
+#' 
+#' #----- use case 2: mean reference sample_id value 
+#' deltacq_tibble %>%
+#'     calculate_deltadeltacq_bytargetid(ref_sample_ids = "S_norm",
+#'                                  norm_function = mean)
 #'
 calculate_deltadeltacq_bytargetid <- function(deltacq_df,
                                          ref_sample_ids,

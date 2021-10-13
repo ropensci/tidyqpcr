@@ -70,3 +70,15 @@ nice format or easy scientific notation.
 \item \code{scale_loglog10}: plot x AND y axes on log10-scale with nice defaults
 }}
 
+\examples{
+library(ggplot2)
+
+# create example plot with ggplot2 dataset 
+p1 <- ggplot(mpg, aes(displ, hwy)) +
+geom_point()
+
+p1 + scale_x_log2nice()
+
+p1 + scale_y_log10nice()
+
+}

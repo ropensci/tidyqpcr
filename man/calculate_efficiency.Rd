@@ -30,6 +30,24 @@ efficiency, efficiency.sd, r.squared.
 \description{
 Note efficiency is given in ratio, not per cent; multiply by 100 for that.
 }
+\examples{
+# create simple dilution dataset
+dilution_tibble <- tibble(dilution = rep(c(1, 0.1, 0.001, 0.0001), 2),
+                     cq = c(1, 3, 4, 6,
+                            4, 5, 6, 7),
+                     biol_rep = rep(c(1,2), each = 4))
+                     
+# calculate primer efficiency
+
+#----- use case 1: include difference across replicates in model
+dilution_tibble \%>\%
+    calculate_efficiency()
+
+#----- use case 2: ignore difference across replicates
+dilution_tibble \%>\%
+    calculate_efficiency(formula = cq ~ log2(dilution))
+
+}
 \seealso{
 calculate_efficiency_bytargetid
 }

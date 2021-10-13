@@ -37,3 +37,32 @@ This is used to calculate the normalized `cq` values for reference
 Also used to calculate the normalized `delta_cq` values for reference
 `sample_ids`, to use in `deltadelta_cq` calculation for each `target_id`.
 }
+\examples{
+# create simple cq dataset with one sample, two targets  and 3 reps
+cq_tibble <- tibble(sample_id = "S_1",
+                     target_id = rep(c("T_1",
+                                       "T_norm"), each = 3),
+                     tech_rep = rep(1:3, 2),
+                     well_row = rep(c("A",
+                                      "B"), each = 3),
+                     well_col = 1,
+                     well = paste0(well_row, well_col),
+                     cq = c(10, 10, 10,
+                            12, 12, 11))
+                     
+# normalise cq to reference target_id called 'T_norm'
+
+#----- use case 1: median reference target_id value
+cq_tibble \%>\%
+    calculate_normvalue(ref_ids = "T_norm",
+                        value_name = "cq",
+                        id_name = "target_id")
+
+#----- use case 2: mean reference target_id value 
+cq_tibble \%>\%
+    calculate_normvalue(ref_ids = "T_norm",
+                        value_name = "cq",
+                        id_name = "target_id",
+                        norm_function = mean)
+
+}

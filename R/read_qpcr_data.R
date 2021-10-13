@@ -1,4 +1,3 @@
-
 #' Reads raw text-format fluorescence data in 1 colour from Roche Lightcyclers
 #' 
 #' This is the data from "export in text format" from the Lightcycler software.
@@ -39,6 +38,9 @@
 #' @export
 #' @seealso read_lightcycler_1colour_cq
 #'
+#' @examples read_lightcycler_1colour_raw(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt", 
+#'                                                  package = "tidyqpcr"))
+#'
 read_lightcycler_1colour_raw <- function(
     filename,
     skip = 2,
@@ -71,6 +73,9 @@ read_lightcycler_1colour_raw <- function(
 #' @return tibble containing cq data
 #' @export
 #' @seealso read_lightcycler_1colour_raw
+#'
+#' @examples read_lightcycler_1colour_cq(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt", 
+#'                                                  package = "tidyqpcr"))
 #'
 read_lightcycler_1colour_cq <- function(
     filename,
