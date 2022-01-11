@@ -3,18 +3,12 @@
 \name{create_blank_plate}
 \alias{create_blank_plate}
 \alias{create_blank_plate_96well}
-\alias{make_row_names_lc1536}
-\alias{make_row_names_echo1536}
 \alias{create_blank_plate_1536well}
-\title{Create a blank plate template as a tibble}
+\title{Create a blank plate template as a tibble (with helper functions for common plate sizes)}
 \usage{
 create_blank_plate(well_row = LETTERS[1:16], well_col = 1:24)
 
 create_blank_plate_96well()
-
-make_row_names_lc1536()
-
-make_row_names_echo1536()
 
 create_blank_plate_1536well(
   well_row = make_row_names_lc1536(),
@@ -45,12 +39,6 @@ For more help, examples and explanations, see the plate setup vignette:
 \itemize{
 \item \code{create_blank_plate_96well}: create blank 96-well plate
 
-\item \code{make_row_names_lc1536}: Row names for 1536-well plates on
-Roche Lightcycler (tm) 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
-
-\item \code{make_row_names_echo1536}: Row names for 1536-well plates on
-Labcyte Echo A,B,...,Z,AA,AB,...,AF.
-
 \item \code{create_blank_plate_1536well}: create blank 1536-well plate
 }}
 
@@ -58,6 +46,18 @@ Labcyte Echo A,B,...,Z,AA,AB,...,AF.
 create_blank_plate(well_row=LETTERS[1:2],well_col=1:3)
 
 create_blank_plate_96well()
+
+create_blank_plate_1536well()
+
+# create blank 96-well plate with empty edge wells
+
+create_blank_plate(well_row=LETTERS[2:7], well_col=2:11)
+
+# create blank 1536-well plate with empty edge wells
+
+full_plate_row_names <- make_row_names_lc1536()
+
+create_blank_plate(well_row=full_plate_row_names[2:31], well_col=2:47)
 
 }
 \seealso{
@@ -68,6 +68,8 @@ Other plate creation functions:
 \code{\link{create_rowkey_4_in_16}()},
 \code{\link{create_rowkey_8_in_16_plain}()},
 \code{\link{display_plate}()},
-\code{\link{label_plate_rowcol}()}
+\code{\link{label_plate_rowcol}()},
+\code{\link{make_row_names_echo1536}()},
+\code{\link{make_row_names_lc1536}()}
 }
 \concept{plate creation functions}

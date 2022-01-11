@@ -1,4 +1,4 @@
-#' Create a blank plate template as a tibble
+#' Create a blank plate template as a tibble (with helper functions for common plate sizes)
 #'
 #' For more help, examples and explanations, see the plate setup vignette:
 #' \code{vignette("platesetup_vignette", package = "tidyqpcr")}
@@ -19,6 +19,18 @@
 #' create_blank_plate(well_row=LETTERS[1:2],well_col=1:3)
 #' 
 #' create_blank_plate_96well()
+#' 
+#' create_blank_plate_1536well()
+#' 
+#' # create blank 96-well plate with empty edge wells
+#' 
+#' create_blank_plate(well_row=LETTERS[2:7], well_col=2:11)
+#' 
+#' # create blank 1536-well plate with empty edge wells
+#' 
+#' full_plate_row_names <- make_row_names_lc1536()
+#' 
+#' create_blank_plate(well_row=full_plate_row_names[2:31], well_col=2:47)
 #'
 #' @family plate creation functions
 #'
@@ -43,16 +55,36 @@ create_blank_plate_96well <- function() {
     create_blank_plate(well_row = LETTERS[1:8], well_col = 1:12)
 }
 
-#' @describeIn create_blank_plate Row names for 1536-well plates on
-#' Roche Lightcycler (tm) 1536 Aa,Ab,Ac,Ad,Ba,...,Hd.
+#' Generates row names for the Roche Lightcycler (tm) 1536-well plates
+#' 
+#' Creates a vector containing 36 row names according to the labeling system 
+#' used by the Roche Lightcycler (tm)
+#' 
+#' @return Vector of row names: Aa,Ab,Ac,Ad,Ba,...,Hd.
+#' 
+#' @family plate creation functions
+#' 
+#' @examples
+#' make_row_names_lc1536()
+#' 
 #' @export
 #'
 make_row_names_lc1536 <- function() {
     paste0(rep(LETTERS[1:8], each = 4), letters[1:4])
 }
 
-#' @describeIn create_blank_plate Row names for 1536-well plates on
-#' Labcyte Echo A,B,...,Z,AA,AB,...,AF.
+#' Generates row names for the Labcyte Echo 1536-well plates 
+#' 
+#' Creates a vector containing 36 row names according to the 
+#' labeling system used by the Labcyte Echo
+#' 
+#' @return Vector of row names: A,B,...,Z,AA,AB,...,AF.
+#' 
+#' @family plate creation functions
+#' 
+#' @examples
+#' make_row_names_echo1536()
+#' 
 #' @export
 #'
 make_row_names_echo1536 <- function() {
@@ -245,7 +277,11 @@ create_rowkey_8_in_16_plain <- function(...) {
 
 #' Label a plate with sample and probe information
 #'
-#' See vignettes for further examples
+#' For more help, examples and explanations, see the plate setup vignette:
+#' \code{vignette("platesetup_vignette", package = "tidyqpcr")}
+#' 
+#' For worked examples of tidyqpcr analysis with 384-well plates, see:
+#' \code{vignette("calibration_vignette", package = "tidyqpcr")}
 #'
 #' @param plate tibble (data frame) with variables well_row, well_col, well.
 #'   This would usually be produced by create_blank_plate(). It is possible to
@@ -278,6 +314,11 @@ create_rowkey_8_in_16_plain <- function(...) {
 #'
 #' @examples
 #' label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
+#' 
+#' # label blank 96-well plate with empty edge wells
+#' 
+#' label_plate_rowcol(plate = create_blank_plate(well_row=LETTERS[2:7], well_col=2:11))
+#' 
 #' @family plate creation functions
 #'
 #' @export

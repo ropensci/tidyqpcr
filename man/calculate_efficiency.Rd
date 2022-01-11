@@ -35,7 +35,8 @@ Note efficiency is given in ratio, not per cent; multiply by 100 for that.
 dilution_tibble <- tibble(dilution = rep(c(1, 0.1, 0.001, 0.0001), 2),
                      cq = c(1, 3, 4, 6,
                             4, 5, 6, 7),
-                     biol_rep = rep(c(1,2), each = 4))
+                     biol_rep = rep(c(1,2), each = 4),
+                     target_id = "T1")
                      
 # calculate primer efficiency
 
