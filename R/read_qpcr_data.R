@@ -74,7 +74,7 @@ read_lightcycler_1colour_raw <- function(
 #' @export
 #' @seealso read_lightcycler_1colour_raw
 #'
-#' @examples read_lightcycler_1colour_cq(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt.gz", 
+#' @examples read_lightcycler_1colour_cq(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Cq.txt.gz", 
 #'                                                  package = "tidyqpcr"))
 #'
 read_lightcycler_1colour_cq <- function(
