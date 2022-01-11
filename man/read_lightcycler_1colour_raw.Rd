@@ -57,7 +57,7 @@ Lightcycler software.
 This function is a thin wrapper around readr::read_tsv.
 }
 \examples{
-read_lightcycler_1colour_raw(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt", 
+read_lightcycler_1colour_raw(system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt.gz", 
                                                  package = "tidyqpcr"))
 
 }

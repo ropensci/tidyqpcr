@@ -56,8 +56,8 @@ theme_set(theme_cowplot(font_size = 11) %+replace%
 wells_exclude <- c("D10","D11","D12", "H10","H11","H12") # these wells are blank
 
 plate_cq_extdata <- read_lightcycler_1colour_cq(
-  "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt"
-  ) %>%
+  system.file("extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq.txt.gz",
+  package = "tidyqpcr")) %>%
   dplyr::filter(! well %in% wells_exclude ) %>% # exclude blank wells
   dplyr::select(well, sample_info, cq) 
 
@@ -65,8 +65,8 @@ plate_cq_extdata <- read_lightcycler_1colour_cq(
 readr::write_tsv(
   x = plate_cq_extdata %>%
     mutate(cq = format(cq,nsmall=2)),
-  path = "../inst/extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt"
-)
+  path =  system.file("extdata/Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt.gz",
+                      package = "tidyqpcr")))
 
 plate_cq_extdata
 ```
@@ -77,11 +77,9 @@ plate_cq_extdata
 We start by loading data from the experiment. We print the data to screen here, it is always a good idea to look at the data to find out if it has loaded correctly and behaves as expected, or not.
 
 ```{r load_plates,dependson="label_plates",results="show"}
-library(tidyverse)
-
 plate_cq_extdata <- read_tsv(
   system.file("extdata",
-    "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt",
+    "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt.gz",
     package = "tidyqpcr"
   )
 )

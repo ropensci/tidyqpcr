@@ -123,8 +123,8 @@ display_plate(plate1plan)
 
 ```{r load_plates,dependson="label_plates",results="show"}
 plates <- read_lightcycler_1colour_cq(
-  "../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Ct.txt"
-  ) %>%
+  system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Cq.txt.gz",
+              package = "tidyqpcr")) %>%
   right_join(plate1plan)
 ```
 
@@ -237,8 +237,8 @@ ggplot(
 ```{r load_amp,dependson="label_plates",results="show"}
 
 plate1curve <- read_lightcycler_1colour_raw(
-  "../inst/extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt"
-  ) %>%
+  system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt.gz",
+  package = "tidyqpcr")) %>%
   debaseline() %>%
   left_join(plate1plan)
 
