@@ -7,7 +7,7 @@ output:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{PrimerCalibration}
+  %\VignetteIndexEntry{Primers and probes calibration vignette}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -34,12 +34,16 @@ We started with two biological replicate RNA samples, treated with DNase and the
 The data were measured on a Roche LC480 instrument in a single 384-well plate. Quantification was performed in the Roche LightCycler software prior to using this program.
 
 
-```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
-## knitr options for report generation
+## Setup knitr options and load packages
+
+```{r setup,warning=FALSE,message=FALSE}
+# knitr options for report generation
 knitr::opts_chunk$set(
   warning = FALSE, message = FALSE, echo = TRUE, cache = FALSE,
   results = "show"
 )
+
+# Load packages
 library(tidyverse)
 library(cowplot)
 library(tidyqpcr)
@@ -97,7 +101,7 @@ plate1plan <-
 
 Checks that for selected technical replicate/probe/dilution combinations, the plate contains the right number of replicates.
 
-```{r print_techreps,results="show",echo=TRUE,cache=FALSE}
+```{r print_techreps,results="show"}
 plate1plan %>%
   filter(tech_rep == "1",
          target_id == target_id_levels[1],
@@ -189,7 +193,7 @@ ggplot(data = filter(plates, prep_type == "+RT"), aes(x = dilution, y = cq)) +
 
 Use regression to estimate linearity of cq with log(dilution), including the slope or efficiency.
 
-```{r calibrate_dilutions,dependson="load_plates",results="show",echo=TRUE}
+```{r calibrate_dilutions,dependson="load_plates",results="show"}
 calculate_efficiency_bytargetid(plates)
 ```
 
