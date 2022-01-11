@@ -348,7 +348,7 @@ label_plate_rowcol <- function(plate,
 #'                                       mutate(sample_id = paste0(dilution_nice, "_", tech_rep)))
 #' 
 #' # display full plate
-#' display_plate(basic_plate)
+#' display_plate_plan(basic_plate)
 #' 
 #' @family plate creation functions
 #'
@@ -356,7 +356,7 @@ label_plate_rowcol <- function(plate,
 #' @importFrom forcats as_factor
 #' @importFrom rlang .data
 #'
-display_plate <- function(plate) {
+display_plate_plan <- function(plate) {
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
@@ -383,4 +383,66 @@ display_plate <- function(plate) {
                        legend.position = "none",
                        plot.margin = grid::unit(rep(0.01, 4), "npc"),
                        panel.border = ggplot2::element_blank())
+}
+
+#' Display the value of each well across the plate. 
+#' 
+#' Plots the plate with each well coloured by its value. Example values are Cq, Delta Cq or Delta Delta Cq.
+#'
+#' @param plate tibble with variables well_col, well_row, and the variable to be plotted.
+#'
+#' @return ggplot object; major output is to plot it
+#'
+#' @examples 
+#' library(dplyr)
+#' 
+#' # create basic 384 well plate
+#' basic_plate <- label_plate_rowcol(create_blank_plate(), 
+#'                                   create_rowkey_8_in_16_plain(), 
+#'                                   create_colkey_6diln_2ctrl_in_24()) %>%
+#'                                       mutate(cq = runif(384) * 10)
+#' 
+#' 
+#' # display well Cq value across plate
+#' display_well_value(basic_plate_plan)
+#' 
+#' @family plate creation functions
+#'
+#' @export
+#' @importFrom forcats as_factor
+#' @importFrom rlang .data
+#'
+display_well_value <- function(plate, value = "cq") {
+    
+    # check value exists in given plate
+    assertthat::assert_that(value %in% names(plate), msg = paste0(value, " is not the name of a variable in the given plate"))
+    
+    # check each well has one value only
+    unique_well_value <- plate %>%
+        group_by(well) %>%
+        dplyr::summarise(num_well = n()) %>%
+        mutate(not_equal_one = num_well != 1)
+    
+    assertthat::assert_that(sum(unique_well_value$not_equal_one) == 0, msg = paste0("Wells do not have unique ", value, " value."))
+    
+    rowlevels <- 
+        dplyr::pull(plate, .data$well_row) %>%
+        as_factor() %>%
+        levels()
+    
+    ggplot2::ggplot(data = plate,
+                    ggplot2::aes(x = as_factor(.data$well_col),
+                                 y = as_factor(.data$well_row))) +
+        ggplot2::geom_tile(ggplot2::aes(fill = .data[[value]]), 
+                           alpha = 0.3) +
+        ggplot2::scale_x_discrete(expand = c(0, 0)) +
+        ggplot2::scale_y_discrete(expand = c(0, 0),
+                                  limits = rev(rowlevels)) +
+        ggplot2::coord_equal() +
+        ggplot2::theme_void() +
+        ggplot2::theme(axis.text = ggplot2::element_text(angle = 0),
+                       panel.grid.major = ggplot2::element_blank(),
+                       plot.margin = grid::unit(rep(0.01, 4), "npc"),
+                       panel.border = ggplot2::element_blank()) +
+        ggplot2::labs(title = paste0(value, " values for each well across the plate"))
 }
