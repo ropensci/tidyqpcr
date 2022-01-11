@@ -60,9 +60,13 @@ We want to make it easier for scientists to produce reliable and interpretable r
 
 # Status
 
-As of October 2021, this software is fully useable, and still in development.
+As of January 2022, this software is fully useable, while still being in development.
+It is particularly good at designing qPCR experiments in microwell plates (96-well and 384-well), and at relative quantification by the delta Cq method.
 
-[Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is actively developing, initially as part of the [eLife Open Innovation Leaders programme 2020](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+[Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available.
+[Sam Haynes](https://github.com/dimmestp) is actively developing, initially as part of the [eLife Open Innovation Leaders programme 2020](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort).
+
+If there is a feature that you need for your work, please ask us! 
 
 ## News
 
@@ -79,7 +83,7 @@ Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, 
 
 tidyqpcr can be used to analyse qPCR data from any nucleic acid source - DNA for qPCR or ChIP-qPCR, RNA for RT-qPCR.
 
-Currently tidyqpcr has functions that support relative quantification, but not yet absolute quantification.
+Currently tidyqpcr has functions that support relative quantification by the delta Cq method, but not yet absolute quantification.
 
 
 ## Current features
