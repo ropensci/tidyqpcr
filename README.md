@@ -53,9 +53,9 @@ We want to create a tool that is flexible enough to analyse high or low throughp
 
 ### Best-practice compliant
 
-tidyqpcr encourages standardised, reliable experimental design by prioritising MIQE-compliant best practices.
+tidyqpcr encourages standardised, reliable experimental design by following the Minimum Information for Publication of Quantitative Real-Time PCR Experiments (MIQE) best practices.
 
-We want to make it easier for scientists to produce reliable and interpretable results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
+We want to make it easier for scientists to produce reliable and interpretable results. The MIQE best practices are a framework to facilitate the full disclosure of all reagents, sequences, and analysis methods necessary to enable other investigators to reproduce results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
 
 # Status
@@ -111,7 +111,7 @@ First install [R](https://www.r-project.org/).
 
 #### For Windows users
 
-Next, you need a working installation of [Rtools]().
+Next, you need a working installation of [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html).
 
 Jeffrey Leek made [slides on installation and testing of Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/).
 
@@ -140,12 +140,12 @@ tidyqpcr automatically imports and loads several external packages for basic fun
 
 ## Using tidyqpcr
 
-The best place to start is the vignettes, which offer tutorials and example data analyses including figures. Currently there are 4 vignettes:
+The best place to start is by viewing the articles on the [tidyqpcr website](https://ewallace.github.io/tidyqpcr/index.html). Here you will find the vignettes, which offer tutorials and example data analyses including figures. Currently there are 4 vignettes:
 
-* [IntroDesignPlatesetup](vignettes/platesetup_vignette.Rmd) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
-* [DeltaCq96wellExample](vignettes/deltacq_96well_vignette.Rmd) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
-* [MultifactorialExample](vignettes/multifactor_vignette.Rmd) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
-* [PrimerCalibration](vignettes/calibration_vignette.Rmd) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
+* [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
+* [DeltaCq96wellExample](https://ewallace.github.io/tidyqpcr/articles/deltacq_96well_vignette.html) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
+* [MultifactorialExample](https://ewallace.github.io/tidyqpcr/articles/multifactor_vignette.html) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
+* [PrimerCalibration](https://ewallace.github.io/tidyqpcr/articles/calibration_vignette.html) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
 
 To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
 
