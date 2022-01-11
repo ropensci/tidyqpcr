@@ -53,16 +53,20 @@ We want to create a tool that is flexible enough to analyse high or low throughp
 
 ### Best-practice compliant
 
-tidyqpcr encourages standardised, reliable experimental design by prioritising MIQE-compliant best practices.
+tidyqpcr encourages standardised, reliable experimental design by following the Minimum Information for Publication of Quantitative Real-Time PCR Experiments (MIQE) best practices.
 
-We want to make it easier for scientists to produce reliable and interpretable results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
+We want to make it easier for scientists to produce reliable and interpretable results. The MIQE best practices are a framework to facilitate the full disclosure of all reagents, sequences, and analysis methods necessary to enable other investigators to reproduce results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
 
 # Status
 
-As of October 2021, this software is fully useable, and still in development.
+As of January 2022, this software is fully useable, while still being in development.
+It is particularly good at designing qPCR experiments in microwell plates (96-well and 384-well), and at relative quantification by the delta Cq method.
 
-[Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available. [Sam Haynes](https://github.com/dimmestp) is actively developing, initially as part of the [eLife Open Innovation Leaders programme 2020](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort). 
+[Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available.
+[Sam Haynes](https://github.com/dimmestp) is actively developing, initially as part of the [eLife Open Innovation Leaders programme 2020](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort).
+
+If there is a feature that you need for your work, please ask us! 
 
 ## News
 
@@ -79,7 +83,7 @@ Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, 
 
 tidyqpcr can be used to analyse qPCR data from any nucleic acid source - DNA for qPCR or ChIP-qPCR, RNA for RT-qPCR.
 
-Currently tidyqpcr has functions that support relative quantification, but not yet absolute quantification.
+Currently tidyqpcr has functions that support relative quantification by the delta Cq method, but not yet absolute quantification.
 
 
 ## Current features
@@ -111,7 +115,7 @@ First install [R](https://www.r-project.org/).
 
 #### For Windows users
 
-Next, you need a working installation of [Rtools]().
+Next, you need a working installation of [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html).
 
 Jeffrey Leek made [slides on installation and testing of Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/).
 
@@ -140,12 +144,12 @@ tidyqpcr automatically imports and loads several external packages for basic fun
 
 ## Using tidyqpcr
 
-The best place to start is the vignettes, which offer tutorials and example data analyses including figures. Currently there are 4 vignettes:
+The best place to start is by viewing the articles on the [tidyqpcr website](https://ewallace.github.io/tidyqpcr/index.html). Here you will find the vignettes, which offer tutorials and example data analyses including figures. Currently there are 4 vignettes:
 
-* [IntroDesignPlatesetup](vignettes/platesetup_vignette.Rmd) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
-* [DeltaCq96wellExample](vignettes/deltacq_96well_vignette.Rmd) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
-* [MultifactorialExample](vignettes/multifactor_vignette.Rmd) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
-* [PrimerCalibration](vignettes/calibration_vignette.Rmd) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
+* [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
+* [DeltaCq96wellExample](https://ewallace.github.io/tidyqpcr/articles/deltacq_96well_vignette.html) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
+* [MultifactorialExample](https://ewallace.github.io/tidyqpcr/articles/multifactor_vignette.html) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
+* [PrimerCalibration](https://ewallace.github.io/tidyqpcr/articles/calibration_vignette.html) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
 
 To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
 
