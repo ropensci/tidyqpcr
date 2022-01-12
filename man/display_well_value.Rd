@@ -21,6 +21,7 @@ For a specific example see the calibration vignette:
 }
 \examples{
 library(dplyr)
+library(ggplot2)
 
 # create basic 384 well plate
 basic_plate <- create_blank_plate_96well() \%>\%
