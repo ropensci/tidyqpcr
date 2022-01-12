@@ -6,38 +6,19 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{IntroDesignPlatesetup}
+  %\VignetteIndexEntry{Introduction to designing an experiment and setting up a plate plan in tidyqpcr}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 
-```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
-
-## knitr options for report generation
-knitr::opts_chunk$set(
-  warning = FALSE, message = FALSE, echo = TRUE, cache = FALSE,
-  results = "show"
-)
-library(tidyverse)
-library(cowplot)
-library(tidyqpcr)
-
-# set default theme for graphics
-theme_set(theme_cowplot(font_size = 11) %+replace%
-  theme(
-    panel.border = element_rect(
-      colour = "grey50",
-      linetype = "solid", size = 0.5
-    ),
-    strip.background = element_blank()
-  ))
-```
-
 # Overview
 
-This vignette introduces how to set up microwell plates for tidyqpcr analysis. Start here if you are new-ish to the tidyverse or want to see explanations about how to design experiments and plate layouts. For worked examples of tidyqpcr analysis with 384-well plates, see:
+This vignette introduces how to set up microwell plates for tidyqpcr analysis.
+Start here if you are new-ish to the tidyverse or want to see explanations about how to design experiments and plate layouts.
+For worked examples of tidyqpcr analysis on 96-well and 384-well plates, see:
 
+* Delta Cq 96-well plate qPCR analysis vignette, `vignette("deltacq_96well_vignette", package = "tidyqpcr")`
 * Primers and Probes Calibration vignette, `vignette("calibration_vignette", package = "tidyqpcr")`
 * Multifactorial experiment vignette, `vignette("multifactor_vignette", package = "tidyqpcr")`
 
@@ -48,6 +29,23 @@ We suggest thinking through the whole experiment first, including what you will 
 This vignette builds from a 12-well "practice plate" up to a 96 well plate for a plausible small RT-qPCR experiment. The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.
 
 This vignette focuses on one primer set per well (for SYBR data), and doesn't discuss more than one probe per well (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
+
+## Setup knitr options and load packages
+
+This loads the packages necessary for the rest of the code to run.
+
+```{r setup,warning=FALSE,message=FALSE}
+
+# knitr options for report generation
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE, echo = TRUE, cache = FALSE,
+  results = "show"
+)
+
+# Load packages
+library(tidyverse)
+library(tidyqpcr)
+```
 
 ## Essential information: target_id, sample_id, prep_type
 
@@ -305,6 +303,7 @@ The functions `unite` and `separate` have visual descriptions on the [RStudio da
 
 ## Hints and Tips
 
-* In tidyqpcr we chose to give all variables snake_case names, such as `sample_id`, `prep_type`, following the tidyverse style guide.
+* In tidyqpcr we chose to give all variables snake_case names, such as `sample_id`, `prep_type`, following the [tidyverse style guide](https://style.tidyverse.org).
 * What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same sample_id/target_id in two adjacent rows, using `rep(sample_id, each = 2)` might help.
 * If your experiment spans multiple plates, it can be helpful to re-use `colkey` and `rowkey` in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the `sample_id` name includes replicate information and so is unique for the analysis.
+* If you want to avoid certain rows or columns, change the `well_row` or `well_col` arguments in your blank plates, row keys, and column keys. For example `create_blank_plate(well_row = LETTERS[2:7], well_col = 2:11)` creates a blank 96-well plate with outside rows and columns empty.
