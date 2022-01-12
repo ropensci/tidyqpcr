@@ -430,9 +430,9 @@ display_well_value <- function(plate, value = "cq") {
     
     # check each well has one value only
     unique_well_value <- plate %>%
-        dplyr::group_by(well) %>%
+        dplyr::group_by(.data$well) %>%
         dplyr::summarise(num_well = dplyr::n()) %>%
-        dplyr::mutate(not_equal_one = num_well != 1)
+        dplyr::mutate(not_equal_one = .data$num_well != 1)
     
     assertthat::assert_that(sum(unique_well_value$not_equal_one) == 0, msg = paste0("Wells do not have unique ", value, " value."))
     
