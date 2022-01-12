@@ -450,7 +450,7 @@ display_well_value <- function(plate, value = "cq") {
         ggplot2::coord_equal() +
         ggplot2::theme_void() +
         ggplot2::theme(axis.text = ggplot2::element_text(angle = 0),
-                       plot.title = element_text(hjust = 0.5),
+                       plot.title = ggplot2::element_text(hjust = 0.5),
                        panel.grid.major = ggplot2::element_blank(),
                        plot.margin = grid::unit(rep(0.01, 4), "npc"),
                        panel.border = ggplot2::element_blank()) +
