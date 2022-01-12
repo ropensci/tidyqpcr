@@ -8,6 +8,8 @@ display_well_value(plate, value = "cq")
 }
 \arguments{
 \item{plate}{tibble with variables well_col, well_row, and the variable to be plotted.}
+
+\item{value}{character vector selecting the variable in plate to plot as the well value}
 }
 \value{
 ggplot object; major output is to plot it
