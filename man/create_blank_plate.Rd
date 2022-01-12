@@ -71,6 +71,7 @@ Other plate creation functions:
 \code{\link{create_rowkey_4_in_16}()},
 \code{\link{create_rowkey_8_in_16_plain}()},
 \code{\link{display_plate}()},
+\code{\link{display_well_value}()},
 \code{\link{label_plate_rowcol}()}
 }
 \concept{plate creation functions}

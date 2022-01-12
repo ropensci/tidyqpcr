@@ -351,7 +351,7 @@ label_plate_rowcol <- function(plate,
 #'                                       mutate(sample_id = paste0(dilution_nice, "_", tech_rep)))
 #' 
 #' # display full plate
-#' display_plate_plan(basic_plate)
+#' display_plate(basic_plate)
 #' 
 #' @family plate creation functions
 #'
@@ -359,7 +359,7 @@ label_plate_rowcol <- function(plate,
 #' @importFrom forcats as_factor
 #' @importFrom rlang .data
 #'
-display_plate_plan <- function(plate) {
+display_plate <- function(plate) {
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
@@ -392,6 +392,9 @@ display_plate_plan <- function(plate) {
 #' 
 #' Plots the plate with each well coloured by its value. Example values are Cq, Delta Cq or Delta Delta Cq.
 #'
+#' For a specific example see the calibration vignette:
+#' \code{vignette("calibration_vignette", package = "tidyqpcr")}
+#'
 #' @param plate tibble with variables well_col, well_row, and the variable to be plotted.
 #'
 #' @return ggplot object; major output is to plot it
@@ -400,14 +403,18 @@ display_plate_plan <- function(plate) {
 #' library(dplyr)
 #' 
 #' # create basic 384 well plate
-#' basic_plate <- label_plate_rowcol(create_blank_plate(), 
-#'                                   create_rowkey_8_in_16_plain(), 
-#'                                   create_colkey_6diln_2ctrl_in_24()) %>%
-#'                                       mutate(cq = runif(384) * 10)
+#' basic_plate <- create_blank_plate_96well() %>%
+#'     mutate(cq = runif(96) * 10,
+#'     deltacq = runif(96) * 2)
 #' 
 #' 
 #' # display well Cq value across plate
-#' display_well_value(basic_plate_plan)
+#' display_well_value(basic_plate)
+#' 
+#' # display well Delta Cq value across plate with red colour pallette
+#' display_well_value(basic_plate, value = "deltacq") +   # uses ggplot syntax
+#'     scale_fill_gradient(high = "#FF0000") 
+#'           
 #' 
 #' @family plate creation functions
 #'
@@ -436,14 +443,14 @@ display_well_value <- function(plate, value = "cq") {
     ggplot2::ggplot(data = plate,
                     ggplot2::aes(x = as_factor(.data$well_col),
                                  y = as_factor(.data$well_row))) +
-        ggplot2::geom_tile(ggplot2::aes(fill = .data[[value]]), 
-                           alpha = 0.3) +
+        ggplot2::geom_tile(ggplot2::aes(fill = .data[[value]])) +
         ggplot2::scale_x_discrete(expand = c(0, 0)) +
         ggplot2::scale_y_discrete(expand = c(0, 0),
                                   limits = rev(rowlevels)) +
         ggplot2::coord_equal() +
         ggplot2::theme_void() +
         ggplot2::theme(axis.text = ggplot2::element_text(angle = 0),
+                       plot.title = element_text(hjust = 0.5),
                        panel.grid.major = ggplot2::element_blank(),
                        plot.margin = grid::unit(rep(0.01, 4), "npc"),
                        panel.border = ggplot2::element_blank()) +
