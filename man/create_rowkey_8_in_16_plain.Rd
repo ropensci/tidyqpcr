@@ -30,6 +30,8 @@ Other plate creation functions:
 \code{\link{create_colkey_6diln_2ctrl_in_24}()},
 \code{\link{create_rowkey_4_in_16}()},
 \code{\link{display_plate}()},
-\code{\link{label_plate_rowcol}()}
+\code{\link{label_plate_rowcol}()},
+\code{\link{make_row_names_echo1536}()},
+\code{\link{make_row_names_lc1536}()}
 }
 \concept{plate creation functions}
