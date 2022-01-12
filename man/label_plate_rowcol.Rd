@@ -41,10 +41,20 @@ tibble (data frame) with variables well_row, well_col, well, and
   variables can be added by users later.
 }
 \description{
-See vignettes for further examples
+For more help, examples and explanations, see the plate setup vignette:
+\code{vignette("platesetup_vignette", package = "tidyqpcr")}
+}
+\details{
+For worked examples of tidyqpcr analysis with 384-well plates, see:
+\code{vignette("calibration_vignette", package = "tidyqpcr")}
 }
 \examples{
 label_plate_rowcol(plate = create_blank_plate()) # returns blank plate
+
+# label blank 96-well plate with empty edge wells
+
+label_plate_rowcol(plate = create_blank_plate(well_row=LETTERS[2:7], well_col=2:11))
+
 }
 \seealso{
 Other plate creation functions: 
@@ -55,6 +65,8 @@ Other plate creation functions:
 \code{\link{create_rowkey_4_in_16}()},
 \code{\link{create_rowkey_8_in_16_plain}()},
 \code{\link{display_plate}()},
-\code{\link{display_well_value}()}
+\code{\link{display_well_value}()},
+\code{\link{make_row_names_echo1536}()},
+\code{\link{make_row_names_lc1536}()}
 }
 \concept{plate creation functions}
