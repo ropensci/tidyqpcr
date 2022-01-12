@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{MultifactorialExample}
+  %\VignetteIndexEntry{Multifactorial multi-plate qPCR analysis example}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -14,6 +14,7 @@ vignette: >
 # Summary: an example multifactorial qPCR experiment.
 
 This vignette shows how to use tidyqpcr functions to normalize and plot data from multifactorial experiments: many primer sets, many conditions, two plates.
+This vignette is a more advanced example with complex data.
 
 This is real RT-qPCR data by Edward Wallace in June 2018, testing the effect of heat shock and transcription-targeting drugs in _Saccharomyces cerevisiae_ yeast.
 
@@ -33,14 +34,17 @@ Test 6 conditions. That's 3 transcriptional inhibitors (no drug control, 150ug/m
     - *P+* Phenanthroline +heat
     - *T+* Thiolutin +heat
 
+## Setup knitr options and load packages
 
-```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
+```{r setup,warning=FALSE,message=FALSE}
 
-## knitr options for report generation
+# knitr options for report generation
 knitr::opts_chunk$set(
   warning = FALSE, message = FALSE, echo = TRUE, cache = FALSE,
   results = "show"
 )
+
+# Load packages
 library(tidyverse)
 library(cowplot)
 library(tidyqpcr)

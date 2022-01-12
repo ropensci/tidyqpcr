@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{DeltaCq96wellExample}
+  %\VignetteIndexEntry{Delta Cq 96-well plate qPCR analysis example}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -25,13 +25,18 @@ Bacterial strains: wild-type (WT) and mutant (dAgr).
 
 Equipment: Data were collected on a Roche LightCycler 480, and LightCycler software used to estimate Cq/Ct values and export that as a text-format table. The sample information is specified in this input data file.
 
-```{r setup,warning=FALSE,message=FALSE,echo=FALSE}
 
-## knitr options for report generation
+## Setup knitr options and load packages
+
+```{r setup,warning=FALSE,message=FALSE}
+
+# knitr options for report generation
 knitr::opts_chunk$set(
   warning = FALSE, message = FALSE, echo = TRUE, cache = FALSE,
   results = "show"
 )
+
+# Load packages
 library(tidyverse)
 library(cowplot)
 library(tidyqpcr)

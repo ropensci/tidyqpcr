@@ -27,7 +27,7 @@ Suggests:
 VignetteBuilder: knitr
 License: Apache License 2.0 + file LICENSE
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 URL: https://github.com/ewallace/tidyqpcr, https://ewallace.github.io/tidyqpcr/
 BugReports: https://github.com/ewallace/tidyqpcr/issues

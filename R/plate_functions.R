@@ -19,6 +19,9 @@
 #' create_blank_plate(well_row=LETTERS[1:2],well_col=1:3)
 #' 
 #' create_blank_plate_96well()
+#' 
+#' # 96-well plate avoiding edge rows
+#' create_blank_plate(well_row = LETTERS[2:7], well_col = 2:11)
 #'
 #' @family plate creation functions
 #'
