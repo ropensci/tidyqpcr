@@ -426,7 +426,7 @@ display_plate <- function(plate) {
 display_well_value <- function(plate, value = "cq") {
     
     # check value exists in given plate
-    assertthat::assert_that(value %in% names(plate), msg = paste0(value, " is not the name of a variable in the given plate"))
+    assertthat::assert_that({{value}} %in% names(plate), msg = paste0({{value}}, " is not the name of a variable in the given plate"))
     
     # check each well has one value only
     unique_well_value <- plate %>%
@@ -434,7 +434,7 @@ display_well_value <- function(plate, value = "cq") {
         dplyr::summarise(num_well = dplyr::n()) %>%
         dplyr::mutate(not_equal_one = .data$num_well != 1)
     
-    assertthat::assert_that(sum(unique_well_value$not_equal_one) == 0, msg = paste0("Wells do not have unique ", value, " value."))
+    assertthat::assert_that(sum(unique_well_value$not_equal_one) == 0, msg = paste0("Wells do not have unique ", {{value}}, " value."))
     
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
@@ -444,7 +444,7 @@ display_well_value <- function(plate, value = "cq") {
     ggplot2::ggplot(data = plate,
                     ggplot2::aes(x = as_factor(.data$well_col),
                                  y = as_factor(.data$well_row))) +
-        ggplot2::geom_tile(ggplot2::aes(fill = .data[[value]])) +
+        ggplot2::geom_tile(ggplot2::aes(fill = .data[[{{value}}]])) +
         ggplot2::scale_x_discrete(expand = c(0, 0)) +
         ggplot2::scale_y_discrete(expand = c(0, 0),
                                   limits = rev(rowlevels)) +
@@ -455,5 +455,5 @@ display_well_value <- function(plate, value = "cq") {
                        panel.grid.major = ggplot2::element_blank(),
                        plot.margin = grid::unit(rep(0.01, 4), "npc"),
                        panel.border = ggplot2::element_blank()) +
-        ggplot2::labs(title = paste0(value, " values for each well across the plate"))
+        ggplot2::labs(title = paste0({{value}}, " values for each well across the plate"))
 }
