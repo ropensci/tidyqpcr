@@ -138,6 +138,13 @@ plates
 
 summary(plates)
 ```
+# Check for positional effects across plate
+Sometimes wells close the the edge of the plate exhibit different behavior to central wells.
+
+```{r check_edge_effects,dependson="load_plates",results="show"}
+display_well_value(plates)
+```
+
 
 ## Plot unnormalized data shows that -RT and NT controls are low
 

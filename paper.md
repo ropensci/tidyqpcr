@@ -37,10 +37,9 @@ Quantitative PCR is among the most common techniques in biological and biomedica
 There is a critical need for rigorous analysis and reporting of qPCR experiments, codified  in the [minimum information for publication of quantitative real-time PCR experiments (MIQE) guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) [@Bustin:2009].
 Yet it is common for qPCR to be analysed either by closed-source software supplied by the manufacturers of PCR machines, or by highly variable, in-house analysis scripts that have not been peer-reviewed.
 Some open-source libraries for qPCR analysis are available, notably qpcR [@Spiess:2018] and pcr [@Ahmed:2018].
-qpcR is a feature rich qPCR analysis package relying on an object-oriented approach using S4 classes.
-pcr is a less extensive qPCR analysis package based on the tidyverse suite of generic data-science tools using the paradigm of tidy data (spreadsheet-like rectangular data frames).
-However, available packages either assume extensive prior R knowledge, overlook best-practices in qPCR experiments, or lack extensive documentation.
-There remains a need for a qPCR analysis package that integrates with the user-friendly tidyverse, encourages the use of MIQE best-practice compliant experimental design, and provides detailed example analysis pipelines as R vignettes.
+qpcR is a feature rich qPCR analysis package relying on an object-oriented approach using S3 classes.
+pcr is a less extensive qPCR analysis package with partial integration into the tidyverse suite of generic data-science tools using the paradigm of tidy data (spreadsheet-like rectangular data frames).
+There remains a need for a qPCR analysis package that fully integrates with the user-friendly tidyverse, encourages the use of MIQE best-practice compliant experimental design, and provides detailed example analysis pipelines as R vignettes.
 
 Our package, tidyqpcr, addresses the need for best-practice, novice-friendly qPCR analysis in the tidyverse paradigm. 
 tidyqpcr aims to be:
