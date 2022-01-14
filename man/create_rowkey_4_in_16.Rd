@@ -18,6 +18,9 @@ tibble (data frame) with 16 rows, and variables well_row, prep_type,
 Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4
 values is repeated over 3x +RT Techreps and 1x -RT.
 }
+\details{
+This helps to create plate layouts with standard designs.
+}
 \examples{
 create_rowkey_4_in_16(sample_id=c("sheep","goat","cow","chicken"))
 }

@@ -104,6 +104,8 @@ create_blank_plate_1536well <- function(
 #'
 #' Create a 24-column key with 6 values repeated over 24 plate columns.
 #' Each of the 6 values is repeated over 3x +RT Techreps and 1x -RT.
+#' 
+#' This helps to create plate layouts with standard designs.
 #'
 #' @param ... Vectors of length 6 describing well contents,
 #' e.g. sample_id or target_id
@@ -218,6 +220,8 @@ create_colkey_6diln_2ctrl_in_24 <- function(
 #'
 #' Create a 16-row key with 4 values repeated over 16 plate rows. Each of the 4
 #' values is repeated over 3x +RT Techreps and 1x -RT.
+#' 
+#' This helps to create plate layouts with standard designs.
 #'
 #' @param ... Vectors of length 4 describing well contents, e.g. sample_id or
 #'   target_id
@@ -250,6 +254,8 @@ create_rowkey_4_in_16 <- function(...) {
 #'
 #' Create a 16-row key with 8 values repeated over 16 plate rows. No other
 #' information is included by default, hence "plain".
+#' 
+#' This helps to create plate layouts with standard designs.
 #'
 #' @param ... Vectors of length 8 describing well contents, e.g. sample or
 #'   probe.

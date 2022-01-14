@@ -18,6 +18,9 @@ tibble (data frame) with 16 rows, and variables well_col, and
 Create a 16-row key with 8 values repeated over 16 plate rows. No other
 information is included by default, hence "plain".
 }
+\details{
+This helps to create plate layouts with standard designs.
+}
 \examples{
 create_rowkey_8_in_16_plain(sample_id=c("me","you","them","him",
                                    "her","dog","cat","monkey"))
