@@ -45,6 +45,11 @@
 #'     debaseline()
 #'     
 debaseline <- function(plateamp, maxcycle = 10) {
+    assertthat::assert_that(
+        assertthat::has_name(
+            plateamp,
+            c("well", "program_no", "cycle", "fluor_raw"))
+    )
     baseline <-
         plateamp %>%
         dplyr::group_by(.data$well) %>%
@@ -114,6 +119,10 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #' temperature T), has a maximum at the melting temperature Tm. A single peak in
 #' this suggests a single-length PCR product is present in the well. getdRdTall
 #' is the old name for the same function (kept for backwards compatibility).
+#' 
+#' Note that this function does not group by plate, only by well.
+#' The function will give strange results if you pass it data from 
+#' more than one plate. Avoid this by analysing one plate at a time.
 #'
 #' @param platemelt data frame describing melt curves, including variables
 #'   well, temperature, fluor_raw (raw fluorescence value).
@@ -157,10 +166,16 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #'     calculate_drdt_plate(method = "diff")
 #'
 calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
+    assertthat::assert_that(
+        assertthat::has_name(
+            platemelt,
+            c("well", "temperature", "fluor_raw"))
+    )
+    if (assertthat::has_name(platemelt,"plate") ) {
+        warning("platemelt has a plate column, but calculate_drdt_plate works only for single plates.")
+    }
     platemelt %>%
         dplyr::arrange(.data$well, .data$temperature) %>%
-        # @ewallace: doesn't group by plate, only by well,
-        # so will fail strangely if used on data from multiple plates
         dplyr::group_by(.data$well) %>%
         dplyr::mutate(dRdT =
                           calculate_dydx_1(x = .data$temperature,

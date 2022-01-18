@@ -30,6 +30,11 @@ temperature T), has a maximum at the melting temperature Tm. A single peak in
 this suggests a single-length PCR product is present in the well. getdRdTall
 is the old name for the same function (kept for backwards compatibility).
 }
+\details{
+Note that this function does not group by plate, only by well.
+The function will give strange results if you pass it data from 
+more than one plate. Avoid this by analysing one plate at a time.
+}
 \section{Functions}{
 \itemize{
 \item \code{getdRdTall}: 
