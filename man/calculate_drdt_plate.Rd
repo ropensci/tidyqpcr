@@ -2,12 +2,9 @@
 % Please edit documentation in R/amp_melt_curve_functions.R
 \name{calculate_drdt_plate}
 \alias{calculate_drdt_plate}
-\alias{getdRdTall}
 \title{Calculate dR/dT of melt curves for of every well in a plate.}
 \usage{
 calculate_drdt_plate(platemelt, method = "spline", ...)
-
-getdRdTall(platemelt, method = "spline")
 }
 \arguments{
 \item{platemelt}{data frame describing melt curves, including variables
@@ -27,19 +24,13 @@ platemelt with additional column dRdT.
 \description{
 dR/dT, the derivative of the melt curve (of fluorescence signal R vs
 temperature T), has a maximum at the melting temperature Tm. A single peak in
-this suggests a single-length PCR product is present in the well. getdRdTall
-is the old name for the same function (kept for backwards compatibility).
+this suggests a single-length PCR product is present in the well.
 }
 \details{
 Note that this function does not group by plate, only by well.
 The function will give strange results if you pass it data from 
 more than one plate. Avoid this by analysing one plate at a time.
 }
-\section{Functions}{
-\itemize{
-\item \code{getdRdTall}: 
-}}
-
 \examples{
 # create simple curve
 # create simple dataset of raw fluorescence with two samples

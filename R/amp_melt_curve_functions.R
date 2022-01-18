@@ -117,8 +117,7 @@ calculate_dydx_1 <- function(x, y, method = "spline", ...) {
 #'
 #' dR/dT, the derivative of the melt curve (of fluorescence signal R vs
 #' temperature T), has a maximum at the melting temperature Tm. A single peak in
-#' this suggests a single-length PCR product is present in the well. getdRdTall
-#' is the old name for the same function (kept for backwards compatibility).
+#' this suggests a single-length PCR product is present in the well.
 #' 
 #' Note that this function does not group by plate, only by well.
 #' The function will give strange results if you pass it data from 
@@ -184,16 +183,4 @@ calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
                                            ...)
                       ) %>%
         dplyr::ungroup()
-}
-
-#' @describeIn calculate_drdt_plate
-#'
-#' @export
-#'
-getdRdTall <- function(platemelt, method = "spline") {
-    lifecycle::deprecate_warn("0.2", "getdRdTall()",
-                              "calculate_drdt_plate()",
-        details = "Replaced with more specific name")
-    calculate_drdt_plate(platemelt = platemelt,
-                         method = method)
 }
