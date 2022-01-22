@@ -116,21 +116,30 @@ Note that display_plate requires a column called `sample_id`, which here we had 
 ## Load and summarize data
 
 ```{r load_plates,dependson="label_plates",results="show"}
-# read my plates
+# read my plate data, one at a time, with biol_rep and plate number
 
-plate1 <- read_lightcycler_1colour_cq(
-  system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Cq.txt.gz",
-              package = "tidyqpcr")) %>%
+# NOTE: system.file() accesses data from this R package
+# To use your own data, remove the call to system.file(),
+# instead pass your data's filename to read_lightcycler_1colour_cq()
+# or to another relevant read_ function
+plate1 <- 
+  system.file("extdata",
+              "Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Cq.txt.gz",
+              package = "tidyqpcr") %>%
+  read_lightcycler_1colour_cq() %>%
   left_join(plateplan) %>%
   mutate(biol_rep = "1", plate = "1")
 
 
-plate2 <- read_lightcycler_1colour_cq(
-  system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Cq.txt.gz",
-              package = "tidyqpcr")) %>%
+plate2 <- 
+  system.file("extdata",
+              "Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Cq.txt.gz",
+              package = "tidyqpcr") %>%
+  read_lightcycler_1colour_cq() %>%
   left_join(plateplan) %>%
   mutate(biol_rep = "2", plate = "2")
 
+# combine data from both plates into a single data frame
 plates <- bind_rows(plate1, plate2) %>%
   unite(sample_id, condition, biol_rep, sep = "", remove = FALSE)
 

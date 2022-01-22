@@ -126,9 +126,15 @@ display_plate(plate1plan)
 ## Load and summarize data
 
 ```{r load_plates,dependson="label_plates",results="show"}
-plates <- read_lightcycler_1colour_cq(
-  system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02_Cq.txt.gz",
-              package = "tidyqpcr")) %>%
+# NOTE: system.file() accesses data from this R package
+# To use your own data, remove the call to system.file(),
+# instead pass your data's filename to read_lightcycler_1colour_cq()
+# or to another relevant read_ function
+plates <- 
+  system.file("extdata",
+              "Edward_qPCR_Nrd1_calibration_2019-02-02_Cq.txt.gz",
+              package = "tidyqpcr") %>%
+  read_lightcycler_1colour_cq() %>%
   right_join(plate1plan)
 ```
 
