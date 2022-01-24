@@ -36,12 +36,14 @@ Overall, tidyqpcr empowers scientists to conduct reproducible, flexible, and bes
 Quantitative PCR is among the most common techniques in biological and biomedical research, used for the quantification of DNA and RNA.
 There is a critical need for rigorous analysis and reporting of qPCR experiments, codified  in the [minimum information for publication of quantitative real-time PCR experiments (MIQE) guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) [@Bustin:2009].
 Yet it is common for qPCR to be analysed either by closed-source software supplied by the manufacturers of PCR machines, or by highly variable, in-house analysis scripts that have not been peer-reviewed.
-Some open-source libraries for qPCR analysis are available, notably qpcR [@Spiess:2018] and pcr [@Ahmed:2018].
-qpcR is a feature rich qPCR analysis package relying on an object-oriented approach using S3 classes.
-pcr is a less extensive qPCR analysis package with partial integration into the tidyverse suite of generic data-science tools using the paradigm of tidy data (spreadsheet-like rectangular data frames).
-There remains a need for a qPCR analysis package that fully integrates with the user-friendly tidyverse, encourages the use of MIQE best-practice compliant experimental design, and provides detailed example analysis pipelines as R vignettes.
 
-Our package, tidyqpcr, addresses the need for best-practice, novice-friendly qPCR analysis in the tidyverse paradigm. 
+Our package, tidyqpcr, addresses the need for a qPCR analysis package that fully integrates with the user-friendly tidyverse, encourages the use of MIQE best-practice compliant experimental design, and provides detailed example analysis pipelines as R vignettes.
+Following the tidy data paradigm integrates tidyqpcr into the wider collection of data analysis packages provided by the tidyverse, while being accessible to novice users of R.
+Other open-source libraries for qPCR analysis are available with distinct aims. 
+HTqPCR [@Dvinge:2009], ReadqPCR/NormqPCR [@Perkins:2012], and qpcR [@Spiess:2018] have similar and in some respects greater functionality than tidyqpcr, but follow object oriented approaches with specialised data objects.
+By contrast, pcr [@Ahmed:2018] aligns most closely with tidyqpcr but its function inputs are not tidy data frames.
+Although alternatives are available, tidyqpcr's aims and approach are distinct: to improve the quality of qPCR experiments from plate design to analysis, by exposing all data in a consistent tidy format that integrates with the tidyverse.
+
 tidyqpcr aims to be:
 
 * Empowering: tidyqpcr combines a free, open-source qPCR analysis R package with online teaching materials. 
@@ -50,12 +52,13 @@ tidyqpcr aims to be:
 * Best-practice compliant: tidyqpcr encourages standardised, reliable experimental design by prioritising MIQE-compliant best practices.
 
 tidyqpcr can be used to analyse qPCR data from any nucleic acid source - DNA for qPCR or ChIP-qPCR, RNA for RT-qPCR.
-Currently tidyqpcr has functions that support relative quantification, but not yet absolute quantification.
+Currently tidyqpcr has functions that explicitly support relative quantification by the $\Delta Cq$ method, but not yet absolute quantification.
 
 tidyqpcr's current features allow users to:
 
 * use a single data type for analysis as every object is a tibble / data frame.
 * lay out and display 96/384-well plates for easy experimental setup (`label_plate_rowcol`, `create_blank_plate`, ...).
+* consistently describe samples and target amplicons with reserved variable names (`sample_id`, `target_id`).
 * flexibly assign metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/) (see vignettes).
 * read in quantification cycle (Cq) and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`).
 * calibrate primer sets including estimating efficiencies and visualization of curves (`calculate_efficiency`).
