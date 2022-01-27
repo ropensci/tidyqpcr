@@ -106,6 +106,32 @@ Currently tidyqpcr has functions that support relative quantification by the del
 * metadata handling compatible with RDML format
 * files for automatic plate loading with [Opentrons](https://opentrons.com/) and [Labcyte Echo](https://www.labcyte.com/products/liquid-handling/echo-liquid-handlers) liquid handlers.
 
+# Comparison to available packages
+
+Table of package compliance with the essential information required for publication of qPCR results as outlined by the MIQE guidelines. Only the guidelines relating to qPCR validation and data analysis are included.
+
+| MIQE Guidelines | tidyqpcr | HTqPCR | NormqPCR | qpcR | pcr |
+--- | --- | --- | --- | --- | ---
+Version | 1.0.0 | 1.48.0 | 1.40.0 | 1.4.1  | 1.2.2
+Specificity | ? | ? | ? | ? | ?
+For SYBR Green I, Cq of the NTC | Yes + Docs | Yes + Docs | Yes + Docs | ? | Yes
+Calibration curves with slope and y intercept | ? | No | No | ? | Yes
+PCR efficiency calculated from slope | Yes + Doc | No | No | Yes | Yes
+r2 of calibration curve | Yes + Doc | No | No | Yes | Yes
+Linear dynamic range | ? | No | No | ? | No
+Cq variation at LOD | ? | No | No | ? | No
+Evidence for LOD | ? | No | No | ? | No
+If multiplex, efficiency and LOD of each assay | No | No | No | ? | No
+Method of Cq determination | Relative (deltaCq) | Relative (5 methods) | Relative (deltaCq) | ? | Relative (deltacq)
+Outlier identification and disposition | No | Yes (undetermined values) | Yes (undetermined values) | ? | No
+Results for NTCs | Yes + Doc | Yes + Docs | Yes + Docs | ? | Yes
+Justification of number and choice of reference genes | User defined (vignettes encourage 3) | User defined (vignettes encourage 2) | Automatic Selection (vignettes encourage 2) | ? | One 
+Description of normalization method | Yes | Yes | Yes | ? | Yes
+Number and stage (reverse transcription or qPCR) of technical replicates | User defined (vignettes encourage 3) | User defined (vignettes encourage 3) | User defined (vignettes encourage 2) | ? | User defined (vignettes encourage 6)
+Repeatability | ? | Yes + Docs | No | ? | No
+Statistical methods for results significance | No | Yes + Docs | No | ? | Yes
+
+Note: Yes means the package has the functionatlity to complete this analysis. Yes + Docs means this step is explicitly shown in either the function documentation or a vignette.
 
 # Getting started
 
