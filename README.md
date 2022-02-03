@@ -89,9 +89,10 @@ Currently tidyqpcr has functions that support relative quantification by the del
 ## Current features
 
 * every object is a tibble / data frame, no special data classes to learn
-* lay out and display 96/384-well plates for easy experimental setup (`label_plate_rowcol`, `create_blank_plate`, ...)
-* flexible assignment of metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/) (see vignettes)
-* read-in Cq and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`)
+* lay out and display 96/384-well plates for easy experimental setup (`label_plate_rowcol`, `create_blank_plate`, ...).
+* consistently describe samples and target amplicons with reserved variable names (`sample_id`, `target_id`).
+* flexibly assign metadata to samples for visualisation with [ggplot2](https://ggplot2.tidyverse.org/) (see vignettes).
+* read in quantification cycle (Cq) and raw data from Roche LightCycler machines with single-channel fluorescence (`read_lightcycler_1colour_cq`, `read_lightcycler_1colour_raw`).
 * calibration of primer sets including estimating efficiencies and visualization of curves (`calculate_efficiency`, and see vignettes)
 * visualization of amplification and melt curves (`calculate_drdt_plate`, and see vignettes)
 * delta Cq: normalization/ relative quantification of Cq data to one or more reference targets by delta count method (`calculate_normcq`, `calculate_deltacq_bysampleid`)
