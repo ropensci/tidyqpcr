@@ -55,7 +55,7 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 **target_id** should uniquely identify a primer set or primer set/probe combination that you detect in a well. 
 If you are detecting multiple regions of the same gene, or trialing multiple probes or primer sets, you have to give them different target_id names.
 We chose to name this variable "target_id" to make it clear that this could refer to a primer set, or a primer set/ probe combination, detecting a single target sequence.
-Note again that the current (June 2020) version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.
+Note again that the current version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.
 
 **sample_id** should uniquely identify a nucleic acid sample in your experiment. sample_id can either describe all the relevant information, for example `HeatShock_10min_RepA`, `InputControl_WildType_Rep3`; or provide other unique identifying information, for example `S013`. 
 Functions including `display_plate` and `calculate_deltacq_bysampleid` assume that there is a column called `sample_id`, and use it to decide which wells get analysed together.
@@ -144,7 +144,10 @@ We visualise this plate plan using the `display_plate` function:
 display_plate(plate_plan12)
 ```
 
-Expanding this practice plan to incorporate replicates can be done by taking this little square and making copies across a larger plate. This strategy of making copies of a small square makes it easier to use multichannel pipettes to speed up plate loading. It also means that technical replicates of the same sample are not in adjacent wells on the plate, correcting for some  location-specific artefacts of amplification in the qPCR machine. However, if there are row- or column-specific artefacts, this approach does not allow you detect them separately.
+Expanding this practice plan to incorporate replicates can be done by taking this little rectangle and making copies across a larger plate.
+This strategy of making copies of a small rectangle makes it easier to use multichannel pipettes to speed up plate loading.
+It also means that technical replicates of the same sample are not in adjacent wells on the plate, correcting for some  location-specific artefacts of amplification in the qPCR machine.
+However, if there are row- or column-specific artefacts, this approach does not allow you detect them separately.
 
 
 ## Repeat columns for the sample_ids and prep_types
@@ -282,9 +285,26 @@ display_plate(plate_plan96)
 We could print this plate map and take it into the lab as a visual aid for plate loading.
 
 
-# Built-in functions to create plates with standard designs
+# Creating plate layouts with standard designs
 
-ADD HERE
+Some tidyqpcr functions provide shortcuts to create plate layouts with standard designs:
+
+* create_colkey_6_in_24()
+* create_colkey_4diln_2ctrl_in_24()
+* create_colkey_6diln_2ctrl_in_24()
+* create_rowkey_4_in_16()
+* create_rowkey_8_in_16_plain()
+
+These focus on setting up column keys and row keys for 384-well plates where samples are repeated in blocks of 4, 6 or 8.
+Some are specialised for primer calibration, including serial dilution and control samples.
+These functions can be adapted for your own needs.
+For example, the default values of `prep_type` are relevant for RT-qPCR, and you would want to change those for plain qPCR or ChIP-qPCR.
+Please consult the function documentation for details of the paramters and outputs, e.g. `?create_colkey_6_in_24`.
+
+For examples of standard layouts in use, see the vignettes:
+
+* Primers and Probes Calibration vignette, `vignette("calibration_vignette", package = "tidyqpcr")`
+* Multifactorial experiment vignette, `vignette("multifactor_vignette", package = "tidyqpcr")`
 
 
 # What information goes in the plate plan, revisited?
@@ -301,7 +321,8 @@ The key is to be consistent and to make the descriptions both human-readable and
 
 The functions `unite` and `separate` have visual descriptions on the [RStudio data wrangling cheat sheat](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Another useful tidyr function is `crossing`, which creates a table with all combinations of the variables that you supply, say if you want to measure all strains in all conditions.
 
-## Hints and Tips
+
+# Hints and Tips on Plate setup
 
 * In tidyqpcr we chose to give all variables snake_case names, such as `sample_id`, `prep_type`, following the [tidyverse style guide](https://style.tidyverse.org).
 * What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same sample_id/target_id in two adjacent rows, using `rep(sample_id, each = 2)` might help.
