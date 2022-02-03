@@ -106,9 +106,9 @@ Currently tidyqpcr has functions that support relative quantification by the del
 * metadata handling compatible with RDML format
 * files for automatic plate loading with [Opentrons](https://opentrons.com/) and [Labcyte Echo](https://www.labcyte.com/products/liquid-handling/echo-liquid-handlers) liquid handlers.
 
-# Comparison to available packages
+# Comparison of qPCR R packages with respect to the MIQE guidelines
 
-Table of package compliance with the essential information required for publication of qPCR results as outlined by the MIQE guidelines. Only the guidelines relating to qPCR validation and data analysis are included.
+Table of package features corresponding to the essential information on qPCR validation and data analysis, that are outlined by the MIQE guidelines for publication of qPCR results. 
 
 | MIQE Guidelines | tidyqpcr | HTqPCR | NormqPCR | qpcR | pcr |
 --- | --- | --- | --- | --- | ---
@@ -117,10 +117,10 @@ For SYBR Green I, Cq of the NTC | Yes + Docs | Yes + Docs | Yes + Docs | ? | Yes
 Calibration curves with slope and y intercept | Slope | No | No | ? | Yes
 PCR efficiency calculated from slope | Yes + Doc | No | No | Yes | Yes
 r2 of calibration curve | Yes + Doc | No | No | Yes | Yes
-Linear dynamic range* | No | No | No | ? | No
-Cq variation at LOD* | No | No | No | ? | No
-Evidence for LOD* | No | No | No | ? | No
-If multiplex, efficiency and LOD of each assay* | No | No | No | ? | No
+Linear dynamic range ‡ | No | No | No | ? | No
+Cq variation at LOD ‡ | No | No | No | ? | No
+Evidence for LOD ‡ | No | No | No | ? | No
+If multiplex, efficiency and LOD of each assay ‡ | No | No | No | ? | No
 Method of Cq determination FIXME | N/A | Relative (5 methods) | Relative (deltaCq) | ? | Relative (deltacq)
 Outlier identification and disposition | No | Yes (undetermined values) | Yes (undetermined values) | ? | No
 Results for NTCs | Yes + Doc | Yes + Docs | Yes + Docs | ? | Yes
@@ -134,7 +134,7 @@ Note:
 - Yes means the package includes the functionality to complete this analysis.
 - Yes + Docs means this step is explicitly shown in either the function documentation or a vignette.
 - No† means that the package lacks explicit functionality, but generic R capabilities for statistical testing can be applied to the data.
-- * Linear dynamic range and limit of detection (LOD) calculations would be enabled by these packages from additional short scripted analyses from a well-designe experiment, but the functionality is not specifically documented.
+- ‡ Linear dynamic range and limit of detection (LOD) calculations would be enabled by these packages from additional short scripted analyses from a well-designe experiment, but the functionality is not specifically documented.
 
 # Getting started
 
