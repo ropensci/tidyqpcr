@@ -82,12 +82,17 @@ plate_cq_extdata
 We start by loading data from the experiment. We print the data to screen here, it is always a good idea to look at the data to find out if it has loaded correctly and behaves as expected, or not.
 
 ```{r load_plates,dependson="label_plates",results="show"}
-plate_cq_extdata <- read_tsv(
-  system.file("extdata",
-    "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt.gz",
-    package = "tidyqpcr"
-  )
-)
+# NOTE: system.file() accesses data from this R package
+# To use your own data, remove the call to system.file(),
+# instead pass your data's filename to read_tsv()
+# or to another relevant read_ function
+
+file_path_cq <- system.file("extdata",
+                            "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt.gz",
+                            package = "tidyqpcr")
+
+plate_cq_extdata <- file_path_cq %>%
+  read_tsv()
 
 plate_cq_extdata
 ```
