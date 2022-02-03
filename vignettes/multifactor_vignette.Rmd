@@ -122,19 +122,21 @@ Note that display_plate requires a column called `sample_id`, which here we had 
 # To use your own data, remove the call to system.file(),
 # instead pass your data's filename to read_lightcycler_1colour_cq()
 # or to another relevant read_ function
-plate1 <- 
-  system.file("extdata",
+
+file_path_cq_plate1 <- system.file("extdata",
               "Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1_Cq.txt.gz",
-              package = "tidyqpcr") %>%
+              package = "tidyqpcr")
+
+plate1 <- file_path_cq_plate1 %>%
   read_lightcycler_1colour_cq() %>%
   left_join(plateplan) %>%
   mutate(biol_rep = "1", plate = "1")
 
-
-plate2 <- 
-  system.file("extdata",
+file_path_cq_plate2 <- system.file("extdata",
               "Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2_Cq.txt.gz",
-              package = "tidyqpcr") %>%
+              package = "tidyqpcr")
+
+plate2 <- file_path_cq_plate2 %>%
   read_lightcycler_1colour_cq() %>%
   left_join(plateplan) %>%
   mutate(biol_rep = "2", plate = "2")
@@ -284,19 +286,28 @@ ggplot(data = platesmed) +
 # Melt and Amplification Curves
 
 ```{r load_amp,dependson="label_plates",results="show"}
-plate1curve <- read_lightcycler_1colour_raw(
-  system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1.txt.gz",
-              package = "tidyqpcr")) %>%
-  debaseline() %>%
-  left_join(plateplan) %>%
-  mutate(biol_rep = 1, plate = 1)
+# NOTE: system.file() accesses data from this R package
+# To use your own data, remove the call to system.file(),
+# instead pass your data's filename to read_lightcycler_1colour_cq()
+# or to another relevant read_ function
 
-plate2curve <- read_lightcycler_1colour_raw(
-  system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt.gz",
-              package = "tidyqpcr")) %>%
-  debaseline() %>%
-  left_join(plateplan) %>%
-  mutate(biol_rep = 2, plate = 2)
+file_path_raw_plate1 <- system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate1.txt.gz",
+              package = "tidyqpcr")
+
+plate1curve <- file_path_raw_plate1 %>%
+    read_lightcycler_1colour_raw() %>%
+    debaseline() %>%
+    left_join(plateplan) %>%
+    mutate(biol_rep = 1, plate = 1)
+
+file_path_raw_plate2 <- system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt.gz",
+              package = "tidyqpcr")
+
+plate2curve <- file_path_raw_plate2 %>%
+    read_lightcycler_1colour_raw() %>%
+    debaseline() %>%
+    left_join(plateplan) %>%
+    mutate(biol_rep = 2, plate = 2)
 
 platesamp <- bind_rows(plate1curve, plate2curve) %>%
   filter(program_no == 2)

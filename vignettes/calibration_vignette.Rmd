@@ -130,10 +130,12 @@ display_plate(plate1plan)
 # To use your own data, remove the call to system.file(),
 # instead pass your data's filename to read_lightcycler_1colour_cq()
 # or to another relevant read_ function
-plates <- 
-  system.file("extdata",
+file_path_cq <- system.file("extdata",
               "Edward_qPCR_Nrd1_calibration_2019-02-02_Cq.txt.gz",
-              package = "tidyqpcr") %>%
+              package = "tidyqpcr")
+
+plates <- 
+  file_path_cq %>%
   read_lightcycler_1colour_cq() %>%
   right_join(plate1plan)
 ```
@@ -252,12 +254,18 @@ ggplot(
 
 
 ```{r load_amp,dependson="label_plates",results="show"}
+# NOTE: system.file() accesses data from this R package
+# To use your own data, remove the call to system.file(),
+# instead pass your data's filename to read_lightcycler_1colour_cq()
+# or to another relevant read_ function
 
-plate1curve <- read_lightcycler_1colour_raw(
-  system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt.gz",
-  package = "tidyqpcr")) %>%
-  debaseline() %>%
-  left_join(plate1plan)
+file_path_raw <- system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.txt.gz",
+                             package = "tidyqpcr")
+
+plate1curve <- file_path_amp %>%
+    read_lightcycler_1colour_raw() %>%
+    debaseline() %>%
+    left_join(plate1plan)
 
 # amplification curve is program 2
 platesamp <- plate1curve %>%

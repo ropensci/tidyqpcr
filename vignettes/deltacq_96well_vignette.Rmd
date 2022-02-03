@@ -86,10 +86,12 @@ We start by loading data from the experiment. We print the data to screen here, 
 # To use your own data, remove the call to system.file(),
 # instead pass your data's filename to read_tsv()
 # or to another relevant read_ function
-plate_cq_extdata <- 
-  system.file("extdata",
-              "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt.gz",
-              package = "tidyqpcr") %>%
+
+file_path_cq <- system.file("extdata",
+                            "Stuart_dAgr_glyS_spoVG_5S_individualWells_Cq_select.txt.gz",
+                            package = "tidyqpcr")
+
+plate_cq_extdata <- file_path_cq %>%
   read_tsv()
 
 plate_cq_extdata
