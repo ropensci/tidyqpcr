@@ -112,23 +112,25 @@ Table of package features corresponding to the essential information on qPCR val
 
 | MIQE Guidelines | tidyqpcr | HTqPCR | NormqPCR | qpcR | pcr |
 --- | --- | --- | --- | --- | ---
+<<<<<<< HEAD
 Version | 0.4.0 | 1.48.0 | 1.40.0 | 1.4.1  | 1.2.2
 For SYBR Green I, Cq of the NTC | Yes + Docs | Yes + Docs | Yes + Docs | ? | Yes
-Calibration curves with slope and y intercept | Slope | No | No | ? | Yes
-PCR efficiency calculated from slope | Yes + Doc | No | No | Yes | Yes
+For SYBR Green I, Cq of the NTC | Yes + Docs | Yes + Docs | Yes + Docs | Yes | Yes
+Calibration curves with slope and y intercept | Slope | No | No | Yes | Yes
+PCR efficiency calculated from slope | Yes + Doc | No | No | Yes + Doc | Yes
 r2 of calibration curve | Yes + Doc | No | No | Yes | Yes
-Linear dynamic range ‡ | No | No | No | ? | No
-Cq variation at LOD ‡ | No | No | No | ? | No
-Evidence for LOD ‡ | No | No | No | ? | No
-If multiplex, efficiency and LOD of each assay ‡ | No | No | No | ? | No
-Method of Cq determination FIXME | N/A | Relative (5 methods) | Relative (deltaCq) | ? | Relative (deltacq)
-Outlier identification and disposition | No | Yes (undetermined values) | Yes (undetermined values) | ? | No
-Results for NTCs | Yes + Doc | Yes + Docs | Yes + Docs | ? | Yes
-Justification of number and choice of reference genes | User defined (vignettes encourage 3) | User defined (vignettes encourage 2) | Automatic Selection (vignettes encourage 2) | ? | One 
-Description of normalization method | Yes | Yes | Yes | ? | Yes
-Number and stage (reverse transcription or qPCR) of technical replicates | User defined (vignettes encourage 3) | User defined (vignettes encourage 3) | User defined (vignettes encourage 2) | ? | User defined (vignettes encourage 6)
-Repeatability | No† | Yes + Docs | No | ? | No
-Statistical methods for results significance | No† | Yes + Docs | No | ? | Yes
+Linear dynamic range ‡ | No | No | No | No | No
+Cq variation at LOD ‡ | No | No | No | No | No
+Evidence for LOD ‡ | No | No | No | No | No
+If multiplex, efficiency and LOD of each assay ‡ | No | No | No | No | No
+Method of Cq determination FIXME | N/A | Relative (5 methods) | Relative (deltaCq) | Sigmoidal model selection | Relative (deltacq)
+Outlier identification and disposition | No | Yes (undetermined values) | Yes (undetermined values) | Yes | No
+Results for NTCs | Yes + Doc | Yes + Docs | Yes + Docs | Yes | Yes
+Justification of number and choice of reference genes | User defined (vignettes encourage 3) | User defined (vignettes encourage 2) | Automatic Selection (vignettes encourage 2) | Yes | One 
+Description of normalization method | Relative (deltacq) | Relative (deltacq) | Relative (deltacq) | Relative (deltacq) | Relative (deltacq)
+Number and stage (reverse transcription or qPCR) of technical replicates | User defined (vignettes encourage 3) | User defined (vignettes encourage 3) | User defined (vignettes encourage 2) | User defined | User defined (vignettes encourage 6)
+Repeatability | No† | Yes + Docs | No | Yes + Docs | No
+Statistical methods for results significance | No† | Yes + Docs | No | Yes + Docs | Yes
 
 Note: 
 - Yes means the package includes the functionality to complete this analysis.
