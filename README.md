@@ -70,6 +70,7 @@ If there is a feature that you need for your work, please ask us!
 
 ## News
 
+* January 2022, Improvements in documentation and argument-checking for v0.4.
 * October 2021, Unit tests now cover over 75% of tidyqpcr code.
 * June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)
 * August 2020, relative quantification (delta delta Cq) added with function `calculate_deltadeltacq_bytargetid`, and a vignette illustrating this with a small data set from a 96-well plate.
