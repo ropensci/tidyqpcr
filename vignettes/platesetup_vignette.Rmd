@@ -196,7 +196,9 @@ display_plate(plate_plan48)
 
 # Adding more samples and repeating targets
 
-What if we want to measure more than one condition, beyond replicates? For example, a control treatment compared to a drug treatment, or a change in nutrient conditions? We can achieve this again by extending the "repeating block" approach to include the second condition.
+What if we want to measure more than one condition, beyond replicates?
+For example, a control treatment compared to a drug treatment, or a change in nutrient conditions?
+We can achieve this again by extending the "copied rectangle" approach to include the second condition.
 
 
 ## Adding experimental conditions
