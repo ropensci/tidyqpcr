@@ -110,7 +110,7 @@ The `sample_info` column contains values like `WT OD0.5 glyS`, where `WT` descri
 
 However, tidyqpcr expects a column called `sample_id` that identifies the unique sample - here, that would be identified by a strain (e.g. `WT`) and growth stage (e.g. `OD0.5`). So we use the `unite` function, from the `tidyr` package, to create a new column `sample_id` that unites strain and OD.
 
-Before these, we have to do a little organization. Wee add row and column labels for each well, so that we can later draw the plate plan and check the description. We use the tidyqpcr function `create_blank_plate_96well` to make a "blank" plate plan, then join that information to the data. The join function `inner_join` is in the `dplyr` package.
+Before these, we have to do a little organization. We add row and column labels for each well, so that we can later draw the plate plan and check the description. We use the tidyqpcr function `create_blank_plate_96well` to make a "blank" plate plan, then join that information to the data. The join function `inner_join` is in the `dplyr` package.
 
 We use the tidyverse pipe operator `%>%` to do all these transformations in a row, with one on each line.
 
@@ -208,7 +208,7 @@ Having made normalized values, we use `group_by` and `summarize` from the `dplyr
 
 ```{r median_counts,dependson="load_plates"}
 plate_med <- plate_norm %>%
-  group_by(sample_info, sample_id, strain, OD, target_id) %>%
+  group_by(sample_id, strain, OD, target_id) %>%
   summarize(
     delta_cq  = median(delta_cq, na.rm = TRUE),
     rel_abund = median(rel_abund, na.rm = TRUE)
@@ -290,7 +290,7 @@ plate_deltanorm <- plate_norm %>%
   calculate_deltadeltacq_bytargetid(ref_sample_ids = "WT_OD0.5")
 
 plate_deltanorm_med <- plate_deltanorm %>%
-    group_by(sample_info, sample_id, strain, OD, target_id) %>%
+    group_by(sample_id, strain, OD, target_id) %>%
   summarize(
     deltadelta_cq  = median(deltadelta_cq, na.rm = TRUE),
     fold_change    = median(fold_change,   na.rm = TRUE)
@@ -338,8 +338,9 @@ ggplot(data = filter(plate_deltanorm_med, target_id != "5S") ) +
 In this vignette, you have learned the basic workflow for analysing Cq values from qPCR data: 
 
 * Create the `sample_id` column to uniquely identify each biological sample.
-* Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalizes target gene values to the values of one or more reference targets within each sample.
-* Calculate delta delta Cq and fold change using `calculate_deltadeltacq_bytargetid`. This process normalizes each target gene value for each sample to values of the same target in one or more reference samples. 
+* Create the `target_id` column to uniquely identify each target amplicon, e.g. detecting one gene.
+* Calculate delta Cq and relative abundance using `calculate_deltacq_bysampleid`. This process normalizes values for each target to the values of one or more reference targets within each sample.
+* Calculate delta delta Cq and fold change using `calculate_deltadeltacq_bytargetid`. This process normalizes the value for each target in each sample to values of the same target in one or more reference samples. 
 
 # Notes on normalization, reference targets, and reference samples
 
@@ -347,10 +348,23 @@ In this section, we discuss the process of normalization and the choices of refe
 
 Normalization is a tool for making specific comparisons in specific experimental designs.
 
-Tidyqpcr automatically implements one common approach, the `delta Cq` method, in `calculate_deltacq_bysampleid`. The user picks one or more reference targets, and then within each sample the function the median Cq of the reference targets from all other Cqs. The user can also choose a different summary function such as mean. If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested. The [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) are clear, and correct, that reliable quantification usually requires at least three carefully chosen reference targets.
+Tidyqpcr automatically implements one common approach, the `delta Cq` method, in `calculate_deltacq_bysampleid`.
+The user picks one or more reference targets, and then within each sample the function calculates the median Cq of the reference targets from all other Cqs.
+The user can also choose a different summary function such as mean.
+If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested.
+The [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762) are clear, and correct, that reliable quantification usually requires at least three carefully chosen reference targets.
 
-The next step is to calculate the delta delta Cq, normalising each sample to a control sample. Specifically, `calculate_deltadeltacq_bytargetid` estimates the relative change in individual target id delta Cq values, compared to their values in one of more reference sample ids. If a single sample id were chosen as reference, then values in that sample will be given summary delta delta Cq of zero. Usually, an experiment would have multiple biological replicates, and so at least those replicates for a single condition would be chosen as reference sample ids.
+The next step is to calculate the delta delta Cq, normalising each sample to a control sample.
+Specifically, `calculate_deltadeltacq_bytargetid` estimates the relative change in individual target id delta Cq values, compared to their values in one of more reference sample ids.
+If a single sample id were chosen as reference, then values in that sample will be given summary delta delta Cq of zero.
+Usually, an experiment would have multiple biological replicates, and all the replicates for a single condition would be chosen as reference sample ids.
+In that case the delta delta Cq values for each replicate of the reference condition would not be zero, but only the average over these would be zero.
 
-However, the tidyverse and tidyqpcr have the flexibility to do normalization any way that your experiment requires. For example, for a time course with multiple strains and multiple timepoints, it might be important to compare delta Cq values against a reference strain at *each time point* instead of globally. These comparisons can be done with a little work using generic data-manipulation functions in the tidyverse, for example `dplyr::group_by`. If you have a specific question about a design that isn't covered by the functions we have, you're welcome to ask as an issue on [https://github.com/ewallace/tidyqpcr/issues/].
+However, the tidyverse and tidyqpcr have the flexibility to do normalization any way that your experiment requires.
+For example, you might want to use all samples as reference, so that delta delta Cq reports the difference in value between one sample and the average over all samples.
+Alternatively, for a time course with multiple strains and multiple timepoints, it might be important to compare delta Cq values against a reference strain at *each time point* instead of globally.
+These comparisons can be done with a little work using generic data-manipulation functions in the tidyverse, for example `dplyr::group_by`.
 
-There is more information on the help pages for the functions, `?calculate_deltacq_bysampleid` and `?calculate_deltadeltacq_bytargetid`. 
+There is more information on the help pages for the functions, `?calculate_deltacq_bysampleid` and `?calculate_deltadeltacq_bytargetid`.
+
+If you have a specific question about a design that isn't covered by the functions we have, you're welcome to ask by creating a new issue on the tidyqpcr github site: [https://github.com/ewallace/tidyqpcr/issues/](https://github.com/ewallace/tidyqpcr/issues/).
