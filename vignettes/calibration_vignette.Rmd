@@ -21,17 +21,18 @@ This is real qPCR data by Edward Wallace in Feb 2019, testing new RT-qPCR primer
 
 We tested 2-3 primer sets each for 7 genes:
 
-* ECM38/ YLR299W (3 primer sets)
-* FET5 / YFL041W (3 primer sets)
+* ECM38/YLR299W (3 primer sets)
+* FET5/YFL041W (3 primer sets)
 * GPT2/YKR067W
 * ILV5/YLR355C
-* NRD1/YNL251C (ordered 3rd primer set not tested today)
+* NRD1/YNL251C
 * RDL1/YOR285W
 * TFS1/YLR178C
 
 We started with two biological replicate RNA samples, treated with DNase and then split for a test sample with reverse transcriptase (RT) and negative control without reverse transcriptase (-RT). We also took a no template (NT) negative control. For each RT reaction we do serial 5x dilutions down to 125x to form a quantitative calibration curve.
 
-The data were measured on a Roche LC480 instrument in a single 384-well plate. Quantification was performed in the Roche LightCycler software prior to using this program.
+The data were measured on a Roche LC480 instrument in a single 384-well plate.
+Quantification was performed in the Roche LightCycler software prior to exporting the data.
 
 
 ## Setup knitr options and load packages
@@ -61,11 +62,15 @@ theme_set(theme_cowplot(font_size = 11) %+replace%
 
 # Set up experiment
 
-## Label and plan plates
+## Describe which primer set we put in which well using a row key
 
+In this experiment, each primer set was in a different row of the 384-well plate.
+We describe this by creating a row key, a data frame describing the rows of the plate, the primer sets, and the genes that they detect.
 
+We refer to each primer set as a `target_id`, because each primer set has a different target amplicon, on a different location in a gene.
+tidyqpcr insists on having a variable called `target_id` that uniquely identifies each different target that you detect.
 
-```{r label_plates,dependson="plate_functions"}
+```{r create_rowkey,dependson="plate_functions"}
 # Names of target genes
 gene_name_levels <- c("ECM38", "FET5", "GPT2", "ILV5", "NRD1", "RDL1", "TFS1")
 # ORF ids of target genes
@@ -73,7 +78,7 @@ target_levels <- c("YLR299W", "YFL041W", "YKR067W", "YLR355C",
                    "YNL251C", "YOR285W", "YLR178C")
 # Repeats of gene names to account for testing multiple primer sets
 gene_name_values <- c(rep(gene_name_levels[1:2], each = 3),
-              rep(gene_name_levels[3:7], each = 2))
+                      rep(gene_name_levels[3:7], each = 2))
 # id numbers of multiple probesets (reflecting IDs as ordered)
 target_id_levels <- paste(gene_name_values,
   c(1, 2, 3, 1, 3, 4, 1, 4, 1, 4, 1, 2, 4, 5, 1, 5),
@@ -83,11 +88,17 @@ target_id_levels <- paste(gene_name_values,
 
 rowkey <- tibble(
   well_row = LETTERS[1:16],
-  gene_name = gene_name_values,
+  gene_name = factor(gene_name_values, levels = gene_name_levels),
   target_id = factor(target_id_levels, levels = target_id_levels)
 )
+print(rowkey)
+```
 
+## Combine the row key describing primer sets with column key describing on samples and dilutions.
 
+We use a default design built in to tidyqpcr, `create_colkey_4diln_2ctrl_in_24`.
+
+```{r label_plates,dependson=c("plate_functions","create_rowkey")}
 plate1plan <-
   label_plate_rowcol(
     create_blank_plate(),
@@ -146,17 +157,27 @@ plates
 
 summary(plates)
 ```
-# Check for positional effects across plate
-Sometimes wells close the the edge of the plate exhibit different behavior to central wells.
 
-```{r check_edge_effects,dependson="load_plates",results="show"}
+## Visualise Cq values for each well.
+
+Visualising the Cq values shows that the Cq value is different for each primer set in each row.
+Within each section of a row for a single replicate of dilutions, Cq consistently increases with dilutions as expected.
+The grey tiles for most -RT and NT columns mean that the value is `NA`, i.e. no Cq value was reported. This is good.
+
+```{r check_edge_effects,fig.height=4,fig.width=6,dependson="load_plates",results="show"}
 display_well_value(plates)
 ```
 
+Visualisation might also help to identify unwanted positional effects.
+For example, a PCR machine is broken, wells close to an edge of the plate can have different behavior from central wells. 
 
 ## Plot unnormalized data shows that -RT and NT controls are low
 
-We detect no signal in NT (no template) negative control, and very weak signal in -RT (no reverse transcriptase) negative controls.
+This plot visualises the Cq data in a way that highlights the meaning instead of the position on the plate.
+Again, it shows that the Cq value is different for each primer set, and that for each primer st Cq consistently increases with dilutions as expected.
+
+Again, we detect no signal in NT (no template) negative control so those points are mostly missing.
+There is a very weak signal with high Cq in some -RT (no reverse transcriptase) negative controls.
 
 ```{r plot_unnormalized,dependson="load_plates",fig.height=6,fig.width=9}
 
@@ -173,7 +194,9 @@ ggplot(data = plates) +
   ) +
   facet_wrap(~biol_rep) +
   panel_border() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+  scale_y_continuous(breaks = seq(from = 15, to = 35, by = 5)) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+        panel.grid.major.y = element_line(colour="grey80", size = 0.2))
 ```
 
 
@@ -216,13 +239,14 @@ calculate_efficiency_bytargetid(plates)
 ## Dilution series for nice probes only shows linearity clearly
 
 ```{r plot_dilutions_nice,dependson="load_plates",fig.height=6,fig.width=4}
-target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4",
-                           "NRD1_1", "RDL1_4", "TFS1_1")
+target_id_levels_niceprobes <- 
+    c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4",
+      "NRD1_1",  "RDL1_4", "TFS1_1")
 
 ggplot(
   data = filter(plates,
                 prep_type == "+RT",
-                target_id %in% target_id_levels_nice),
+                target_id %in% target_id_levels_niceprobes),
   aes(x = dilution, y = cq)
 ) +
   geom_point() +
@@ -429,15 +453,13 @@ ggplot(
 ## Plot only zoomed melt curves for nice probes
 
 ```{r plotmelt_zoomed_nice,dependson="load_amp",fig.height=6,fig.width=4}
-target_id_levels_nice <- c("ECM38_3", "FET5_1", "GPT2_4", "ILV5_4",
-                           "NRD1_1", "RDL1_4", "TFS1_1")
 ggplot(
   data = platesmelt %>%
     filter(
       tech_rep == "1",
       prep_type == "+RT",
       dilution_nice == "1x",
-      target_id %in% target_id_levels_nice
+      target_id %in% target_id_levels_niceprobes
     ),
   aes(x = temperature, y = dRdT, colour = biol_rep)
 ) +
