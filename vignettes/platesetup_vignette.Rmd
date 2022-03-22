@@ -26,7 +26,9 @@ Setting up plates is partly a technical question of how to use functions in tidy
 
 We suggest thinking through the whole experiment first, including what you will measure, how many replicates, and what figures you will want to make. If you plan all the analysis before even starting to grow your biological samples and extract RNA/DNA, then it is easier to avoid mistakes. Also, the steps from cell growth, through nucleic acid extraction and measurement, to finished figures, go much quicker.
 
-This vignette builds from a 12-well "practice plate" up to a 96 well plate for a plausible small RT-qPCR experiment. The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.
+This vignette builds from a 12-well "practice plate" up to a 96 well plate for a plausible small RT-qPCR experiment.
+The key idea is to design one replicate of your experiment in a small rectangle on the plate, then make copies of this small rectangle across the plate for more replicates or more complicated designs.
+The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.
 
 This vignette focuses on one primer set per well (for SYBR data), and doesn't discuss more than one probe per well (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
 
@@ -150,26 +152,29 @@ It also means that technical replicates of the same sample are not in adjacent w
 However, if there are row- or column-specific artefacts, this approach does not allow you detect them separately.
 
 
-## Repeat columns for the sample_ids and prep_types
+## Replicate columns for the sample_ids and prep_types
 
-Here we are putting three replicates of +RT and one of -RT for each sample. This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/target combinations. 
+Here we are putting three technical replicates of +RT and one of -RT for each sample.
+This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/target combinations. 
 
-We could achieve these replicates in the plate plan by explicitly writing out every time as in `c("+RT", "+RT", "+RT", "-RT")`, or we can again use the `rep` function. Below, we use `rep("+RT", times = 9)` to make 9 repeats, meaning that the 3 tech reps of +RT samples are next to each other. We use the concatenate function `c`, to arrange that next to the single replicates of the -RT samples. 
+We could achieve these replicates in the plate plan by explicitly writing out every time as in `c("+RT", "+RT", "+RT", "-RT")`, or we can again use the `rep` function.
+Below, we use `rep("+RT", times = 9)` to make 9 repeats, meaning that the 3 technical replicates of each of 3 +RT samples are next to each other. 
+We use the concatenate function `c`, to arrange that next to the single replicates of the 3 -RT samples. 
 
 ```{r minimal_48_cols,results="show",echo=TRUE}
 sample_id_levels <- c("rep1", "rep2", "rep3")
-prep_type_vector <- c(rep("+RT", times = 9), rep("-RT", times = 3))
-print(prep_type_vector)
+prep_type_values <- c(rep("+RT", times = 9), rep("-RT", times = 3))
+print(prep_type_values)
 
 colkey12 <- tibble(
   well_col = 1:12,
   sample_id = rep(sample_id_levels, times = 4),
-  prep_type = prep_type_vector
+  prep_type = prep_type_values
 )
 print(colkey12)
 ```
 
-## Putting the 48-rep sample together
+## Putting the 48-well sample together
 
 ```{r minimal_48_combine,results="show",echo=TRUE}
 
@@ -191,7 +196,10 @@ display_plate(plate_plan48)
 
 # Adding more samples and repeating targets
 
-What if we want to measure more than one condition, beyond replicates? For example, a control treatment compared to a drug treatment, or a change in nutrient conditions? We can achieve this again by extending the "repeating block" approach to include the second condition. 
+What if we want to measure more than one condition, beyond replicates?
+For example, a control treatment compared to a drug treatment, or a change in nutrient conditions?
+We can achieve this again by extending the "copied rectangle" approach to include the second condition.
+
 
 ## Adding experimental conditions
 
@@ -210,8 +218,8 @@ We also use the function `rep` to repeat the target_id information 4 times, to f
 
 ```{r targets4rep,results="show",echo=TRUE}
 target_id_levels <- c("ACT1", "BFG2", "CDC19", "DED1")
-target_id_levels_rep <- rep(target_id_levels, times = 2)
-print(target_id_levels_rep)
+target_id_values <- rep(target_id_levels, times = 2)
+print(target_id_values)
 ```
 
 Now combine this into a rowkey:
@@ -219,7 +227,7 @@ Now combine this into a rowkey:
 ```{r twocondition_96_rows,results="show",echo=TRUE}
 rowkey8 <- tibble(
   well_row = LETTERS[1:8],
-  target_id = target_id_levels_rep,
+  target_id = target_id_values,
   condition = condition_values
 )
 print(rowkey8)
@@ -236,7 +244,7 @@ biol_rep_levels <- c("rep1", "rep2", "rep3")
 colkey12_twocondition <- tibble(
   well_col = 1:12,
   biol_rep = rep(biol_rep_levels, times = 4),
-  prep_type = prep_type_vector
+  prep_type = prep_type_values
 )
 print(colkey12_twocondition)
 ```
@@ -298,7 +306,7 @@ Some tidyqpcr functions provide shortcuts to create plate layouts with standard 
 These focus on setting up column keys and row keys for 384-well plates where samples are repeated in blocks of 4, 6 or 8.
 Some are specialised for primer calibration, including serial dilution and control samples.
 These functions can be adapted for your own needs.
-For example, the default values of `prep_type` are relevant for RT-qPCR, and you would want to change those for plain qPCR or ChIP-qPCR.
+For example, the default levels of `prep_type` are relevant for RT-qPCR, and you would want to change those for plain qPCR or ChIP-qPCR.
 Please consult the function documentation for details of the paramters and outputs, e.g. `?create_colkey_6_in_24`.
 
 For examples of standard layouts in use, see the vignettes:
@@ -314,7 +322,7 @@ The plate plan should contain:
 * All the information you need to identify the sample and target/probe/primer set *uniquely*.
 * Everything you might want to plot and compare with outputs.
 
-For example, suppose you are testing multiple primer sets against the same target, your favourite gene `YFG1`, and you have primer sets A, B, and C. Then you might want a variable called `Gene` with value `YFG1` for all of these, in addition to the variable `target_id` with values `YFG1_A`, `YFG1_B`, and `YFG1_C`.
+For example, suppose you are testing multiple primer sets against the same target, your favourite gene `YFG1`, and you have primer sets A, B, and C. Then you might want a variable called `Gene` with value `YFG1` for all of these, in addition to the variable `target_id` with levels `YFG1_A`, `YFG1_B`, and `YFG1_C`.
 
 This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify sample_id as `WT_25C_10min_rep1`, and then use `separate(col = sample_id, into = c("strain", "temperature", "time_min", "biol_rep"), remove = FALSE)` to create individual columns with copies of that information. 
 The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly
@@ -328,3 +336,5 @@ The functions `unite` and `separate` have visual descriptions on the [RStudio da
 * What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same sample_id/target_id in two adjacent rows, using `rep(sample_id, each = 2)` might help.
 * If your experiment spans multiple plates, it can be helpful to re-use `colkey` and `rowkey` in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the `sample_id` name includes replicate information and so is unique for the analysis.
 * If you want to avoid certain rows or columns, change the `well_row` or `well_col` arguments in your blank plates, row keys, and column keys. For example `create_blank_plate(well_row = LETTERS[2:7], well_col = 2:11)` creates a blank 96-well plate with outside rows and columns empty.
+* If you want your data to display in a preferred order, make it a factor. "Factor" is the name in R for data that has a fixed and known set of possible values. R calls these possible values, "levels". A list of pets might have levels: "cat", "dog", and "hamster". Then your pets might have the values `c("cat", "cat", "cat", "dog")`. The same goes for target genes, sample ids, and growth conditions. In this vignette we have tried to distinguish between "levels" and "values" in our code examples.
+To learn more about factors, see the [chapter on factors in R For Data Science (Wickham & Grolemund)](https://r4ds.had.co.nz/factors.html)
