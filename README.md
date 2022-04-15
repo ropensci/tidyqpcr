@@ -18,15 +18,16 @@
 	* [Reproducible](#Reproducible)
 	* [Flexible](#Flexible)
 	* [Best-practice compliant](#Best-practice-compliant)
+* [Getting started](#Getting-started)
+	* [Installing tidyqpcr](#Installing-tidyqpcr)
+	* [Using tidyqpcr](#Using-tidyqpcr)
 * [Status](#Status)
     * [News](#News)
 * [Features](#Features)
 	* [Current features](#Current-features)
 	* [Future priorities](#Future-priorities)
-* [Getting started](#Getting-started)
-	* [Installing tidyqpcr](#Installing-tidyqpcr)
-	* [Using tidyqpcr](#Using-tidyqpcr)
 * [Contribute](#Contribute)
+
 
 # Motivation
 
@@ -58,9 +59,64 @@ tidyqpcr encourages standardised, reliable experimental design by following the 
 We want to make it easier for scientists to produce reliable and interpretable results. The MIQE best practices are a framework to facilitate the full disclosure of all reagents, sequences, and analysis methods necessary to enable other investigators to reproduce results. The final version of tidyqpcr will, by default, request the relevant experimental conditions and assay characteristics, as described in the [MIQE guidelines](https://academic.oup.com/clinchem/article/55/4/611/5631762), to allow reviewers/readers to rigorously assess the validity of a result. See "Future Priorities" below to get updates on tidyqpcr's MIQE compliant features.
 
 
+# Getting started
+
+## Installing tidyqpcr
+
+First install [R](https://www.r-project.org/). 
+
+#### For Windows users
+
+Next, you need a working installation of [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html).
+
+Jeffrey Leek made [slides on installation and testing of Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/).
+
+### For all R users
+
+Install the devtools R package, see [devtools installation instructions](https://www.r-project.org/nosvn/pandoc/devtools.html). 
+
+```
+library(devtools)
+devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignettes require cowplot package
+
+## Alternatively, install without building the vignetttes to remove cowplot dependency 
+## (Not recommended as vignettes contain the tutorials on using tidyqpcr)
+devtools::install_github("ewallace/tidyqpcr")
+```
+
+**Note**
+older versions of the remotes package automatically convert warnings to errors during installation.
+Please update your remotes package to >2.3.0 in order to remove this default.
+
+Then load tidyqpcr as a standard package:
+
+```
+library(tidyqpcr)
+```
+**Note**
+tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2.
+This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded.
+Restarting the R session and loading tidyqpcr separately may solve such issues.
+
+## Using tidyqpcr
+
+The best place to start is by viewing the articles on the [tidyqpcr website](https://ewallace.github.io/tidyqpcr/index.html).
+Here you will find the vignettes, which offer tutorials and example data analyses including figures.
+Currently there are 4 vignettes:
+
+* [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
+* [DeltaCq96wellExample](https://ewallace.github.io/tidyqpcr/articles/deltacq_96well_vignette.html) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
+* [MultifactorialExample](https://ewallace.github.io/tidyqpcr/articles/multifactor_vignette.html) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
+* [PrimerCalibration](https://ewallace.github.io/tidyqpcr/articles/calibration_vignette.html) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
+
+To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
+
+Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
+
+
 # Status
 
-As of January 2022, this software is fully useable, while still being in development.
+As of April 2022, this software is fully useable, while still being in development.
 It is particularly good at designing qPCR experiments in microwell plates (96-well and 384-well), and at relative quantification by the delta Cq method.
 
 [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available.
@@ -136,56 +192,7 @@ Note:
 - Yes means the package includes the functionality to complete this analysis.
 - Yes + Docs means this step is explicitly shown in either the function documentation or a vignette.
 - No† means that the package lacks explicit functionality, but generic R capabilities for statistical testing can be applied to the data.
-- ‡ Linear dynamic range and limit of detection (LOD) calculations would be enabled by these packages from additional short scripted analyses from a well-designe experiment, but the functionality is not specifically documented.
-
-# Getting started
-
-## Installing tidyqpcr
-
-First install [R](https://www.r-project.org/). 
-
-#### For Windows users
-
-Next, you need a working installation of [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html).
-
-Jeffrey Leek made [slides on installation and testing of Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/).
-
-### For all R users
-
-Install the devtools R package, see [devtools installation instructions](https://www.r-project.org/nosvn/pandoc/devtools.html). 
-
-```
-library(devtools)
-devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignettes require cowplot package
-
-## Alternatively, install without building the vignetttes to remove cowplot dependency 
-## (Not recommended as vignettes contain the tutorials on using tidyqpcr)
-devtools::install_github("ewallace/tidyqpcr")
-```
-**Note**
-older versions of the remote package automatically convert warnings to errors during installation. Please update your remotes package to >2.3.0 in order to remove this default.
-
-Then load tidyqpcr as a standard package:
-
-```
-library(tidyqpcr)
-```
-**Note**
-tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2. This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded. Restarting the R session and loading tidyqpcr separately may solve such issues.
-
-## Using tidyqpcr
-
-The best place to start is by viewing the articles on the [tidyqpcr website](https://ewallace.github.io/tidyqpcr/index.html). Here you will find the vignettes, which offer tutorials and example data analyses including figures. Currently there are 4 vignettes:
-
-* [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
-* [DeltaCq96wellExample](https://ewallace.github.io/tidyqpcr/articles/deltacq_96well_vignette.html) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
-* [MultifactorialExample](https://ewallace.github.io/tidyqpcr/articles/multifactor_vignette.html) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
-* [PrimerCalibration](https://ewallace.github.io/tidyqpcr/articles/calibration_vignette.html) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
-
-To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
-
-
-Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
+- ‡ Linear dynamic range and limit of detection (LOD) calculations would be enabled by these packages from additional short scripted analyses from a well-designed experiment, but the functionality is not specifically documented.
 
 
 # Contribute
