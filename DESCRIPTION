@@ -1,14 +1,13 @@
 Package: tidyqpcr
 Type: Package
 Title: Quantitative PCR Analysis with the Tidyverse
-Version: 0.3
+Version: 0.4
 Authors@R: c(person("Edward", "Wallace", email = "Edward.Wallace@ed.ac.uk", role = c("aut", "cre")),
              person("Sam", "Haynes", email = "samuel.haynes10@gmail.com", role = c("ctb")))
 Description: This package is for reproducible quantitative PCR (qPCR) analysis using packages from the tidyverse, notably dplyr and ggplot2. It normalizes (by ddCq), summarizes, and plots pre-calculated Cq data, and plots raw amplification and melt curves from Roche lightcycler machines. It does NOT (yet) calculate Cq data from amplification curves.
 Depends: 
     R (>= 3.1.0),
-    tibble,
-    tidyr
+    tibble
 Imports:
     rlang,
     dplyr,
@@ -16,7 +15,8 @@ Imports:
     readr,
     forcats,
     assertthat,
-    lifecycle
+    lifecycle,
+    tidyr
 Suggests: 
     knitr,
     rmarkdown,
@@ -25,7 +25,7 @@ Suggests:
     testthat,
     covr
 VignetteBuilder: knitr
-License: Apache License 2.0 + file LICENSE
+License: Apache License (>= 2)
 LazyData: true
 RoxygenNote: 7.1.2
 Encoding: UTF-8
