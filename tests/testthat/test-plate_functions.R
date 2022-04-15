@@ -20,7 +20,7 @@ simulated_colkey <- tibble(well_col = factor(1:24),
                                         levels = c("A", "B")),
                       tech_rep = factor(rep(rep(1:2, each = 6),
                                             times = 2))) %>%
-    mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
+    dplyr::mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
 
 simulated_rowkey <- tibble(well_row = factor(LETTERS[1:16]),
                            target_id = c("Target_1", "Target_2", "Target_3", "Target_4",
@@ -62,7 +62,7 @@ test_that("functions for creating a 384 well, primer calibration plate work with
     calculated_blank_384_plate <- create_blank_plate()
 
     calculated_colkey <- create_colkey_4diln_2ctrl_in_24() %>%
-        mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
+        dplyr::mutate(sample_id = paste(biol_rep, dilution_nice, sep = "_"))
 
     calculated_rowkey <- create_rowkey_8_in_16_plain(target_id = c("Target_1", "Target_2",
                                                                    "Target_3", "Target_4",
@@ -84,10 +84,10 @@ test_that("functions for creating a 384 well, primer calibration plate work with
     expect_equal(calculated_labeled_384_plate,
                  simulated_label_plate)
 
-    expect_true(is.ggplot(calculated_plate_schematic))
+    expect_true(ggplot2::is.ggplot(calculated_plate_schematic))
 })
 
-# Units test for creating, labeling and displaying a 384 well,
+# Unit test for creating, labeling and displaying a 384 well,
 # primer calibration plate with 6 * dilution
 
 ### Create dataset of expected function outputs ###
@@ -104,7 +104,7 @@ simulated_colkey <- tibble(well_col = factor(1:24),
                                                   times = 3),
                                               levels = c("+RT", "-RT", "NT")),
                            tech_rep = factor(rep(rep(1:3, each = 8)))) %>%
-    mutate(sample_id = paste(dilution_nice, tech_rep, sep = "_"))
+    dplyr::mutate(sample_id = paste(dilution_nice, tech_rep, sep = "_"))
 
 simulated_rowkey <- tibble(well_row = factor(LETTERS[1:16]),
                            target_id = c("Target_1", "Target_2", "Target_3", "Target_4",
@@ -141,7 +141,7 @@ test_that("functions for creating a 384 well, primer calibration plate work with
     calculated_blank_384_plate <- create_blank_plate()
 
     calculated_colkey <- create_colkey_6diln_2ctrl_in_24() %>%
-        mutate(sample_id = paste(dilution_nice, tech_rep, sep = "_"))
+        dplyr::mutate(sample_id = paste(dilution_nice, tech_rep, sep = "_"))
 
     calculated_rowkey <- create_rowkey_8_in_16_plain(target_id = c("Target_1", "Target_2",
                                                                    "Target_3", "Target_4",

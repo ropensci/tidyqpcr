@@ -4,20 +4,21 @@
 
 plate_wells <- expand.grid(well_row = c("A", "B", "C", "D"), well_col = 1:4) %>%
     tidyr::unite(well, c(well_row, well_col), sep = "") %>%
-    pull(well)
+    dplyr::pull(well)
 
-simulated_amplification_curve_data <- tibble(well = rep(plate_wells, times = 15),
-                                             cycle = rep(1:15, each = 16),
-                                             program_no = 2,
-                                             fluor_raw = rep(c(10, 15, 13, 20, 20, 50, 60, 70,
-                                                               90, 130, 170, 280, 440, 670, 1020),
-                                                             each = 16),
-                                             fluor_base = rep(35, 240))
+simulated_amplification_curve_data <- 
+    tibble(well = rep(plate_wells, times = 15),
+           cycle = rep(1:15, each = 16),
+           program_no = 2,
+           fluor_raw = rep(c(10, 15, 13, 20, 20, 50, 60, 70,
+                             90, 130, 170, 280, 440, 670, 1020),
+                           each = 16),
+           fluor_base = rep(35, 240))
 
 simulated_debased_amplification_curve_data <- simulated_amplification_curve_data %>%
-    mutate(fluor_signal = rep(c(-25, -20, -22, -15, -15, 15, 25, 35,
-                                55, 95, 135, 245, 405, 635, 985),
-                              each = 16))
+    dplyr::mutate(fluor_signal = rep(c(-25, -20, -22, -15, -15, 15, 25, 35,
+                                       55, 95, 135, 245, 405, 635, 985),
+                                     each = 16))
 
 ### Test functions give expected output ###
 
@@ -33,27 +34,28 @@ test_that("debaseline functions correctly", {
 
 plate_wells <- expand.grid(well_row = c("A", "B", "C", "D"), well_col = 1:4) %>%
     tidyr::unite(well, c(well_row, well_col), sep = "") %>%
-    pull(well)
+    dplyr::pull(well)
 
-simulated_melt_curve_data_diff <- tibble(well = rep(plate_wells, times = 15),
-                                    temperature = rep(1:15, each = 16),
-                                             fluor_raw = rep(c(10, 15, 13, 20, 20, 50, 60, 70,
-                                                               90, 130, 170, 280, 440, 670, 1020),
-                                                             each = 16))
+simulated_melt_curve_data_diff <- 
+    tibble(well = rep(plate_wells, times = 15),
+           temperature = rep(1:15, each = 16),
+           fluor_raw = rep(c(10, 15, 13, 20, 20, 50, 60, 70,
+                             90, 130, 170, 280, 440, 670, 1020),
+                           each = 16))
 
 simulated_melt_curve_data_spline <- tibble(well = rep(plate_wells, times = 15),
                                          temperature = rep(1:15, each = 16),
                                          fluor_raw = rep(1:15, each = 16))
 
 simulated_dRdT_melt_curve_data_diff <- simulated_melt_curve_data_diff %>%
-    mutate(dRdT = rep(c(-5, 2, -7, 0, -30, -10, -10, -20, -40,
-                        -40, -110, -160, -230, -350, NA),
-                      each = 16)) %>%
-    arrange(well, temperature)
+    dplyr::mutate(dRdT = rep(c(-5, 2, -7, 0, -30, -10, -10, -20, -40,
+                               -40, -110, -160, -230, -350, NA),
+                             each = 16)) %>%
+    dplyr::arrange(well, temperature)
 
 simulated_dRdT_melt_curve_data_spline <- simulated_melt_curve_data_spline %>%
-    mutate(dRdT = rep(-1, each = 240)) %>%
-    arrange(well, temperature)
+    dplyr::mutate(dRdT = rep(-1, each = 240)) %>%
+    dplyr::arrange(well, temperature)
 
 ### Test functions give expected output ###
 
