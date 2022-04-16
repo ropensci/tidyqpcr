@@ -1,7 +1,7 @@
 ---
 title: "Delta Cq 96-well plate qPCR analysis example"
 author: "Stuart McKellar and Edward Wallace"
-date: "July 2020"
+date: "April 2022"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -37,7 +37,10 @@ knitr::opts_chunk$set(
 )
 
 # Load packages
-library(tidyverse)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+library(readr)
 library(tidyqpcr)
 
 # set default theme for graphics
