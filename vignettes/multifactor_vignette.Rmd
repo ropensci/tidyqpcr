@@ -46,16 +46,11 @@ knitr::opts_chunk$set(
 
 # Load packages
 library(tidyverse)
-library(cowplot)
 library(tidyqpcr)
 
 # set default theme for graphics
-theme_set(theme_cowplot(font_size = 11) %+replace%
+theme_set(theme_bw(base_size = 11) %+replace%
   theme(
-    panel.border = element_rect(
-      colour = "grey50",
-      linetype = "solid", size = 0.5
-    ),
     strip.background = element_blank()
   ))
 ```
@@ -232,13 +227,7 @@ ggplot(data = platesmed) +
   ) +
   scale_shape_manual(values = c(15:18, 5:6)) +
   scale_y_log10nice("mRNA relative detection") +
-  theme(
-    axis.text.x = element_text(angle = 90, vjust = 0.5),
-    panel.border = element_rect(
-      fill = NA, linetype = 1,
-      colour = "grey50", size = 0.5
-    )
-  )
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
 ### Faceted by drug treatment
@@ -253,13 +242,7 @@ ggplot(data = platesmed) +
   facet_wrap(~drug, ncol = 3) +
   scale_colour_manual(values = c("-" = "grey50", "+" = "red")) +
   scale_y_log10nice("mRNA relative detection") +
-  theme(
-    axis.text.x = element_text(angle = 90, vjust = 0.5),
-    panel.border = element_rect(
-      fill = NA, linetype = 1,
-      colour = "grey50", size = 0.5
-    )
-  )
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
 ### Faceted by heat shock condition
@@ -273,13 +256,7 @@ ggplot(data = platesmed) +
   ) +
   facet_wrap(~heat, ncol = 3) +
   scale_y_log10nice("mRNA relative detection") +
-  theme(
-    axis.text.x = element_text(angle = 90, vjust = 0.5),
-    panel.border = element_rect(
-      fill = NA, linetype = 1,
-      colour = "grey50", size = 0.5
-    )
-  )
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
 
@@ -332,7 +309,7 @@ ggplot(
   scale_x_continuous(breaks = seq(60, 100, 10),
                      minor_breaks = seq(60, 100, 5)) +
   labs(title = "Melt curves, biol. rep. 1, tech. rep. 1") +
-  panel_border()
+  theme(panel.grid = element_blank())
 ```
 
 ## Melt Curves, biol_rep 2
@@ -349,7 +326,7 @@ ggplot(
   scale_x_continuous(breaks = seq(60, 100, 10),
                      minor_breaks = seq(60, 100, 5)) +
   labs(title = "Melt curves, biol. rep. 2, tech. rep. 1") +
-  panel_border()
+  theme(panel.grid = element_blank())
 ```
 
 
@@ -366,7 +343,7 @@ ggplot(
   scale_linetype_manual(values = c("-RT" = "dashed", "+RT" = "solid")) +
   expand_limits(y = 0) +
   labs(title = "Amp. curves, biol. rep. 1, tech. rep. 1") +
-  panel_border()
+  theme(panel.grid = element_blank())
 ```
 
 ```{r plotamp_rep2,dependson="load_amp",fig.width=12,fig.height=6}
@@ -380,5 +357,5 @@ ggplot(
   scale_linetype_manual(values = c("-RT" = "dashed", "+RT" = "solid")) +
   expand_limits(y = 0) +
   labs(title = "Amp. curves, biol. rep. 2, tech. rep. 1") +
-  panel_border()
+  theme(panel.grid = element_blank())
 ```

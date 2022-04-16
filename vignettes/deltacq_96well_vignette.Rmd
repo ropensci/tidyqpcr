@@ -38,17 +38,13 @@ knitr::opts_chunk$set(
 
 # Load packages
 library(tidyverse)
-library(cowplot)
 library(tidyqpcr)
 
 # set default theme for graphics
-theme_set(theme_cowplot(font_size = 11) %+replace%
+theme_set(theme_bw(base_size = 11) %+replace%
   theme(
-    panel.border = element_rect(
-      colour = "grey50",
-      linetype = "solid", size = 0.5
-    ),
-    strip.background = element_blank()
+    strip.background = element_blank(),
+    panel.grid = element_blank()
   ))
 ```
 
