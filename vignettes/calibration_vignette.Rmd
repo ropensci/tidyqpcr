@@ -163,7 +163,7 @@ Within each section of a row for a single replicate of dilutions, Cq consistentl
 The grey tiles for most -RT and NT columns mean that the value is `NA`, i.e. no Cq value was reported. This is good.
 
 ```{r check_edge_effects,fig.height=4,fig.width=6,dependson="load_plates",results="show"}
-display_well_value(plates)
+display_plate_value(plates)
 ```
 
 Visualisation might also help to identify unwanted positional effects.
