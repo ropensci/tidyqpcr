@@ -140,7 +140,7 @@ plate_plan12 <- label_plate_rowcol(
   colkey = colkey3
 )
 
-display_plate(plate_plan12)
+display_plate_qpcr(plate_plan12)
 ```
 
 # Status
