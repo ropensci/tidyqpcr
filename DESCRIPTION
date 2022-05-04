@@ -20,8 +20,6 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    tidyverse,
-    cowplot,
     testthat,
     covr
 VignetteBuilder: knitr
