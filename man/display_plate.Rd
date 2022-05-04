@@ -20,7 +20,14 @@ ggplot2 geom elements.
 \examples{
 library(ggplot2)
 
-# display wells of empty plate
+# display empty plot of empty plate
+display_plate(create_blank_plate_96well())
+
+# display wells of empty plate filled by column
+display_plate(create_blank_plate_96well()) + 
+  geom_tile(aes(fill = well_col), colour = "black")
+
+# display wells of empty 1536-well plate filled by row
 display_plate(create_blank_plate_1536well()) + 
   geom_tile(aes(fill = well_row), colour = "black")
 
@@ -34,7 +41,7 @@ Other plate creation functions:
 \code{\link{create_rowkey_4_in_16}()},
 \code{\link{create_rowkey_8_in_16_plain}()},
 \code{\link{display_plate_qpcr}()},
-\code{\link{display_well_value}()},
+\code{\link{display_plate_value}()},
 \code{\link{label_plate_rowcol}()},
 \code{\link{make_row_names_echo1536}()},
 \code{\link{make_row_names_lc1536}()}
