@@ -7,3 +7,8 @@
 ^pkgdown$
 ^codecov\.yml$
 ^\.github$
+^codemeta\.json$
+^CITATION\.cff$
+^paper\.bib$
+^paper\.md$
+^LICENSE\.md$
