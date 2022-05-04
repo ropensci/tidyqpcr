@@ -28,62 +28,83 @@ NULL
 #' p1 + scale_y_log10nice()
 #' 
 scale_x_log2nice <- function(name=ggplot2::waiver(),
-                             omag=seq(-10,10),
+                             omag=seq(-10, 10),
                              scilabels=FALSE,
                              ...) {
     breaks2 <- 2^omag
     if (scilabels) {
-        labels2 <- paste("2^{",omag,"}",sep="")
+        labels2 <- paste("2^{", omag, "}", sep = "")
     } else {
         labels2 <- breaks2
     }
-    ggplot2::scale_x_log10(name,breaks=breaks2,labels=parse(text=labels2),...)
+    ggplot2::scale_x_log10(name,
+                           breaks = breaks2,
+                           labels = parse(text = labels2),
+                           ...)
 }
 
 #' @describeIn log_plot_helpers plot x axis on log10-scale with nice defaults
 #' @export
 #' 
-scale_x_log10nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=FALSE,...) {
+scale_x_log10nice <- function(name=ggplot2::waiver(),
+                              omag=seq(-10, 10),
+                              scilabels=FALSE,
+                              ...) {
     # @ewallace: ideally would also create minor breaks from 2:9.
     breaks10 <- 10^omag
     if (scilabels) {
-        labels10 <- paste("10^{",omag,"}",sep="")
+        labels10 <- paste("10^{", omag, "}", sep = "")
     } else {
         labels10 <- breaks10
     }
-    ggplot2::scale_x_log10(name,breaks=breaks10,labels=parse(text=labels10),...)
+    ggplot2::scale_x_log10(name,
+                           breaks = breaks10,
+                           labels = parse(text = labels10),
+                           ...)
 }
 
 #' @describeIn log_plot_helpers plot y axis on log2-scale with nice defaults
 #' @export
 #' 
-scale_y_log2nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=FALSE,...) {
+scale_y_log2nice <- function(name = ggplot2::waiver(),
+                             omag = seq(-10, 10),
+                             scilabels = FALSE,
+                             ...) {
     breaks2 <- 2^omag
     if (scilabels) {
-        labels2 <- paste("2^{",omag,"}",sep="")
+        labels2 <- paste("2^{", omag, "}", sep = "")
     } else {
         labels2 <- breaks2
     }
-    ggplot2::scale_y_log10(name,breaks=breaks2,labels=parse(text=labels2),...)
+    ggplot2::scale_y_log10(name,
+                           breaks = breaks2,
+                           labels = parse(text = labels2),
+                           ...)
 }
 
 #' @describeIn log_plot_helpers plot y axis on log10-scale with nice defaults
 #' @export
 #' 
-scale_y_log10nice <- function(name=ggplot2::waiver(),omag=seq(-10,10),scilabels=FALSE,...) {
+scale_y_log10nice <- function(name = ggplot2::waiver(),
+                              omag = seq(-10, 10),
+                              scilabels = FALSE,
+                              ...) {
     # @ewallace: ideally would also create minor breaks from 2:9.
     breaks10 <- 10^omag
     if (scilabels) {
-        labels10 <- paste("10^{",omag,"}",sep="")
+        labels10 <- paste("10^{", omag, "}", sep = "")
     } else {
         labels10 <- breaks10
     }
-    ggplot2::scale_y_log10(name,breaks=breaks10,labels=parse(text=labels10),...)
+    ggplot2::scale_y_log10(name,
+                           breaks = breaks10,
+                           labels = parse(text = labels10),
+                           ...)
 }
 
 #' @describeIn log_plot_helpers plot x AND y axes on log10-scale with nice defaults
 #' @export
 #' 
 scale_loglog10 <- function(...) {
-    list(scale_x_log10nice(...),scale_y_log10nice(...))
+    list(scale_x_log10nice(...), scale_y_log10nice(...))
 }
