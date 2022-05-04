@@ -2,34 +2,27 @@
 % Please edit documentation in R/plate_functions.R
 \name{display_plate}
 \alias{display_plate}
-\title{Display plate plan with sample_id, target_id, prep_type per well}
+\title{Display an empty plate plan which can be populated with 
+ggplot2 geom elements.}
 \usage{
 display_plate(plate)
 }
 \arguments{
-\item{plate}{tibble with variables well_col, well_row, sample_id, target_id,
-prep_type. Output from label_plate_rowcol.}
+\item{plate}{tibble with variables well_col, well_row.}
 }
 \value{
 ggplot object; major output is to plot it
 }
 \description{
-Display plate plan with sample_id, target_id, prep_type per well
+Display an empty plate plan which can be populated with 
+ggplot2 geom elements.
 }
 \examples{
-library(dplyr)
+library(ggplot2)
 
-# create basic 384 well plate
-basic_plate <- label_plate_rowcol(create_blank_plate(), 
-                                  create_rowkey_8_in_16_plain(target_id = c("T_1", "T_2",
-                                                                            "T_3", "T_4", 
-                                                                            "T_5", "T_6",
-                                                                            "T_7", "T_8")), 
-                                  create_colkey_6diln_2ctrl_in_24() \%>\% 
-                                      mutate(sample_id = paste0(dilution_nice, "_", tech_rep)))
-
-# display full plate
-display_plate(basic_plate)
+# display wells of empty plate
+display_plate(create_blank_plate_1536well()) + 
+  geom_tile(aes(fill = well_row), colour = "black")
 
 }
 \seealso{
@@ -40,6 +33,7 @@ Other plate creation functions:
 \code{\link{create_colkey_6diln_2ctrl_in_24}()},
 \code{\link{create_rowkey_4_in_16}()},
 \code{\link{create_rowkey_8_in_16_plain}()},
+\code{\link{display_plate_qpcr}()},
 \code{\link{display_well_value}()},
 \code{\link{label_plate_rowcol}()},
 \code{\link{make_row_names_echo1536}()},

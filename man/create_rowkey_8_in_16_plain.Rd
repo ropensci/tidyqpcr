@@ -32,6 +32,7 @@ Other plate creation functions:
 \code{\link{create_colkey_6_in_24}()},
 \code{\link{create_colkey_6diln_2ctrl_in_24}()},
 \code{\link{create_rowkey_4_in_16}()},
+\code{\link{display_plate_qpcr}()},
 \code{\link{display_plate}()},
 \code{\link{display_well_value}()},
 \code{\link{label_plate_rowcol}()},

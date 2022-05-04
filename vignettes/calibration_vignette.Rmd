@@ -126,7 +126,7 @@ plate1plan %>%
 This can be printed out to facilitate loading the plate correctly.
 
 ```{r display_plates,fig.height=8,fig.width=12,dependson="label_plates"}
-display_plate(plate1plan)
+display_plate_qpcr(plate1plan)
 ```
 
 

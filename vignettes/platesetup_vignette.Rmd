@@ -62,7 +62,7 @@ We chose to name this variable "target_id" to make it clear that this could refe
 Note again that the current version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.
 
 **sample_id** should uniquely identify a nucleic acid sample in your experiment. sample_id can either describe all the relevant information, for example `HeatShock_10min_RepA`, `InputControl_WildType_Rep3`; or provide other unique identifying information, for example `S013`. 
-Functions including `display_plate` and `calculate_deltacq_bysampleid` assume that there is a column called `sample_id`, and use it to decide which wells get analysed together.
+Functions including `display_plate_qpcr` and `calculate_deltacq_bysampleid` assume that there is a column called `sample_id`, and use it to decide which wells get analysed together.
 We discuss below how to add other kinds of information/metadata to help your analysis.
 
 **prep_type** is used for different types of nucleic acid preps from the same sample.
@@ -142,10 +142,10 @@ plate_plan12 <- label_plate_rowcol(
 print(plate_plan12)
 ```
 
-We visualise this plate plan using the `display_plate` function:
+We visualise this plate plan using the `display_plate_qpcr` function:
 
 ```{r minimal_noreps_display,results="show",echo=TRUE,fig.height=3,fig.width=3}
-display_plate(plate_plan12)
+display_plate_qpcr(plate_plan12)
 ```
 
 Expanding this practice plan to incorporate replicates can be done by taking this little rectangle and making copies across a larger plate.
@@ -189,10 +189,10 @@ plate_plan48 <- label_plate_rowcol(
 print(plate_plan48)
 ```
 
-We again visualise this plate plan using the `display_plate` function
+We again visualise this plate plan using the `display_plate_qpcr` function
 
 ```{r minimal_48_display,results="show",echo=TRUE,fig.height=3,fig.width=8}
-display_plate(plate_plan48)
+display_plate_qpcr(plate_plan48)
 ```
 
 
@@ -289,7 +289,7 @@ Again, check the help file with `?unite`. The line `unite(sample_id, condition, 
 Now we display the plate to check that we have everything in place:
 
 ```{r twocondition_96_display,results="show",echo=TRUE,fig.height=6,fig.width=8}
-display_plate(plate_plan96)
+display_plate_qpcr(plate_plan96)
 ```
 
 We could print this plate map and take it into the lab as a visual aid for plate loading.

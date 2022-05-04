@@ -133,13 +133,13 @@ Again, we print the table to check that the columns and data are correct.
 
 ## Display the plate layout
 
-It is easier to understand pictures than tables of text. To display the layout of samples within a microplate, tidyqpcr has a function `display_plate`. We use that here to show how the samples are laid out within the plate. 
+It is easier to understand pictures than tables of text. To display the layout of samples within a microplate, tidyqpcr has a function `display_plate_qpcr`. We use that here to show how the samples are laid out within the plate. 
 
 ```{r display_plates,fig.height=6,fig.width=9,dependson="add_sample_target_data"}
-display_plate(plate_cq_data)
+display_plate_qpcr(plate_cq_data)
 ```
 
-Here, the different colours indicate different `target_ids`, which is default behaviour of `display_plate`. This display makes it possible to see that there are three identically-labeled wells - technical replicates - in a row.
+Here, the different colours indicate different `target_ids`, which is default behaviour of `display_plate_qpcr`. This display makes it possible to see that there are three identically-labeled wells - technical replicates - in a row.
 
 ## Plot unnormalized Cq data
 

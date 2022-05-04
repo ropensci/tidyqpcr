@@ -101,14 +101,14 @@ plateplan <-
   )
 ```
 
-Display the plate plan using display_plate. 
+Display the plate plan using display_plate_qpcr. 
 
 ```{r display_plates,fig.height=9,fig.width=10,dependson="label_plates"}
-display_plate(plateplan %>%
+display_plate_qpcr(plateplan %>%
   mutate(sample_id = condition))
 ```
 
-Note that display_plate requires a column called `sample_id`, which here we had to make from the `condition` variable using `mutate(sample_id=condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
+Note that display_plate_qpcr requires a column called `sample_id`, which here we had to make from the `condition` variable using `mutate(sample_id=condition)`. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using `unite` in the next code chunk.
 
 ## Load and summarize data
 
