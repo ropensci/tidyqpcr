@@ -113,6 +113,35 @@ To find these from your R session, enter `browseVignettes(package="tidyqpcr")`.
 
 Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
 
+A basic use case for designing a 12 well plate is given below, see [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) for more details.
+
+```
+target_id_levels <- c("ACT1", "BFG2", "CDC19", "DED1")
+
+rowkey4 <- tibble(
+  well_row = LETTERS[1:4],
+  target_id = target_id_levels
+)
+
+sample_id_levels <- c("rep1", "rep2", "rep3")
+prep_type_levels <- "+RT"
+
+colkey3 <- tibble(
+  well_col = 1:3,
+  sample_id = sample_id_levels,
+  prep_type = prep_type_levels
+)
+
+create_blank_plate(well_row = LETTERS[1:4], well_col = 1:3)
+
+plate_plan12 <- label_plate_rowcol(
+  plate = create_blank_plate(well_row = LETTERS[1:4], well_col = 1:3),
+  rowkey = rowkey4,
+  colkey = colkey3
+)
+
+display_plate_qpcr(plate_plan12)
+```
 
 # Status
 
