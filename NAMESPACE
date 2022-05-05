@@ -3,7 +3,7 @@
 export(calculate_deltacq_bysampleid)
 export(calculate_deltadeltacq_bytargetid)
 export(calculate_drdt_plate)
-export(calculate_dydx_1)
+export(calculate_dydx)
 export(calculate_efficiency)
 export(calculate_efficiency_bytargetid)
 export(calculate_normvalue)

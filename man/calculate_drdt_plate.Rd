@@ -58,6 +58,6 @@ temp_tibble \%>\%
 }
 \seealso{
 Other melt_curve_functions: 
-\code{\link{calculate_dydx_1}()}
+\code{\link{calculate_dydx}()}
 }
 \concept{melt_curve_functions}

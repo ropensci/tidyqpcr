@@ -92,15 +92,15 @@ debaseline <- function(plateamp, maxcycle = 10) {
 #'
 #' # calculate gradient of curve
 #' #----- use case 1 : using splines
-#' calculate_dydx_1(x, y)
+#' calculate_dydx(x, y)
 #' 
 #' # optional arguments are passed to smooth.splines function
-#' calculate_dydx_1(x, y, spar = 0.5)
+#' calculate_dydx(x, y, spar = 0.5)
 #' 
 #' #----- use case 2 : using difference between adjacent points
-#' calculate_dydx_1(x, y, method = "diff")
+#' calculate_dydx(x, y, method = "diff")
 #'
-calculate_dydx_1 <- function(x, y, method = "spline", ...) {
+calculate_dydx <- function(x, y, method = "spline", ...) {
     assertthat::assert_that(is.numeric(x))
     assertthat::assert_that(is.numeric(y))
     assertthat::assert_that(length(x) == length(y))
@@ -177,10 +177,10 @@ calculate_drdt_plate <- function(platemelt, method = "spline", ...) {
         dplyr::arrange(.data$well, .data$temperature) %>%
         dplyr::group_by(.data$well) %>%
         dplyr::mutate(dRdT =
-                          calculate_dydx_1(x = .data$temperature,
-                                           y = .data$fluor_raw,
-                                           method = method,
-                                           ...)
-                      ) %>%
+                          calculate_dydx(x = .data$temperature,
+                                         y = .data$fluor_raw,
+                                         method = method,
+                                         ...)
+        ) %>%
         dplyr::ungroup()
 }
