@@ -1,3 +1,13 @@
+# Units test for displaying a blank 1536 well
+
+### Test functions give expected output ###
+
+test_that("functions for displaying a blank 1536 well works", {
+    blank_plate_schematic <- display_plate(create_blank_plate_1536well())
+    
+    expect_true(ggplot2::is.ggplot(blank_plate_schematic))
+})
+
 # Units test for creating, labeling and displaying a 384 well,
 # primer calibration plate with 4 * dilution
 
@@ -73,7 +83,7 @@ test_that("functions for creating a 384 well, primer calibration plate work with
                                                        calculated_rowkey,
                                                        calculated_colkey)
 
-    calculated_plate_schematic <- display_plate(calculated_labeled_384_plate)
+    calculated_plate_schematic <- display_plate_qpcr(calculated_labeled_384_plate)
 
     expect_equal(calculated_colkey,
                  simulated_colkey)

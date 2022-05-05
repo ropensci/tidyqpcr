@@ -375,27 +375,26 @@ label_plate_rowcol <- function(plate,
 }
 
 
-#' Display plate plan with sample_id, target_id, prep_type per well
+#' Display an empty plate plan which can be populated with 
+#' ggplot2 geom elements.
 #'
-#' @param plate tibble with variables well_col, well_row, sample_id, target_id,
-#'   prep_type. Output from label_plate_rowcol.
+#' @param plate tibble with variables well_col, well_row.
 #'
 #' @return ggplot object; major output is to plot it
 #'
-#' @examples 
-#' library(dplyr)
+#' @examples
+#' library(ggplot2)
 #' 
-#' # create basic 384 well plate
-#' basic_plate <- label_plate_rowcol(create_blank_plate(), 
-#'                                   create_rowkey_8_in_16_plain(target_id = c("T_1", "T_2",
-#'                                                                             "T_3", "T_4", 
-#'                                                                             "T_5", "T_6",
-#'                                                                             "T_7", "T_8")), 
-#'                                   create_colkey_6diln_2ctrl_in_24() %>% 
-#'                                       mutate(sample_id = paste0(dilution_nice, "_", tech_rep)))
+#' # display empty plot of empty plate
+#' display_plate(create_blank_plate_96well())
 #' 
-#' # display full plate
-#' display_plate(basic_plate)
+#' # display wells of empty plate filled by column
+#' display_plate(create_blank_plate_96well()) + 
+#'   geom_tile(aes(fill = well_col), colour = "black")
+#' 
+#' # display wells of empty 1536-well plate filled by row
+#' display_plate(create_blank_plate_1536well()) + 
+#'   geom_tile(aes(fill = well_row), colour = "black")
 #' 
 #' @family plate creation functions
 #'
@@ -412,14 +411,6 @@ display_plate <- function(plate) {
     ggplot2::ggplot(data = plate,
                     ggplot2::aes(x = as_factor(.data$well_col),
                         y = as_factor(.data$well_row))) +
-        ggplot2::geom_tile(ggplot2::aes(fill = .data$target_id), 
-                           alpha = 0.3) +
-        ggplot2::geom_text(ggplot2::aes(label = 
-                                   paste(.data$target_id,
-                                         .data$sample_id,
-                                         .data$prep_type,
-                                         sep = "\n")),
-                           size = 2.5, lineheight = 1) +
         ggplot2::scale_x_discrete(expand = c(0, 0)) +
         ggplot2::scale_y_discrete(expand = c(0, 0),
                                   limits = rev(rowlevels)) +
@@ -430,6 +421,62 @@ display_plate <- function(plate) {
                        legend.position = "none",
                        plot.margin = grid::unit(rep(0.01, 4), "npc"),
                        panel.border = ggplot2::element_blank())
+}
+
+#' Display qPCR plate plan with sample_id, target_id, prep_type per well
+#'
+#' @param plate tibble with variables well_col, well_row, sample_id, target_id,
+#'   prep_type. Output from label_plate_rowcol.
+#'
+#' @return ggplot object; major output is to plot it
+#'
+#' @examples 
+#' 
+#' 
+#' # create basic 6-well plate
+#' basic_plate <- 
+#'     label_plate_rowcol(plate = create_blank_plate(well_row = LETTERS[1:2],
+#'                                                   well_col = 1:3),
+#'                        rowkey = tibble(well_row = factor(LETTERS[1:2]),
+#'                                        target_id = c("T_A","T_B")),
+#'                        colkey = tibble(well_col = factor(1:3),
+#'                                        sample_id = c("S_1","S_2", "S_3"),
+#'                                        prep_type = "+RT"))
+#' 
+#' # display basic plate
+#' display_plate_qpcr(basic_plate)
+#' 
+#' # create full 384 well plate
+#' full_plate <- label_plate_rowcol(create_blank_plate(), 
+#'                                   create_rowkey_8_in_16_plain(target_id = c("T_1", "T_2",
+#'                                                                             "T_3", "T_4", 
+#'                                                                             "T_5", "T_6",
+#'                                                                             "T_7", "T_8")), 
+#'                                   create_colkey_6diln_2ctrl_in_24() %>% 
+#'                                       dplyr::mutate(sample_id = paste0(dilution_nice,
+#'                                                                        "_",
+#'                                                                        tech_rep)))
+#' 
+#' # display full plate
+#' display_plate_qpcr(full_plate)
+#' 
+#' @family plate creation functions
+#'
+#' @export
+#' @importFrom forcats as_factor
+#' @importFrom rlang .data
+#'
+display_plate_qpcr <- function(plate) {
+    
+    display_plate(plate) +
+        ggplot2::geom_tile(ggplot2::aes(fill = .data$target_id), 
+                           alpha = 0.3) +
+        ggplot2::geom_text(ggplot2::aes(label = 
+                                            paste(.data$target_id,
+                                                  .data$sample_id,
+                                                  .data$prep_type,
+                                                  sep = "\n")),
+                           size = 2.5, lineheight = 1)
 }
 
 #' Display the value of each well across the plate. 
@@ -449,17 +496,17 @@ display_plate <- function(plate) {
 #' library(dplyr)
 #' library(ggplot2)
 #' 
-#' # create basic 384 well plate
-#' basic_plate <- create_blank_plate_96well() %>%
+#' # create 96 well plate with random values
+#' plate_randomcq <- create_blank_plate_96well() %>%
 #'     mutate(cq = runif(96) * 10,
-#'     deltacq = runif(96) * 2)
+#'            deltacq = runif(96) * 2)
 #' 
 #' 
 #' # display well Cq value across plate
-#' display_well_value(basic_plate)
+#' display_plate_value(plate_randomcq)
 #' 
 #' # display well Delta Cq value across plate with red colour pallette
-#' display_well_value(basic_plate, value = "deltacq") +   # uses ggplot syntax
+#' display_plate_value(plate_randomcq, value = "deltacq") +   # uses ggplot syntax
 #'     scale_fill_gradient(high = "#FF0000") 
 #'           
 #' 
@@ -469,10 +516,10 @@ display_plate <- function(plate) {
 #' @importFrom forcats as_factor
 #' @importFrom rlang .data
 #'
-display_well_value <- function(plate, value = "cq") {
-    
+display_plate_value <- function(plate, value = "cq") {
     # check value exists in given plate
-    assertthat::assert_that(value %in% names(plate), msg = paste0(value, " is not the name of a variable in the given plate"))
+    assertthat::assert_that(value %in% names(plate), 
+                            msg = paste0(value, " is not the name of a variable in the given plate"))
     
     # check each well has one value only
     unique_well_value <- plate %>%
@@ -480,26 +527,17 @@ display_well_value <- function(plate, value = "cq") {
         dplyr::summarise(num_well = dplyr::n()) %>%
         dplyr::mutate(not_equal_one = .data$num_well != 1)
     
-    assertthat::assert_that(sum(unique_well_value$not_equal_one) == 0, msg = paste0("Wells do not have unique ", value, " value."))
+    assertthat::assert_that(sum(unique_well_value$not_equal_one) == 0, 
+                            msg = paste0("Wells do not have unique ", value, " value."))
     
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
         levels()
     
-    ggplot2::ggplot(data = plate,
-                    ggplot2::aes(x = as_factor(.data$well_col),
-                                 y = as_factor(.data$well_row))) +
+    display_plate(plate = plate) +
         ggplot2::geom_tile(ggplot2::aes(fill = .data[[value]])) +
-        ggplot2::scale_x_discrete(expand = c(0, 0)) +
-        ggplot2::scale_y_discrete(expand = c(0, 0),
-                                  limits = rev(rowlevels)) +
-        ggplot2::coord_equal() +
-        ggplot2::theme_void() +
-        ggplot2::theme(axis.text = ggplot2::element_text(angle = 0),
-                       plot.title = ggplot2::element_text(hjust = 0.5),
-                       panel.grid.major = ggplot2::element_blank(),
-                       plot.margin = grid::unit(rep(0.01, 4), "npc"),
-                       panel.border = ggplot2::element_blank()) +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       panel.grid.major = ggplot2::element_blank()) +
         ggplot2::labs(title = paste0({{value}}, " values for each well across the plate"))
 }
