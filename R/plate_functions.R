@@ -311,7 +311,7 @@ create_rowkey_8_in_16_plain <- function(...) {
 #'   character (1,10,11,...), instead of a factor or integer (1,2,3,...). For
 #'   this reason, the function by default converts well_row in `rowkey`, and
 #'   well_col in `colkey`, to factors, taking factor levels from `plate`, and
-#'   warns the user.
+#'   messages the user.
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
 #'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
@@ -338,9 +338,9 @@ label_plate_rowcol <- function(plate,
     if (!is.null(colkey)) {
         assertthat::assert_that(assertthat::has_name(colkey, "well_col"))
         # Note: should this if clause be a freestanding function?
-        # coerce_column_to_factor(df, col, warn=TRUE)?
+        # coerce_column_to_factor(df, col, warn=FALSE)?
         if (!is.factor(colkey$well_col) & coercefactors) {
-            warning("coercing well_col to a factor with levels from plate$well_col")
+            message("coercing well_col to a factor with levels from plate$well_col")
             colkey <- dplyr::mutate(
                 colkey,
                 well_col = factor(.data$well_col,
@@ -352,7 +352,7 @@ label_plate_rowcol <- function(plate,
     if (!is.null(rowkey)) {
         assertthat::assert_that(assertthat::has_name(rowkey, "well_row"))
         if (!is.factor(rowkey$well_row) & coercefactors) {
-            warning("coercing well_row to a factor with levels from plate$well_row")
+            message("coercing well_row to a factor with levels from plate$well_row")
             rowkey <- dplyr::mutate(
                 rowkey,
                 well_row = factor(.data$well_row,

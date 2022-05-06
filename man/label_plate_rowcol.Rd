@@ -33,7 +33,7 @@ tibble (data frame) with variables well_row, well_col, well, and
   character (1,10,11,...), instead of a factor or integer (1,2,3,...). For
   this reason, the function by default converts well_row in `rowkey`, and
   well_col in `colkey`, to factors, taking factor levels from `plate`, and
-  warns the user.
+  messages the user.
 
   Other tidyqpcr functions require plate plans to contain variables
   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
