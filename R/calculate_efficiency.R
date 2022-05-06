@@ -121,7 +121,10 @@ calculate_efficiency <- function(cq_df_1, formula = cq ~ log2(dilution) + biol_r
 calculate_efficiency_bytargetid <- function(cq_df,
                            formula = cq ~ log2(dilution) + biol_rep,
                            use_prep_types="+RT") {
+    assertthat::assert_that(assertthat::has_name(cq_df, "target_id"))
+    
     if (!is.na(use_prep_types)) {
+        assertthat::assert_that(assertthat::has_name(cq_df, "prep_type"))
         cq_df <- dplyr::filter(cq_df, .data$prep_type %in% use_prep_types)
     }
     cq_df %>%

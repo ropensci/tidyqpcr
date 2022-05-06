@@ -55,12 +55,16 @@ calculate_normvalue <- function(value_df,
                       value_name = "value",
                       id_name = "id",
                       norm_function = median) {
+    
+    assertthat::assert_that(assertthat::has_name(value_df, value_name))
+    assertthat::assert_that(assertthat::has_name(value_df, id_name))
+    
     # make subset of value_df where gene is one or more ref_ids
     value_to_norm_by <- dplyr::filter(value_df,
                              .data[[id_name]] %in% ref_ids) %>%
         dplyr::pull({{value_name}}) %>%
         norm_function(na.rm = TRUE)
-    #
+    
     # assign summary (median) value to value_df$value_to_norm_by
     dplyr::mutate(value_df, value_to_norm_by = value_to_norm_by)
 }
@@ -124,6 +128,11 @@ calculate_normvalue <- function(value_df,
 calculate_deltacq_bysampleid <- function(cq_df,
                                          ref_target_ids,
                                          norm_function = median) {
+    
+    assertthat::assert_that(assertthat::has_name(cq_df, "target_id"))
+    assertthat::assert_that(assertthat::has_name(cq_df, "sample_id"))
+    assertthat::assert_that(assertthat::has_name(cq_df, "cq"))
+    
     cq_df %>%
         dplyr::group_by(.data$sample_id) %>%
         dplyr::do(calculate_normvalue(.data,
@@ -210,7 +219,13 @@ calculate_deltadeltacq_bytargetid <- function(deltacq_df,
                                          ref_sample_ids,
                                          norm_function = median,
                                          ddcq_positive = TRUE) {
+    
+    assertthat::assert_that(assertthat::has_name(deltacq_df, "target_id"))
+    assertthat::assert_that(assertthat::has_name(deltacq_df, "sample_id"))
+    assertthat::assert_that(assertthat::has_name(deltacq_df, "delta_cq"))
+    
     ddcq_factor <- (-1) ^ ddcq_positive
+    
     deltacq_df %>%
         dplyr::group_by(.data$target_id) %>%
         dplyr::do(calculate_normvalue(.data,
