@@ -36,8 +36,8 @@ tibble (data frame) with variables well_row, well_col, well, and
   messages the user.
 
   Other tidyqpcr functions require plate plans to contain variables
-  sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
-  any of these are missing. This is a warning, not an error, because these
+  sample_id, target_id, and prep_type, so `label_plate_rowcol` will message
+  if any of these are missing. This is a message, not an error, because these
   variables can be added by users later.
 }
 \description{

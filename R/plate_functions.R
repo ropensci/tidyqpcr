@@ -314,8 +314,8 @@ create_rowkey_8_in_16_plain <- function(...) {
 #'   messages the user.
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
-#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
-#'   any of these are missing. This is a warning, not an error, because these
+#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will message
+#'   if any of these are missing. This is a message, not an error, because these
 #'   variables can be added by users later.
 #'
 #' @examples
@@ -361,15 +361,15 @@ label_plate_rowcol <- function(plate,
         }
         plate <- dplyr::left_join(plate, rowkey, by = "well_row")
     }
-    # check that plate contains sample_id, target_id, prep_type, warn if not
+    # check that plate contains sample_id, target_id, prep_type
     if (! "sample_id" %in% names(plate)) {
-        warning("plate does not contain variable sample_id")
+        message("plate does not contain variable sample_id")
     }
     if (! "target_id" %in% names(plate)) {
-        warning("plate does not have variable target_id")
+        message("plate does not have variable target_id")
     }
     if (! "prep_type" %in% names(plate)) {
-        warning("plate does not have variable prep_type")
+        message("plate does not have variable prep_type")
     }
     return(dplyr::arrange(plate, .data$well_row, .data$well_col))
 }
@@ -403,6 +403,9 @@ label_plate_rowcol <- function(plate,
 #' @importFrom rlang .data
 #'
 display_plate <- function(plate) {
+    assertthat::assert_that(assertthat::has_name(plate, "well_row"))
+    assertthat::assert_that(assertthat::has_name(plate, "well_col"))
+    
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
@@ -467,6 +470,9 @@ display_plate <- function(plate) {
 #' @importFrom rlang .data
 #'
 display_plate_qpcr <- function(plate) {
+    assertthat::assert_that(assertthat::has_name(plate, "target_id"))
+    assertthat::assert_that(assertthat::has_name(plate, "sample_id"))
+    assertthat::assert_that(assertthat::has_name(plate, "prep_type"))
     
     display_plate(plate) +
         ggplot2::geom_tile(ggplot2::aes(fill = .data$target_id), 
