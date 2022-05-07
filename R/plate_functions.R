@@ -403,8 +403,9 @@ label_plate_rowcol <- function(plate,
 #' @importFrom rlang .data
 #'
 display_plate <- function(plate) {
-    assertthat::assert_that(assertthat::has_name(plate, "well_row"))
-    assertthat::assert_that(assertthat::has_name(plate, "well_col"))
+    assertthat::assert_that(
+        assertthat::has_name(plate, 
+                             c("well_row","well_col")))
     
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
@@ -470,9 +471,11 @@ display_plate <- function(plate) {
 #' @importFrom rlang .data
 #'
 display_plate_qpcr <- function(plate) {
-    assertthat::assert_that(assertthat::has_name(plate, "target_id"))
-    assertthat::assert_that(assertthat::has_name(plate, "sample_id"))
-    assertthat::assert_that(assertthat::has_name(plate, "prep_type"))
+    assertthat::assert_that(
+        assertthat::has_name(plate, 
+                             c("target_id",
+                               "sample_id",
+                               "prep_type")))
     
     display_plate(plate) +
         ggplot2::geom_tile(ggplot2::aes(fill = .data$target_id), 
