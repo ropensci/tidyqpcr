@@ -34,6 +34,10 @@ tibble (data frame) with variables well_row, well_col, well, and
   this reason, the function by default converts well_row in `rowkey`, and
   well_col in `colkey`, to factors, taking factor levels from `plate`, and
   messages the user.
+  
+  If `plate$well_col` or `plate$well_row` are not factors and coercefactors = TRUE 
+  label_plate_rowcol will automatically convert them to factors, but will output a 
+  warning telling users this may lead to unexpected behaviour. 
 
   Other tidyqpcr functions require plate plans to contain variables
   sample_id, target_id, and prep_type, so `label_plate_rowcol` will message

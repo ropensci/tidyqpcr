@@ -312,6 +312,10 @@ create_rowkey_8_in_16_plain <- function(...) {
 #'   this reason, the function by default converts well_row in `rowkey`, and
 #'   well_col in `colkey`, to factors, taking factor levels from `plate`, and
 #'   messages the user.
+#'   
+#'   If `plate$well_col` or `plate$well_row` are not factors and coercefactors = TRUE 
+#'   label_plate_rowcol will automatically convert them to factors, but will output a 
+#'   warning telling users this may lead to unexpected behaviour. 
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
 #'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will message
@@ -335,6 +339,22 @@ label_plate_rowcol <- function(plate,
                                rowkey = NULL,
                                colkey = NULL,
                                coercefactors = TRUE) {
+    if (! "well_col" %in% names(plate) | ! "well_row" %in% names(plate)){
+        stop("plate must contain well_row and well_col variables")
+    }
+    
+    if (!is.factor(plate$well_col) & coercefactors){
+        warning("plate$well_col is not a factor. Automatically generating plate$well_col factor levels. May lead to incorrect plate plans.")
+        plate <- plate %>%
+            mutate(well_col = factor(well_col))
+    }
+    
+    if (!is.factor(plate$well_row) & coercefactors){
+        warning("plate$well_row is not a factor. Automatically generating plate$well_row factor levels. May lead to incorrect plate plans.")
+        plate <- plate %>%
+            mutate(well_row = factor(well_row))
+    }
+    
     if (!is.null(colkey)) {
         assertthat::assert_that(assertthat::has_name(colkey, "well_col"))
         # Note: should this if clause be a freestanding function?
