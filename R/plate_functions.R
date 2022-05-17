@@ -159,6 +159,7 @@ create_colkey_6_in_24 <- function(...) {
 #'
 #' @export
 #' @importFrom tibble tibble
+#' @importFrom forcats as_factor
 #'
 create_colkey_4diln_2ctrl_in_24 <- function(
                      dilution      = c(5 ^ (0:-3), 1, 1),
@@ -172,10 +173,9 @@ create_colkey_4diln_2ctrl_in_24 <- function(
     tibble(well_col = factor(1:24),
            dilution = rep(dilution, 4),
            dilution_nice = rep(dilution_nice, 4),
-           prep_type = factor(rep(prep_type, 4),
-                         levels = c("+RT", "-RT", "NT")),
-           biol_rep = factor(biol_rep),
-           tech_rep = factor(tech_rep)
+           prep_type = as_factor(rep(prep_type, 4)),
+           biol_rep = as_factor(biol_rep),
+           tech_rep = as_factor(tech_rep)
     )
 }
 
@@ -200,6 +200,7 @@ create_colkey_4diln_2ctrl_in_24 <- function(
 #'
 #' @export
 #' @importFrom tibble tibble
+#' @importFrom forcats as_factor
 #'
 create_colkey_6diln_2ctrl_in_24 <- function(
                      dilution = c(5 ^ (0:-5), 1, 1),
@@ -211,9 +212,8 @@ create_colkey_6diln_2ctrl_in_24 <- function(
     tibble(well_col = factor(1:24),
            dilution = rep(dilution, 3),
            dilution_nice = rep(dilution_nice, 3),
-           prep_type = factor(rep(prep_type, 3),
-                         levels = c("+RT", "-RT", "NT")),
-           tech_rep = factor(tech_rep))
+           prep_type = as_factor(rep(prep_type, 3)),
+           tech_rep = as_factor(tech_rep))
 }
 
 #' Create a 4-value, 16-row key for plates
@@ -233,14 +233,14 @@ create_colkey_6diln_2ctrl_in_24 <- function(
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
+#' @importFrom forcats as_factor
 #' @importFrom tidyr %>%
 #'
 create_rowkey_4_in_16 <- function(...) {
     rowkey <- tibble(well_row = factor(LETTERS[1:16]),
-                     prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
-                                   levels = c("+RT", "-RT")),
-                     tech_rep = factor(rep(c(1, 2, 3, 1), each = 4),
-                                      levels = 1:3))
+                     prep_type = as_factor(c(rep("+RT", 12), rep("-RT", 4))),
+                     tech_rep = as_factor(rep(c(1, 2, 3, 1), each = 4))
+    )
     if (!missing(...)) {
         pieces4 <- list(...) %>% as_tibble()
         stopifnot(nrow(pieces4) == 4)
@@ -334,6 +334,7 @@ create_rowkey_8_in_16_plain <- function(...) {
 #' @export
 #'
 #' @importFrom rlang .data
+#' @importFrom forcats as_factor
 #'
 label_plate_rowcol <- function(plate,
                                rowkey = NULL,
@@ -346,13 +347,13 @@ label_plate_rowcol <- function(plate,
     if (!is.factor(plate$well_col) & coercefactors){
         warning("plate$well_col is not a factor. Automatically generating plate$well_col factor levels. May lead to incorrect plate plans.")
         plate <- plate %>%
-            mutate(well_col = factor(well_col))
+            dplyr::mutate(well_col = as_factor(well_col))
     }
     
     if (!is.factor(plate$well_row) & coercefactors){
         warning("plate$well_row is not a factor. Automatically generating plate$well_row factor levels. May lead to incorrect plate plans.")
         plate <- plate %>%
-            mutate(well_row = factor(well_row))
+            dplyr::mutate(well_row = as_factor(well_row))
     }
     
     if (!is.null(colkey)) {
@@ -487,7 +488,6 @@ display_plate <- function(plate) {
 #' @family plate creation functions
 #'
 #' @export
-#' @importFrom forcats as_factor
 #' @importFrom rlang .data
 #'
 display_plate_qpcr <- function(plate) {
