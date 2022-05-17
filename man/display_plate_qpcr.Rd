@@ -39,7 +39,9 @@ full_plate <- label_plate_rowcol(create_blank_plate(),
                                                                             "T_5", "T_6",
                                                                             "T_7", "T_8")), 
                                   create_colkey_6diln_2ctrl_in_24() \%>\% 
-                                      dplyr::mutate(sample_id = paste0(dilution_nice, "_", tech_rep)))
+                                      dplyr::mutate(sample_id = paste0(dilution_nice,
+                                                                       "_",
+                                                                       tech_rep)))
 
 # display full plate
 display_plate_qpcr(full_plate)

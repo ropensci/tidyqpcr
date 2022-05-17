@@ -122,15 +122,14 @@ create_blank_plate_1536well <- function(
 #' @importFrom tidyr %>%
 #'
 create_colkey_6_in_24 <- function(...) {
-    colkey <- tibble(well_col   = factor(1:24),
-                     prep_type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
-                         factor(levels = c("+RT", "-RT")),
-                     tech_rep = rep(c(1, 2, 3, 1), each = 6) %>%
-                         factor(levels = 1:3)
+    colkey <- tibble(well_col  = factor(1:24),
+                     prep_type = as_factor(c(rep("+RT", 18), rep("-RT", 6))),
+                     tech_rep  = as_factor(rep(c(1, 2, 3, 1), each = 6))
                      )
     if (!missing(...)) {
         pieces6 <- list(...) %>% as_tibble()
-        stopifnot(nrow(pieces6) == 6)
+        assertthat::assert_that(nrow(pieces6) == 6, 
+                                msg = "Some input data is not of length 6")
         pieces24 <- dplyr::bind_rows(pieces6, pieces6, pieces6, pieces6)
         colkey <- dplyr::bind_cols(colkey, pieces24)
     }
@@ -159,12 +158,13 @@ create_colkey_6_in_24 <- function(...) {
 #'
 #' @export
 #' @importFrom tibble tibble
+#' @importFrom forcats as_factor
 #'
 create_colkey_4diln_2ctrl_in_24 <- function(
                      dilution      = c(5 ^ (0:-3), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
-                     prep_type         = c(rep("+RT", 4), "-RT", "NT"),
-                     biol_rep       = rep(c("A", "B"), each = 12,
+                     prep_type     = c(rep("+RT", 4), "-RT", "NT"),
+                     biol_rep      = rep(c("A", "B"), each = 12,
                                         length.out = 24),
                      tech_rep      = rep(1:2, each = 6,
                                         length.out = 24)
@@ -172,10 +172,9 @@ create_colkey_4diln_2ctrl_in_24 <- function(
     tibble(well_col = factor(1:24),
            dilution = rep(dilution, 4),
            dilution_nice = rep(dilution_nice, 4),
-           prep_type = factor(rep(prep_type, 4),
-                         levels = c("+RT", "-RT", "NT")),
-           biol_rep = factor(biol_rep),
-           tech_rep = factor(tech_rep)
+           prep_type = as_factor(rep(prep_type, 4)),
+           biol_rep = as_factor(biol_rep),
+           tech_rep = as_factor(tech_rep)
     )
 }
 
@@ -200,6 +199,7 @@ create_colkey_4diln_2ctrl_in_24 <- function(
 #'
 #' @export
 #' @importFrom tibble tibble
+#' @importFrom forcats as_factor
 #'
 create_colkey_6diln_2ctrl_in_24 <- function(
                      dilution = c(5 ^ (0:-5), 1, 1),
@@ -211,9 +211,8 @@ create_colkey_6diln_2ctrl_in_24 <- function(
     tibble(well_col = factor(1:24),
            dilution = rep(dilution, 3),
            dilution_nice = rep(dilution_nice, 3),
-           prep_type = factor(rep(prep_type, 3),
-                         levels = c("+RT", "-RT", "NT")),
-           tech_rep = factor(tech_rep))
+           prep_type = as_factor(rep(prep_type, 3)),
+           tech_rep = as_factor(tech_rep))
 }
 
 #' Create a 4-value, 16-row key for plates
@@ -233,17 +232,18 @@ create_colkey_6diln_2ctrl_in_24 <- function(
 #'
 #' @export
 #' @importFrom tibble tibble as_tibble
+#' @importFrom forcats as_factor
 #' @importFrom tidyr %>%
 #'
 create_rowkey_4_in_16 <- function(...) {
     rowkey <- tibble(well_row = factor(LETTERS[1:16]),
-                     prep_type = factor(c(rep("+RT", 12), rep("-RT", 4)),
-                                   levels = c("+RT", "-RT")),
-                     tech_rep = factor(rep(c(1, 2, 3, 1), each = 4),
-                                      levels = 1:3))
+                     prep_type = as_factor(c(rep("+RT", 12), rep("-RT", 4))),
+                     tech_rep = as_factor(rep(c(1, 2, 3, 1), each = 4))
+    )
     if (!missing(...)) {
         pieces4 <- list(...) %>% as_tibble()
-        stopifnot(nrow(pieces4) == 4)
+        assertthat::assert_that(nrow(pieces4) == 4, 
+                                msg = "Some input data is not of length 4")
         pieces16 <- dplyr::bind_rows(pieces4, pieces4, pieces4, pieces4)
         rowkey <- dplyr::bind_cols(rowkey, pieces16)
     }
@@ -274,7 +274,8 @@ create_rowkey_8_in_16_plain <- function(...) {
     rowkey <- tibble(well_row = factor(LETTERS[1:16]))
     if (!missing(...)) {
         pieces8 <- list(...) %>% as_tibble()
-        stopifnot(nrow(pieces8) == 8)
+        assertthat::assert_that(nrow(pieces8) == 8, 
+                                msg = "Some input data is not of length 8")
         pieces16 <- dplyr::bind_rows(pieces8, pieces8)
         rowkey <- dplyr::bind_cols(rowkey, pieces16)
     }
@@ -311,11 +312,15 @@ create_rowkey_8_in_16_plain <- function(...) {
 #'   character (1,10,11,...), instead of a factor or integer (1,2,3,...). For
 #'   this reason, the function by default converts well_row in `rowkey`, and
 #'   well_col in `colkey`, to factors, taking factor levels from `plate`, and
-#'   warns the user.
+#'   messages the user.
+#'   
+#'   If `plate$well_col` or `plate$well_row` are not factors and coercefactors = TRUE 
+#'   label_plate_rowcol will automatically convert them to factors, but will output a 
+#'   warning telling users this may lead to unexpected behaviour. 
 #'
 #'   Other tidyqpcr functions require plate plans to contain variables
-#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will warn if
-#'   any of these are missing. This is a warning, not an error, because these
+#'   sample_id, target_id, and prep_type, so `label_plate_rowcol` will message
+#'   if any of these are missing. This is a message, not an error, because these
 #'   variables can be added by users later.
 #'
 #' @examples
@@ -330,17 +335,34 @@ create_rowkey_8_in_16_plain <- function(...) {
 #' @export
 #'
 #' @importFrom rlang .data
+#' @importFrom forcats as_factor
 #'
 label_plate_rowcol <- function(plate,
                                rowkey = NULL,
                                colkey = NULL,
                                coercefactors = TRUE) {
+    assertthat::assert_that(
+        assertthat::has_name(plate, 
+                             c("well_row","well_col")))
+    
+    if (!is.factor(plate$well_col) & coercefactors){
+        warning("plate$well_col is not a factor. Automatically generating plate$well_col factor levels. May lead to incorrect plate plans.")
+        plate <- plate %>%
+            dplyr::mutate(well_col = as_factor(.data$well_col))
+    }
+    
+    if (!is.factor(plate$well_row) & coercefactors){
+        warning("plate$well_row is not a factor. Automatically generating plate$well_row factor levels. May lead to incorrect plate plans.")
+        plate <- plate %>%
+            dplyr::mutate(well_row = as_factor(.data$well_row))
+    }
+    
     if (!is.null(colkey)) {
         assertthat::assert_that(assertthat::has_name(colkey, "well_col"))
         # Note: should this if clause be a freestanding function?
-        # coerce_column_to_factor(df, col, warn=TRUE)?
+        # coerce_column_to_factor(df, col, warn=FALSE)?
         if (!is.factor(colkey$well_col) & coercefactors) {
-            warning("coercing well_col to a factor with levels from plate$well_col")
+            message("coercing well_col to a factor with levels from plate$well_col")
             colkey <- dplyr::mutate(
                 colkey,
                 well_col = factor(.data$well_col,
@@ -352,7 +374,7 @@ label_plate_rowcol <- function(plate,
     if (!is.null(rowkey)) {
         assertthat::assert_that(assertthat::has_name(rowkey, "well_row"))
         if (!is.factor(rowkey$well_row) & coercefactors) {
-            warning("coercing well_row to a factor with levels from plate$well_row")
+            message("coercing well_row to a factor with levels from plate$well_row")
             rowkey <- dplyr::mutate(
                 rowkey,
                 well_row = factor(.data$well_row,
@@ -361,15 +383,15 @@ label_plate_rowcol <- function(plate,
         }
         plate <- dplyr::left_join(plate, rowkey, by = "well_row")
     }
-    # check that plate contains sample_id, target_id, prep_type, warn if not
+    # check that plate contains sample_id, target_id, prep_type
     if (! "sample_id" %in% names(plate)) {
-        warning("plate does not contain variable sample_id")
+        message("plate does not contain variable sample_id")
     }
     if (! "target_id" %in% names(plate)) {
-        warning("plate does not have variable target_id")
+        message("plate does not have variable target_id")
     }
     if (! "prep_type" %in% names(plate)) {
-        warning("plate does not have variable prep_type")
+        message("plate does not have variable prep_type")
     }
     return(dplyr::arrange(plate, .data$well_row, .data$well_col))
 }
@@ -403,6 +425,10 @@ label_plate_rowcol <- function(plate,
 #' @importFrom rlang .data
 #'
 display_plate <- function(plate) {
+    assertthat::assert_that(
+        assertthat::has_name(plate, 
+                             c("well_row","well_col")))
+    
     rowlevels <- 
         dplyr::pull(plate, .data$well_row) %>%
         as_factor() %>%
@@ -463,10 +489,14 @@ display_plate <- function(plate) {
 #' @family plate creation functions
 #'
 #' @export
-#' @importFrom forcats as_factor
 #' @importFrom rlang .data
 #'
 display_plate_qpcr <- function(plate) {
+    assertthat::assert_that(
+        assertthat::has_name(plate, 
+                             c("target_id",
+                               "sample_id",
+                               "prep_type")))
     
     display_plate(plate) +
         ggplot2::geom_tile(ggplot2::aes(fill = .data$target_id), 
