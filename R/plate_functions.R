@@ -130,7 +130,8 @@ create_colkey_6_in_24 <- function(...) {
                      )
     if (!missing(...)) {
         pieces6 <- list(...) %>% as_tibble()
-        stopifnot(nrow(pieces6) == 6)
+        assertthat::assert_that(nrow(pieces6) == 6, 
+                                msg = "Some input data is not of length 6")
         pieces24 <- dplyr::bind_rows(pieces6, pieces6, pieces6, pieces6)
         colkey <- dplyr::bind_cols(colkey, pieces24)
     }
@@ -243,7 +244,8 @@ create_rowkey_4_in_16 <- function(...) {
     )
     if (!missing(...)) {
         pieces4 <- list(...) %>% as_tibble()
-        stopifnot(nrow(pieces4) == 4)
+        assertthat::assert_that(nrow(pieces4) == 4, 
+                                msg = "Some input data is not of length 4")
         pieces16 <- dplyr::bind_rows(pieces4, pieces4, pieces4, pieces4)
         rowkey <- dplyr::bind_cols(rowkey, pieces16)
     }
@@ -274,7 +276,8 @@ create_rowkey_8_in_16_plain <- function(...) {
     rowkey <- tibble(well_row = factor(LETTERS[1:16]))
     if (!missing(...)) {
         pieces8 <- list(...) %>% as_tibble()
-        stopifnot(nrow(pieces8) == 8)
+        assertthat::assert_that(nrow(pieces8) == 8, 
+                                msg = "Some input data is not of length 8")
         pieces16 <- dplyr::bind_rows(pieces8, pieces8)
         rowkey <- dplyr::bind_cols(rowkey, pieces16)
     }
@@ -340,9 +343,9 @@ label_plate_rowcol <- function(plate,
                                rowkey = NULL,
                                colkey = NULL,
                                coercefactors = TRUE) {
-    if (! "well_col" %in% names(plate) | ! "well_row" %in% names(plate)){
-        stop("plate must contain well_row and well_col variables")
-    }
+    assertthat::assert_that(
+        assertthat::has_name(plate, 
+                             c("well_row","well_col")))
     
     if (!is.factor(plate$well_col) & coercefactors){
         warning("plate$well_col is not a factor. Automatically generating plate$well_col factor levels. May lead to incorrect plate plans.")
