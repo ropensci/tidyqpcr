@@ -122,11 +122,9 @@ create_blank_plate_1536well <- function(
 #' @importFrom tidyr %>%
 #'
 create_colkey_6_in_24 <- function(...) {
-    colkey <- tibble(well_col   = factor(1:24),
-                     prep_type    = c(rep("+RT", 18), rep("-RT", 6)) %>%
-                         factor(levels = c("+RT", "-RT")),
-                     tech_rep = rep(c(1, 2, 3, 1), each = 6) %>%
-                         factor(levels = 1:3)
+    colkey <- tibble(well_col  = factor(1:24),
+                     prep_type = as_factor(c(rep("+RT", 18), rep("-RT", 6))),
+                     tech_rep  = as_factor(rep(c(1, 2, 3, 1), each = 6))
                      )
     if (!missing(...)) {
         pieces6 <- list(...) %>% as_tibble()
@@ -165,8 +163,8 @@ create_colkey_6_in_24 <- function(...) {
 create_colkey_4diln_2ctrl_in_24 <- function(
                      dilution      = c(5 ^ (0:-3), 1, 1),
                      dilution_nice = c("1x", "5x", "25x", "125x", "-RT", "NT"),
-                     prep_type         = c(rep("+RT", 4), "-RT", "NT"),
-                     biol_rep       = rep(c("A", "B"), each = 12,
+                     prep_type     = c(rep("+RT", 4), "-RT", "NT"),
+                     biol_rep      = rep(c("A", "B"), each = 12,
                                         length.out = 24),
                      tech_rep      = rep(1:2, each = 6,
                                         length.out = 24)
