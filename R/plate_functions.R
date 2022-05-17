@@ -348,13 +348,13 @@ label_plate_rowcol <- function(plate,
     if (!is.factor(plate$well_col) & coercefactors){
         warning("plate$well_col is not a factor. Automatically generating plate$well_col factor levels. May lead to incorrect plate plans.")
         plate <- plate %>%
-            dplyr::mutate(well_col = as_factor(well_col))
+            dplyr::mutate(well_col = as_factor(.data$well_col))
     }
     
     if (!is.factor(plate$well_row) & coercefactors){
         warning("plate$well_row is not a factor. Automatically generating plate$well_row factor levels. May lead to incorrect plate plans.")
         plate <- plate %>%
-            dplyr::mutate(well_row = as_factor(well_row))
+            dplyr::mutate(well_row = as_factor(.data$well_row))
     }
     
     if (!is.null(colkey)) {
