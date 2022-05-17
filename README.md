@@ -145,7 +145,7 @@ display_plate_qpcr(plate_plan12)
 
 # Status
 
-As of April 2022, this software is fully useable, while still being in development.
+As of May 2022, this software is fully useable, while still being in development.
 It is particularly good at designing qPCR experiments in microwell plates (96-well and 384-well), and at relative quantification by the delta Cq method.
 
 [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available.
@@ -155,6 +155,7 @@ If there is a feature that you need for your work, please ask us!
 
 ## News
 
+* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays.
 * January 2022, Improvements in documentation and argument-checking for v0.4.
 * October 2021, Unit tests now cover over 75% of tidyqpcr code.
 * June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)
@@ -235,3 +236,10 @@ We will be following the [code of conduct from the tidyverse](https://dplyr.tidy
 ## How to contribute code: style, checking, development cycle
 
 If you want to fix bugs or add features yourself, that's great. tidyqpcr development aims to follow best practices which we have outlined in the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file in the .github folder.
+
+## Thank you
+
+Many thanks to everyone who has helped with tidyqpcr
+
+Users and interviewees: Jamie Auxillos, Rosey Bayne, Liz Hughes, Rachael Murray, Elliott Chapman, Laura Tuck, Amy Newell, David Barrass, 
+Reviewers: @seaaan, @kelshmo and @jooolia
