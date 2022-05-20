@@ -309,7 +309,7 @@ These focus on setting up column keys and row keys for 384-well plates where sam
 Some are specialised for primer calibration, including serial dilution and control samples.
 These functions can be adapted for your own needs.
 For example, the default levels of `prep_type` are relevant for RT-qPCR, and you would want to change those for plain qPCR or ChIP-qPCR.
-Please consult the function documentation for details of the paramters and outputs, e.g. `?create_colkey_6_in_24`.
+Please consult the function documentation for details of the parameters and outputs, e.g. `?create_colkey_6_in_24`.
 
 For examples of standard layouts in use, see the vignettes:
 

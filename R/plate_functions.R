@@ -57,7 +57,7 @@ create_blank_plate_96well <- function() {
 
 #' Generates row names for the Roche Lightcycler (tm) 1536-well plates
 #' 
-#' Creates a vector containing 36 row names according to the labeling system 
+#' Creates a vector containing 36 row names according to the labelling system 
 #' used by the Roche Lightcycler (tm)
 #' 
 #' @return Vector of row names: Aa,Ab,Ac,Ad,Ba,...,Hd.
@@ -76,7 +76,7 @@ make_row_names_lc1536 <- function() {
 #' Generates row names for the Labcyte Echo 1536-well plates 
 #' 
 #' Creates a vector containing 36 row names according to the 
-#' labeling system used by the Labcyte Echo
+#' labelling system used by the Labcyte Echo
 #' 
 #' @return Vector of row names: A,B,...,Z,AA,AB,...,AF.
 #' 
