@@ -83,7 +83,7 @@ calculate_normvalue <- function(value_df,
 #'   the same for different technical replicates measuring identical reactions
 #'   in different wells of the plate, but differ for different biological and
 #'   experimental replicates. See tidyqpcr vignettes for examples.
-#' @param ref_target_ids names of targetss to normalize by, i.e. reference
+#' @param ref_target_ids names of targets to normalize by, i.e. reference
 #'   genes, hydrolysis probes, or primer sets. This can be one reference target
 #'   id, a selection of multiple target ids, or even all measured target ids. In
 #'   the case of all of them, the delta Cq value would be calculated relative to

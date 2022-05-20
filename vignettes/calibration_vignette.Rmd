@@ -167,7 +167,7 @@ display_plate_value(plates)
 ```
 
 Visualisation might also help to identify unwanted positional effects.
-For example, a PCR machine is broken, wells close to an edge of the plate can have different behavior from central wells. 
+For example, a PCR machine is broken, wells close to an edge of the plate can have different behaviour from central wells. 
 
 ## Plot unnormalized data shows that -RT and NT controls are low
 
