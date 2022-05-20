@@ -196,7 +196,7 @@ Table of package features corresponding to the essential information on qPCR val
 
 | MIQE Guidelines | tidyqpcr | HTqPCR | NormqPCR | qpcR | pcr |
 --- | --- | --- | --- | --- | ---
-Version | 0.4.0 | 1.48.0 | 1.40.0 | 1.4.1  | 1.2.2
+Version | 0.5.0 | 1.48.0 | 1.40.0 | 1.4.1  | 1.2.2
 For SYBR Green I, Cq of the NTC | Yes + Docs | Yes + Docs | Yes + Docs | Yes | Yes
 Calibration curves with slope and y intercept | Slope | No | No | Yes + Docs | Yes + Docs
 PCR efficiency calculated from slope | Yes + Doc | No | Yes + Doc | Yes + Doc | Yes
