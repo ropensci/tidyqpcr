@@ -241,5 +241,5 @@ If you want to fix bugs or add features yourself, that's great. tidyqpcr develop
 
 Many thanks to everyone who has helped with tidyqpcr
 
-Users and interviewees: Jamie Auxillos, Rosey Bayne, Liz Hughes, Rachael Murray, Elliott Chapman, Laura Tuck, Amy Newell, David Barrass, 
+Users and interviewees: Jamie Auxillos, Rosey Bayne, Liz Hughes, Rachael Murray, Elliott Chapman, Laura Tuck, Amy Newell, David Barrass, Christopher Katanski,  Magnus Gwynne and Stuart McKeller.
 Reviewers: @seaaan, @kelshmo and @jooolia
