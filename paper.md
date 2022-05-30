@@ -77,7 +77,7 @@ We thank everyone in the eLife Innovation Leaders 2020 program for all their hel
 We thank Sander Granneman, Stefanie Butland and Sean Hughes for feedback and encouragement.
 We thank rOpenSci, Julia Gustavsen, and Kelsey Montgomery for constructive reviews.
 We thank all those who have participated in interviews, including; Flic Anderson, Jamie Auxillos, David Barrass, Rosey Bayne, Elliott Chapman, Magnus Gwynne, Liz Hughes, Chris Katanski and Stuart McKellar.
-Edward Wallace is a Sir Henry Dale Fellow, jointly funded by the Wellcome Trust and the Royal Society (Grant Number 208779/Z/17/Z).
+Edward Wallace is a Sir Henry Dale Fellow, jointly funded by Wellcome and the Royal Society [208779/Z/17/Z].
 Samuel Haynes is funded by the EASTBIO UKRI-BBSRC DTP [BB/M010996/1].
 
 
