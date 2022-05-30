@@ -151,7 +151,7 @@ If there is a feature that you need for your work, please ask us!
 
 ## News
 
-* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays.
+* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays. Updated to v0.5.
 * January 2022, Improvements in documentation and argument-checking for v0.4.
 * October 2021, Unit tests now cover over 75% of tidyqpcr code.
 * June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)
@@ -196,7 +196,7 @@ Table of package features corresponding to the essential information on qPCR val
 
 | MIQE Guidelines | tidyqpcr | HTqPCR | NormqPCR | qpcR | pcr |
 --- | --- | --- | --- | --- | ---
-Version | 0.4.0 | 1.48.0 | 1.40.0 | 1.4.1  | 1.2.2
+Version | 0.5.0 | 1.48.0 | 1.40.0 | 1.4.1  | 1.2.2
 For SYBR Green I, Cq of the NTC | Yes + Docs | Yes + Docs | Yes + Docs | Yes | Yes
 Calibration curves with slope and y intercept | Slope | No | No | Yes + Docs | Yes + Docs
 PCR efficiency calculated from slope | Yes + Doc | No | Yes + Doc | Yes + Doc | Yes
