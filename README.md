@@ -151,7 +151,7 @@ If there is a feature that you need for your work, please ask us!
 
 ## News
 
-* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays.
+* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays. Updated to v0.5.
 * January 2022, Improvements in documentation and argument-checking for v0.4.
 * October 2021, Unit tests now cover over 75% of tidyqpcr code.
 * June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)
