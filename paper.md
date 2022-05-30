@@ -14,9 +14,9 @@ authors:
     orcid: 0000-0002-3366-1812
     affiliation: 1
 affiliations:
- - name: Institute for Cell Biology, School of Biological Sciences, The University of Edinburgh,
+ - name: Institute for Cell Biology and SynthSys, School of Biological Sciences, The University of Edinburgh,
    index: 1
-date: 25 July 2021
+date: 30 May 2022
 bibliography: paper.bib
 header-includes:
    - \usepackage{draftwatermark}
@@ -75,9 +75,10 @@ The ease-of-use and documentation of tidyqpcr will enable efficient best-practic
 
 We thank everyone in the eLife Innovation Leaders 2020 program for all their help developing tidyqpcr, in particular program leader Emmy Tsang and our mentor Aidan Budd.
 We thank Sander Granneman, Stefanie Butland and Sean Hughes for feedback and encouragement.
+We thank rOpenSci, Julia Gustavsen, and Kelsey Montgomery for constructive reviews.
 We thank all those who have participated in interviews, including; Flic Anderson, Jamie Auxillos, David Barrass, Rosey Bayne, Elliott Chapman, Magnus Gwynne, Liz Hughes, Chris Katanski and Stuart McKellar.
 Edward Wallace is a Sir Henry Dale Fellow, jointly funded by the Wellcome Trust and the Royal Society (Grant Number 208779/Z/17/Z).
-Samuel Haynes is funded by the EASTBIO UKRI-BBSRC DTP.
+Samuel Haynes is funded by the EASTBIO UKRI-BBSRC DTP [BB/M010996/1].
 
 
 # References
