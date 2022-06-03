@@ -23,7 +23,10 @@ simulated_debased_amplification_curve_data <- simulated_amplification_curve_data
 ### Test functions give expected output ###
 
 test_that("debaseline functions correctly", {
-    calculated_debased_amplification_curve_data <- debaseline(simulated_amplification_curve_data)
+    calculated_debased_amplification_curve_data <- 
+        simulated_amplification_curve_data %>%
+        dplyr::select(-fluor_base) %>%
+        debaseline()
     
     expect_equal(calculated_debased_amplification_curve_data, simulated_debased_amplification_curve_data)
 })

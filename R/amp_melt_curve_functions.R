@@ -50,6 +50,10 @@ debaseline <- function(plateamp, maxcycle = 10) {
             plateamp,
             c("well", "program_no", "cycle", "fluor_raw"))
     )
+    assertthat::assert_that(
+        !assertthat::has_name(plateamp,"fluor_base"),
+        msg = "plateamp contains a variable called fluor_base, which breaks debaseline"
+    )
     baseline <-
         plateamp %>%
         dplyr::group_by(.data$well) %>%
