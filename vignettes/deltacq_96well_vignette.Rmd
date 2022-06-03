@@ -117,7 +117,7 @@ We use the tidyverse pipe operator `%>%` to do all these transformations in a ro
 ```{r add_sample_target_data,dependson="load_plates",results="show"}
 plate_cq_data <- 
   create_blank_plate_96well() %>% # row and column labels for each well
-  inner_join(plate_cq_extdata) %>% # join that info to loaded data
+  inner_join(plate_cq_extdata, by = "well") %>% # join that info to loaded data
   # next separate the sample and target information for future data analysis
   separate(sample_info,
            into = c("strain","OD","target_id"), 

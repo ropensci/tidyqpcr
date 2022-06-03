@@ -146,7 +146,7 @@ file_path_cq <- system.file("extdata",
 plates <- 
   file_path_cq %>%
   read_lightcycler_1colour_cq() %>%
-  right_join(plate1plan)
+  right_join(plate1plan, by = "well")
 ```
 
 
@@ -286,7 +286,7 @@ file_path_raw <- system.file("extdata/Edward_qPCR_Nrd1_calibration_2019-02-02.tx
 plate1curve <- file_path_raw %>%
     read_lightcycler_1colour_raw() %>%
     debaseline() %>%
-    left_join(plate1plan)
+    left_join(plate1plan, by = "well")
 
 # amplification curve is program 2
 platesamp <- plate1curve %>%
