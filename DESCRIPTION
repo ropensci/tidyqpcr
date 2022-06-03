@@ -12,6 +12,7 @@ Imports:
     rlang,
     dplyr,
     ggplot2,
+    scales,
     readr,
     forcats,
     assertthat,

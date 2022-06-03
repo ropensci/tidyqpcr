@@ -11,7 +11,7 @@ Vector of row names: A,B,...,Z,AA,AB,...,AF.
 }
 \description{
 Creates a vector containing 36 row names according to the 
-labeling system used by the Labcyte Echo
+labelling system used by the Labcyte Echo
 }
 \examples{
 make_row_names_echo1536()

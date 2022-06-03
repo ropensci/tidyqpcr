@@ -10,7 +10,7 @@ make_row_names_lc1536()
 Vector of row names: Aa,Ab,Ac,Ad,Ba,...,Hd.
 }
 \description{
-Creates a vector containing 36 row names according to the labeling system 
+Creates a vector containing 36 row names according to the labelling system 
 used by the Roche Lightcycler (tm)
 }
 \examples{

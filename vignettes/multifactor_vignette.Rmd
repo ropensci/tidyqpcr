@@ -228,7 +228,8 @@ ggplot(data = platesmed) +
     position = position_jitter(width = 0.2, height = 0)
   ) +
   scale_shape_manual(values = c(15:18, 5:6)) +
-  scale_y_log10nice("mRNA relative detection") +
+  scale_y_log10("mRNA relative detection",
+                labels = scales::label_number()) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -243,7 +244,8 @@ ggplot(data = platesmed) +
   ) +
   facet_wrap(~drug, ncol = 3) +
   scale_colour_manual(values = c("-" = "grey50", "+" = "red")) +
-  scale_y_log10nice("mRNA relative detection") +
+  scale_y_log10("mRNA relative detection",
+                labels = scales::label_number()) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -257,7 +259,8 @@ ggplot(data = platesmed) +
     position = position_jitter(width = 0.2, height = 0)
   ) +
   facet_wrap(~heat, ncol = 3) +
-  scale_y_log10nice("mRNA relative detection") +
+  scale_y_log10("mRNA relative detection",
+                labels = scales::label_number()) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
