@@ -82,8 +82,12 @@ test_that("functions for creating a 384 well, primer calibration plate work with
     calculated_labeled_384_plate <- label_plate_rowcol(calculated_blank_384_plate,
                                                        calculated_rowkey,
                                                        calculated_colkey)
-
+    
+    calculated_plate_empty <- display_plate(calculated_labeled_384_plate)
+    
     calculated_plate_schematic <- display_plate_qpcr(calculated_labeled_384_plate)
+    
+    calculated_plate_value <- display_plate_value(calculated_labeled_384_plate, value = "dilution")
 
     expect_equal(calculated_colkey,
                  simulated_colkey)
@@ -94,7 +98,9 @@ test_that("functions for creating a 384 well, primer calibration plate work with
     expect_equal(calculated_labeled_384_plate,
                  simulated_label_plate)
 
+    expect_true(ggplot2::is.ggplot(calculated_plate_empty))
     expect_true(ggplot2::is.ggplot(calculated_plate_schematic))
+    expect_true(ggplot2::is.ggplot(calculated_plate_value))
 })
 
 # Unit test for creating, labeling and displaying a 384 well,
