@@ -38,7 +38,9 @@ tidyqpcr is a software package for qPCR data analysis that builds on the tidyver
 
 tidyqpcr combines a free, open-source qPCR analysis R package with online teaching materials. 
 
-We want our users to be able to know and understand what happens at every step of their analysis. Users are able to know what occurs at each step as all tidyqpcr tools are open source and follow the FAIR principles - [Findable, Accessible, Interoperable, and Reusable](https://www.force11.org/group/fairgroup/fairprinciples). Users should also find each step understandable as we aim to produce educational resources as extensions of [data carpentry](https://datacarpentry.org/) workshops, such as [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/), accessible to beginner programmers. 
+We want our users to be able to know and understand what happens at every step of their analysis.
+Users are able to know what occurs at each step as all tidyqpcr tools are open source and follow the FAIR principles - [Findable, Accessible, Interoperable, and Reusable](https://force11.org/info/the-fair-data-principles/). 
+Users should also find each step understandable as we aim to produce educational resources as extensions of [data carpentry](https://datacarpentry.org/) workshops, such as [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/), accessible to beginner programmers. 
 
 ### Reproducible
 
