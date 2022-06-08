@@ -38,7 +38,9 @@ tidyqpcr is a software package for qPCR data analysis that builds on the tidyver
 
 tidyqpcr combines a free, open-source qPCR analysis R package with online teaching materials. 
 
-We want our users to be able to know and understand what happens at every step of their analysis. Users are able to know what occurs at each step as all tidyqpcr tools are open source and follow the FAIR principles - [Findable, Accessible, Interoperable, and Reusable](https://www.force11.org/group/fairgroup/fairprinciples). Users should also find each step understandable as we aim to produce educational resources as extensions of [data carpentry](https://datacarpentry.org/) workshops, such as [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/), accessible to beginner programmers. 
+We want our users to be able to know and understand what happens at every step of their analysis.
+Users are able to know what occurs at each step as all tidyqpcr tools are open source and follow the FAIR principles - [Findable, Accessible, Interoperable, and Reusable](https://force11.org/info/the-fair-data-principles/). 
+Users should also find each step understandable as we aim to produce educational resources as extensions of [data carpentry](https://datacarpentry.org/) workshops, such as [Data Analysis and Visualization in R for Ecologists](https://datacarpentry.org/R-ecology-lesson/), accessible to beginner programmers. 
 
 ### Reproducible
 
@@ -151,7 +153,8 @@ If there is a feature that you need for your work, please ask us!
 
 ## News
 
-* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays.
+* June 2022, removed plot helper functions `scale_..._nice` and `scale_loglog` from tidyqpcr, because those capabilities are now available in the [scales package](https://scales.r-lib.org) using `label_log` and similar functions. Older code may need to change `scale_y_log10nice` to `scale_y_log10(labels = scales::label_log())`, for example.
+* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays. Updated to v0.5.
 * January 2022, Improvements in documentation and argument-checking for v0.4.
 * October 2021, Unit tests now cover over 75% of tidyqpcr code.
 * June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)

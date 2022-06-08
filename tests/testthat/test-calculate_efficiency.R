@@ -26,7 +26,10 @@ simulated_dilution_efficiency_dataset <- tibble(target_id = c("Target_1", "Targe
 
 ### Test functions give expected output ###
 test_that("functions for calculating efficiency.", {
-    calculated_dilution_efficiency_dataset <- calculate_efficiency_bytargetid(simulated_dilution_cq_dataset)
+    calculated_dilution_efficiency_dataset <- 
+        suppressWarnings(
+            calculate_efficiency_bytargetid(
+                simulated_dilution_cq_dataset))
 
     expect_equal(calculated_dilution_efficiency_dataset,
                  simulated_dilution_efficiency_dataset)

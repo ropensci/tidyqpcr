@@ -126,7 +126,7 @@ file_path_cq_plate1 <- system.file("extdata",
 
 plate1 <- file_path_cq_plate1 %>%
   read_lightcycler_1colour_cq() %>%
-  left_join(plateplan) %>%
+  left_join(plateplan, by = "well") %>%
   mutate(biol_rep = "1", plate = "1")
 
 file_path_cq_plate2 <- system.file("extdata",
@@ -135,7 +135,7 @@ file_path_cq_plate2 <- system.file("extdata",
 
 plate2 <- file_path_cq_plate2 %>%
   read_lightcycler_1colour_cq() %>%
-  left_join(plateplan) %>%
+  left_join(plateplan, by = "well") %>%
   mutate(biol_rep = "2", plate = "2")
 
 # combine data from both plates into a single data frame
@@ -228,7 +228,8 @@ ggplot(data = platesmed) +
     position = position_jitter(width = 0.2, height = 0)
   ) +
   scale_shape_manual(values = c(15:18, 5:6)) +
-  scale_y_log10nice("mRNA relative detection") +
+  scale_y_log10("mRNA relative detection",
+                labels = scales::label_number()) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -243,7 +244,8 @@ ggplot(data = platesmed) +
   ) +
   facet_wrap(~drug, ncol = 3) +
   scale_colour_manual(values = c("-" = "grey50", "+" = "red")) +
-  scale_y_log10nice("mRNA relative detection") +
+  scale_y_log10("mRNA relative detection",
+                labels = scales::label_number()) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -257,7 +259,8 @@ ggplot(data = platesmed) +
     position = position_jitter(width = 0.2, height = 0)
   ) +
   facet_wrap(~heat, ncol = 3) +
-  scale_y_log10nice("mRNA relative detection") +
+  scale_y_log10("mRNA relative detection",
+                labels = scales::label_number()) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
@@ -276,7 +279,7 @@ file_path_raw_plate1 <- system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-0
 plate1curve <- file_path_raw_plate1 %>%
     read_lightcycler_1colour_raw() %>%
     debaseline() %>%
-    left_join(plateplan) %>%
+    left_join(plateplan, by = "well") %>%
     mutate(biol_rep = 1, plate = 1)
 
 file_path_raw_plate2 <- system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt.gz",
@@ -285,7 +288,7 @@ file_path_raw_plate2 <- system.file("extdata/Edward_qPCR_TxnInhibitors_HS_2018-0
 plate2curve <- file_path_raw_plate2 %>%
     read_lightcycler_1colour_raw() %>%
     debaseline() %>%
-    left_join(plateplan) %>%
+    left_join(plateplan, by = "well") %>%
     mutate(biol_rep = 2, plate = 2)
 
 platesamp <- bind_rows(plate1curve, plate2curve) %>%
