@@ -328,7 +328,22 @@ create_rowkey_8_in_16_plain <- function(...) {
 #' 
 #' # label blank 96-well plate with empty edge wells
 #' 
-#' label_plate_rowcol(plate = create_blank_plate(well_row=LETTERS[2:7], well_col=2:11))
+#' label_plate_rowcol(plate = create_blank_plate(well_row = LETTERS[2:7], 
+#'                                               well_col = 2:11))
+#' 
+#' # label 96-well plate with sample id in rows
+#' 
+#' label_plate_rowcol(plate = create_blank_plate(well_row = LETTERS[1:8],
+#'                                               well_col = 1:12),
+#'                    rowkey = tibble(well_row = LETTERS[1:8],
+#'                                    sample_id = paste0("S_",1:8)))
+#' 
+#' # label fraction of 96-well plate with target id in columns
+#' 
+#' label_plate_rowcol(plate = create_blank_plate(well_row = LETTERS[1:8],
+#'                                               well_col = 1:4),
+#'                    colkey = tibble(well_col = 1:4,
+#'                                    target_id = paste0("T_",1:4)))
 #' 
 #' @family plate creation functions
 #'
