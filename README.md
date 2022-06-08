@@ -153,6 +153,7 @@ If there is a feature that you need for your work, please ask us!
 
 ## News
 
+* June 2022, removed plot helper functions `scale_..._nice` and `scale_loglog` from tidyqpcr, because those capabilities are now available in the [scales package](https://scales.r-lib.org) using `label_log` and similar functions. Older code may need to change `scale_y_log10nice` to `scale_y_log10(labels = scales::label_log())`, for example.
 * May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays. Updated to v0.5.
 * January 2022, Improvements in documentation and argument-checking for v0.4.
 * October 2021, Unit tests now cover over 75% of tidyqpcr code.
