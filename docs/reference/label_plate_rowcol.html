@@ -155,7 +155,8 @@ colkey to factors</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># label blank 96-well plate with empty edge wells</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">label_plate_rowcol</span><span class="op">(</span>plate <span class="op">=</span> <span class="fu"><a href="create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, well_col<span class="op">=</span><span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">label_plate_rowcol</span><span class="op">(</span>plate <span class="op">=</span> <span class="fu"><a href="create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, </span>
+<span class="r-in">                                              well_col <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not contain variable sample_id</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not have variable target_id</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not have variable prep_type</span>
@@ -173,6 +174,54 @@ colkey to factors</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> B10   B        10      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> B11   B        11      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 50 more rows</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># label 96-well plate with sample id in rows</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">label_plate_rowcol</span><span class="op">(</span>plate <span class="op">=</span> <span class="fu"><a href="create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>,</span>
+<span class="r-in">                                              well_col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>,</span>
+<span class="r-in">                   rowkey <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>,</span>
+<span class="r-in">                                   sample_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"S_"</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> coercing well_row to a factor with levels from plate$well_row</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not have variable target_id</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not have variable prep_type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 96 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    well  well_row well_col sample_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> A1    A        1        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> A2    A        2        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> A3    A        3        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> A4    A        4        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> A5    A        5        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> A6    A        6        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> A7    A        7        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> A8    A        8        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> A9    A        9        S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> A10   A        10       S_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 86 more rows</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># label fraction of 96-well plate with target id in columns</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">label_plate_rowcol</span><span class="op">(</span>plate <span class="op">=</span> <span class="fu"><a href="create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>,</span>
+<span class="r-in">                                              well_col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span class="r-in">                   colkey <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>well_col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span>
+<span class="r-in">                                   target_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"T_"</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> coercing well_col to a factor with levels from plate$well_col</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not contain variable sample_id</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> plate does not have variable prep_type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 32 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    well  well_row well_col target_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> A1    A        1        T_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> A2    A        2        T_2      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> A3    A        3        T_3      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> A4    A        4        T_4      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> B1    B        1        T_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> B2    B        2        T_2      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> B3    B        3        T_3      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> B4    B        4        T_4      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> C1    C        1        T_1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> C2    C        2        T_2      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 22 more rows</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

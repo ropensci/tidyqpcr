@@ -84,8 +84,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Introduction to designing an experiment and setting up a plate plan in tidyqpcr</h1>
-                        <h4 data-toc-skip class="author">Edward Wallace</h4>
+      <h1 data-toc-skip>Introduction to designing an experiment and
+setting up a plate plan in tidyqpcr</h1>
+                        <h4 data-toc-skip class="author">Edward
+Wallace</h4>
             
             <h4 data-toc-skip class="date">April 2022</h4>
       
@@ -99,23 +101,51 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This vignette introduces how to set up microwell plates for tidyqpcr analysis. Start here if you are new-ish to the tidyverse or want to see explanations about how to design experiments and plate layouts. For worked examples of tidyqpcr analysis on 96-well and 384-well plates, see:</p>
+<p>This vignette introduces how to set up microwell plates for tidyqpcr
+analysis. Start here if you are new-ish to the tidyverse or want to see
+explanations about how to design experiments and plate layouts. For
+worked examples of tidyqpcr analysis on 96-well and 384-well plates,
+see:</p>
 <ul>
-<li>Delta Cq 96-well plate qPCR analysis vignette, <code><a href="../articles/deltacq_96well_vignette.html">vignette("deltacq_96well_vignette", package = "tidyqpcr")</a></code>
+<li>Delta Cq 96-well plate qPCR analysis vignette,
+<code><a href="../articles/deltacq_96well_vignette.html">vignette("deltacq_96well_vignette", package = "tidyqpcr")</a></code>
 </li>
-<li>Primers and Probes Calibration vignette, <code><a href="../articles/calibration_vignette.html">vignette("calibration_vignette", package = "tidyqpcr")</a></code>
+<li>Primers and Probes Calibration vignette,
+<code><a href="../articles/calibration_vignette.html">vignette("calibration_vignette", package = "tidyqpcr")</a></code>
 </li>
-<li>Multifactorial experiment vignette, <code><a href="../articles/multifactor_vignette.html">vignette("multifactor_vignette", package = "tidyqpcr")</a></code>
+<li>Multifactorial experiment vignette,
+<code><a href="../articles/multifactor_vignette.html">vignette("multifactor_vignette", package = "tidyqpcr")</a></code>
 </li>
 </ul>
-<p>Setting up plates is partly a technical question of how to use functions in tidyqpcr and the tidyverse, but more fundamentally a question about how to design your experiment. We recommend the community-led best-practice <a href="https://academic.oup.com/clinchem/article/55/4/611/5631762" class="external-link">MIQE guidelines</a>: how many replicates do you need, and what information do you need to provide to accompany your analysis?</p>
-<p>We suggest thinking through the whole experiment first, including what you will measure, how many replicates, and what figures you will want to make. If you plan all the analysis before even starting to grow your biological samples and extract RNA/DNA, then it is easier to avoid mistakes. Also, the steps from cell growth, through nucleic acid extraction and measurement, to finished figures, go much quicker.</p>
-<p>This vignette builds from a 12-well “practice plate” up to a 96 well plate for a plausible small RT-qPCR experiment. The key idea is to design one replicate of your experiment in a small rectangle on the plate, then make copies of this small rectangle across the plate for more replicates or more complicated designs. The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.</p>
-<p>This vignette focuses on one primer set per well (for SYBR data), and doesn’t discuss more than one probe per well (for TaqMan data). Please create <a href="https://github.com/ewallace/tidyqpcr/issue" class="external-link">an issue on the github</a> if your data needs aren’t covered here, and we will try to respond to it.</p>
+<p>Setting up plates is partly a technical question of how to use
+functions in tidyqpcr and the tidyverse, but more fundamentally a
+question about how to design your experiment. We recommend the
+community-led best-practice <a href="https://academic.oup.com/clinchem/article/55/4/611/5631762" class="external-link">MIQE
+guidelines</a>: how many replicates do you need, and what information do
+you need to provide to accompany your analysis?</p>
+<p>We suggest thinking through the whole experiment first, including
+what you will measure, how many replicates, and what figures you will
+want to make. If you plan all the analysis before even starting to grow
+your biological samples and extract RNA/DNA, then it is easier to avoid
+mistakes. Also, the steps from cell growth, through nucleic acid
+extraction and measurement, to finished figures, go much quicker.</p>
+<p>This vignette builds from a 12-well “practice plate” up to a 96 well
+plate for a plausible small RT-qPCR experiment. The key idea is to
+design one replicate of your experiment in a small rectangle on the
+plate, then make copies of this small rectangle across the plate for
+more replicates or more complicated designs. The goal is that after
+working through this vignette, the plate setup in the Multifactorial
+vignette will be easier to follow.</p>
+<p>This vignette focuses on one primer set per well (for SYBR data), and
+doesn’t discuss more than one probe per well (for TaqMan data). Please
+create <a href="https://github.com/ewallace/tidyqpcr/issues" class="external-link">an issue on
+tidyqpcr github repository</a> if your data needs aren’t covered here,
+and we will try to respond to it.</p>
 <div class="section level3">
 <h3 id="setup-knitr-options-and-load-packages">Setup knitr options and load packages<a class="anchor" aria-label="anchor" href="#setup-knitr-options-and-load-packages"></a>
 </h3>
-<p>This loads the packages necessary for the rest of the code to run.</p>
+<p>This loads the packages necessary for the rest of the code to
+run.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># knitr options for report generation</span>
 <span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>
@@ -132,19 +162,59 @@
 <div class="section level3">
 <h3 id="essential-information-target_id-sample_id-prep_type">Essential information: target_id, sample_id, prep_type<a class="anchor" aria-label="anchor" href="#essential-information-target_id-sample_id-prep_type"></a>
 </h3>
-<p>Each well of your plate measures one or more sequence targets in one DNA/RNA sample. Each sample may be duplicated with different types of preparation (e.g. no reverse transcriptase enzyme controls). The minimal information you need to describe your plate is to specify the target(s), sample, and preparation type for every well.<br>
-So, tidyqpcr expects that your plate plan has at a minimum three pieces of information per well: target_id, sample_id, and prep_type.</p>
-<p><strong>target_id</strong> should uniquely identify a primer set or primer set/probe combination that you detect in a well. If you are detecting multiple regions of the same gene, or trialing multiple probes or primer sets, you have to give them different target_id names. We chose to name this variable “target_id” to make it clear that this could refer to a primer set, or a primer set/ probe combination, detecting a single target sequence. Note again that the current version of tidyqpcr has been tested on SYBR/intercalating dye data with one primer set per well only.</p>
-<p><strong>sample_id</strong> should uniquely identify a nucleic acid sample in your experiment. sample_id can either describe all the relevant information, for example <code>HeatShock_10min_RepA</code>, <code>InputControl_WildType_Rep3</code>; or provide other unique identifying information, for example <code>S013</code>. Functions including <code>display_plate_qpcr</code> and <code>calculate_deltacq_bysampleid</code> assume that there is a column called <code>sample_id</code>, and use it to decide which wells get analysed together. We discuss below how to add other kinds of information/metadata to help your analysis.</p>
-<p><strong>prep_type</strong> is used for different types of nucleic acid preps from the same sample. Negative controls are crucial, either no template (NT) controls, or specifically for RNA-measuring RT-qPCR, the no-reverse transcriptase control that detects DNA contamination, as discussed in the MIQE guidelines. So for RT-qPCR experiments we expect to have prep_types +RT and -RT for each sample, and for primer calibration we would always have a no template control.</p>
-<p>Technical replicates are also necessary for qPCR experiments to track the variability. This occurs as multiple wells, each of which has the same combination of target_id, sample_id, and prep_type.</p>
+<p>Each well of your plate measures one or more sequence targets in one
+DNA/RNA sample. Each sample may be duplicated with different types of
+preparation (e.g. no reverse transcriptase enzyme controls). The minimal
+information you need to describe your plate is to specify the target(s),
+sample, and preparation type for every well.<br>
+So, tidyqpcr expects that your plate plan has at a minimum three pieces
+of information per well: target_id, sample_id, and prep_type.</p>
+<p><strong>target_id</strong> should uniquely identify a primer set or
+primer set/probe combination that you detect in a well. If you are
+detecting multiple regions of the same gene, or trialing multiple probes
+or primer sets, you have to give them different target_id names. We
+chose to name this variable “target_id” to make it clear that this could
+refer to a primer set, or a primer set/ probe combination, detecting a
+single target sequence. Note again that the current version of tidyqpcr
+has been tested on SYBR/intercalating dye data with one primer set per
+well only.</p>
+<p><strong>sample_id</strong> should uniquely identify a nucleic acid
+sample in your experiment. sample_id can either describe all the
+relevant information, for example <code>HeatShock_10min_RepA</code>,
+<code>InputControl_WildType_Rep3</code>; or provide other unique
+identifying information, for example <code>S013</code>. Functions
+including <code>display_plate_qpcr</code> and
+<code>calculate_deltacq_bysampleid</code> assume that there is a column
+called <code>sample_id</code>, and use it to decide which wells get
+analysed together. We discuss below how to add other kinds of
+information/metadata to help your analysis.</p>
+<p><strong>prep_type</strong> is used for different types of nucleic
+acid preps from the same sample. Negative controls are crucial, either
+no template (NT) controls, or specifically for RNA-measuring RT-qPCR,
+the no-reverse transcriptase control that detects DNA contamination, as
+discussed in the MIQE guidelines. So for RT-qPCR experiments we expect
+to have prep_types +RT and -RT for each sample, and for primer
+calibration we would always have a no template control.</p>
+<p>Technical replicates are also necessary for qPCR experiments to track
+the variability. This occurs as multiple wells, each of which has the
+same combination of target_id, sample_id, and prep_type.</p>
 </div>
 <div class="section level3">
 <h3 id="using-rows-and-columns-to-make-life-easier">Using rows and columns to make life easier<a class="anchor" aria-label="anchor" href="#using-rows-and-columns-to-make-life-easier"></a>
 </h3>
-<p>Technically, tidyqpcr can cope with any combination of target and sample in any well. As long as the information is associated clearly, later analysis will work fine. However, good systematic designs that are interpretable both by people (you) and by the computer are less error prone.</p>
-<p>One systematic approach is to have each row measure exactly one target and each column one sample. Or vice versa: one row per sample, one column per target. This has the advantage of being straightforward to load with a multichannel pipette.</p>
-<p>tidyqpcr is setup to make it easy to specify column contents with a <code>colkey</code>, and row contents with a <code>rowkey</code>, then to combine these into a plan for an entire plate or for a sub-region of a plate.</p>
+<p>Technically, tidyqpcr can cope with any combination of target and
+sample in any well. As long as the information is associated clearly,
+later analysis will work fine. However, good systematic designs that are
+interpretable both by people (you) and by the computer are less error
+prone.</p>
+<p>One systematic approach is to have each row measure exactly one
+target and each column one sample. Or vice versa: one row per sample,
+one column per target. This has the advantage of being straightforward
+to load with a multichannel pipette.</p>
+<p>tidyqpcr is setup to make it easy to specify column contents with a
+<code>colkey</code>, and row contents with a <code>rowkey</code>, then
+to combine these into a plan for an entire plate or for a sub-region of
+a plate.</p>
 </div>
 </div>
 <div class="section level2">
@@ -156,12 +226,19 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <li>Three biological replicates: rep1, rep2, rep3</li>
 <li>Three technical replicates of +RT and one of -RT</li>
 </ul>
-<p>We need 4 * 3 * 4 = 48 wells for this experiment. Let’s put this information into 48 wells of a 96-well plate.</p>
+<p>We need 4 * 3 * 4 = 48 wells for this experiment. Let’s put this
+information into 48 wells of a 96-well plate.</p>
 <div class="section level3">
 <h3 id="practice-version-only-a-single-technical-replicate-">Practice version, only a single technical replicate.<a class="anchor" aria-label="anchor" href="#practice-version-only-a-single-technical-replicate-"></a>
 </h3>
-<p>Here we use the function <code>tibble</code> to make the rowkey data tibble, and the function <code>rep</code> to repeat the target_id information enough times to fill the plate. These functions are imported into tidyqpcr; access their help files directly by <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">?tibble</a></code> and <code><a href="https://rdrr.io/r/base/rep.html" class="external-link">?rep</a></code> from your R session.</p>
-<p>We use the built-in constant <code>LETTERS</code> to label the well row (<code>well_row</code>) with letters A through D, like they are labeled on a standard 96-well plate.</p>
+<p>Here we use the function <code>tibble</code> to make the rowkey data
+tibble, and the function <code>rep</code> to repeat the target_id
+information enough times to fill the plate. These functions are imported
+into tidyqpcr; access their help files directly by <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">?tibble</a></code>
+and <code><a href="https://rdrr.io/r/base/rep.html" class="external-link">?rep</a></code> from your R session.</p>
+<p>We use the built-in constant <code>LETTERS</code> to label the well
+row (<code>well_row</code>) with letters A through D, like they are
+labeled on a standard 96-well plate.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">target_id_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACT1"</span>, <span class="st">"BFG2"</span>, <span class="st">"CDC19"</span>, <span class="st">"DED1"</span><span class="op">)</span>
 
@@ -177,7 +254,8 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;">2</span> B        BFG2     </span>
 <span class="co">## <span style="color: #BCBCBC;">3</span> C        CDC19    </span>
 <span class="co">## <span style="color: #BCBCBC;">4</span> D        DED1</span></code></pre>
-<p>Similarly, we put the sample information in a tibble for the columns, including <code>well_col</code> for the column name</p>
+<p>Similarly, we put the sample information in a tibble for the columns,
+including <code>well_col</code> for the column name</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sample_id_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rep1"</span>, <span class="st">"rep2"</span>, <span class="st">"rep3"</span><span class="op">)</span>
 <span class="va">prep_type_levels</span> <span class="op">&lt;-</span> <span class="st">"+RT"</span>
@@ -194,7 +272,9 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;">1</span>        1 rep1      +RT      </span>
 <span class="co">## <span style="color: #BCBCBC;">2</span>        2 rep2      +RT      </span>
 <span class="co">## <span style="color: #BCBCBC;">3</span>        3 rep3      +RT</span></code></pre>
-<p>To hold the information about a blank plate, with information on both the row and column for each well, tidyqpcr has the function <code>create_blank_plate</code>:</p>
+<p>To hold the information about a blank plate, with information on both
+the row and column for each well, tidyqpcr has the function
+<code>create_blank_plate</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, well_col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## <span style="color: #949494;"># A tibble: 12 × 3</span></span>
@@ -212,8 +292,12 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;">10</span> D1    D        1       </span>
 <span class="co">## <span style="color: #BCBCBC;">11</span> D2    D        2       </span>
 <span class="co">## <span style="color: #BCBCBC;">12</span> D3    D        3</span></code></pre>
-<p>Access help for this also at <code><a href="../reference/create_blank_plate.html">?create_blank_plate</a></code>. Note that there are default functions to make 96-well, 384-well, and 1536-well blank plates, or as above you can customise it.</p>
-<p>Now we create our 12-well mini-plate, using the <code>label_plate_rowcol</code> function to combine information from the blank plate template, the rowkey, and the column key.</p>
+<p>Access help for this also at <code><a href="../reference/create_blank_plate.html">?create_blank_plate</a></code>. Note
+that there are default functions to make 96-well, 384-well, and
+1536-well blank plates, or as above you can customise it.</p>
+<p>Now we create our 12-well mini-plate, using the
+<code>label_plate_rowcol</code> function to combine information from the
+blank plate template, the rowkey, and the column key.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate_plan12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/label_plate_rowcol.html">label_plate_rowcol</a></span><span class="op">(</span>
   plate <span class="op">=</span> <span class="fu"><a href="../reference/create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, well_col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,
@@ -237,17 +321,33 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;">10</span> D1    D        1        rep1      +RT       DED1     </span>
 <span class="co">## <span style="color: #BCBCBC;">11</span> D2    D        2        rep2      +RT       DED1     </span>
 <span class="co">## <span style="color: #BCBCBC;">12</span> D3    D        3        rep3      +RT       DED1</span></code></pre>
-<p>We visualise this plate plan using the <code>display_plate_qpcr</code> function:</p>
+<p>We visualise this plate plan using the
+<code>display_plate_qpcr</code> function:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_qpcr.html">display_plate_qpcr</a></span><span class="op">(</span><span class="va">plate_plan12</span><span class="op">)</span></code></pre></div>
 <p><img src="platesetup_vignette_files/figure-html/minimal_noreps_display-1.png" width="288"></p>
-<p>Expanding this practice plan to incorporate replicates can be done by taking this little rectangle and making copies across a larger plate. This strategy of making copies of a small rectangle makes it easier to use multichannel pipettes to speed up plate loading. It also means that technical replicates of the same sample are not in adjacent wells on the plate, correcting for some location-specific artefacts of amplification in the qPCR machine. However, if there are row- or column-specific artefacts, this approach does not allow you detect them separately.</p>
+<p>Expanding this practice plan to incorporate replicates can be done by
+taking this little rectangle and making copies across a larger plate.
+This strategy of making copies of a small rectangle makes it easier to
+use multichannel pipettes to speed up plate loading. It also means that
+technical replicates of the same sample are not in adjacent wells on the
+plate, correcting for some location-specific artefacts of amplification
+in the qPCR machine. However, if there are row- or column-specific
+artefacts, this approach does not allow you detect them separately.</p>
 </div>
 <div class="section level3">
 <h3 id="replicate-columns-for-the-sample_ids-and-prep_types">Replicate columns for the sample_ids and prep_types<a class="anchor" aria-label="anchor" href="#replicate-columns-for-the-sample_ids-and-prep_types"></a>
 </h3>
-<p>Here we are putting three technical replicates of +RT and one of -RT for each sample. This approach is reliable if DNA contamination from -RT samples would show up in multiple sample/target combinations.</p>
-<p>We could achieve these replicates in the plate plan by explicitly writing out every time as in <code>c("+RT", "+RT", "+RT", "-RT")</code>, or we can again use the <code>rep</code> function. Below, we use <code>rep("+RT", times = 9)</code> to make 9 repeats, meaning that the 3 technical replicates of each of 3 +RT samples are next to each other. We use the concatenate function <code>c</code>, to arrange that next to the single replicates of the 3 -RT samples.</p>
+<p>Here we are putting three technical replicates of +RT and one of -RT
+for each sample. This approach is reliable if DNA contamination from -RT
+samples would show up in multiple sample/target combinations.</p>
+<p>We could achieve these replicates in the plate plan by explicitly
+writing out every time as in <code>c("+RT", "+RT", "+RT", "-RT")</code>,
+or we can again use the <code>rep</code> function. Below, we use
+<code>rep("+RT", times = 9)</code> to make 9 repeats, meaning that the 3
+technical replicates of each of 3 +RT samples are next to each other. We
+use the concatenate function <code>c</code>, to arrange that next to the
+single replicates of the 3 -RT samples.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sample_id_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rep1"</span>, <span class="st">"rep2"</span>, <span class="st">"rep3"</span><span class="op">)</span>
 <span class="va">prep_type_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"+RT"</span>, times <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"-RT"</span>, times <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>
@@ -301,7 +401,8 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> A9    A        9        rep3      +RT       ACT1     </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> A10   A        10       rep1      -RT       ACT1     </span>
 <span class="co">## <span style="color: #949494;"># … with 38 more rows</span></span></code></pre>
-<p>We again visualise this plate plan using the <code>display_plate_qpcr</code> function</p>
+<p>We again visualise this plate plan using the
+<code>display_plate_qpcr</code> function</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_qpcr.html">display_plate_qpcr</a></span><span class="op">(</span><span class="va">plate_plan48</span><span class="op">)</span></code></pre></div>
 <p><img src="platesetup_vignette_files/figure-html/minimal_48_display-1.png" width="768"></p>
@@ -310,11 +411,17 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <div class="section level2">
 <h2 id="adding-more-samples-and-repeating-targets">Adding more samples and repeating targets<a class="anchor" aria-label="anchor" href="#adding-more-samples-and-repeating-targets"></a>
 </h2>
-<p>What if we want to measure more than one condition, beyond replicates? For example, a control treatment compared to a drug treatment, or a change in nutrient conditions? We can achieve this again by extending the “copied rectangle” approach to include the second condition.</p>
+<p>What if we want to measure more than one condition, beyond
+replicates? For example, a control treatment compared to a drug
+treatment, or a change in nutrient conditions? We can achieve this again
+by extending the “copied rectangle” approach to include the second
+condition.</p>
 <div class="section level3">
 <h3 id="adding-experimental-conditions">Adding experimental conditions<a class="anchor" aria-label="anchor" href="#adding-experimental-conditions"></a>
 </h3>
-<p>In our example, let us do this explicitly. For the rowkey we can use the <code>rep</code> function to measure each target in conditions <code>Ctrl</code> and <code>Drug</code>, repeating each 4 times.</p>
+<p>In our example, let us do this explicitly. For the rowkey we can use
+the <code>rep</code> function to measure each target in conditions
+<code>Ctrl</code> and <code>Drug</code>, repeating each 4 times.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">condition_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Ctrl"</span>, <span class="st">"Drug"</span><span class="op">)</span>
 <span class="va">condition_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">condition_levels</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
@@ -324,7 +431,9 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <div class="section level3">
 <h3 id="repeating-target-names-without-repeating-yourself">Repeating target names without repeating yourself<a class="anchor" aria-label="anchor" href="#repeating-target-names-without-repeating-yourself"></a>
 </h3>
-<p>We also use the function <code>rep</code> to repeat the target_id information 4 times, to fill the plate. Again, ask for help using <code><a href="https://rdrr.io/r/base/rep.html" class="external-link">?rep</a></code>.</p>
+<p>We also use the function <code>rep</code> to repeat the target_id
+information 4 times, to fill the plate. Again, ask for help using
+<code><a href="https://rdrr.io/r/base/rep.html" class="external-link">?rep</a></code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">target_id_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACT1"</span>, <span class="st">"BFG2"</span>, <span class="st">"CDC19"</span>, <span class="st">"DED1"</span><span class="op">)</span>
 <span class="va">target_id_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">target_id_levels</span>, times <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
@@ -353,7 +462,11 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <div class="section level3">
 <h3 id="recreating-the-column-key">Recreating the column key<a class="anchor" aria-label="anchor" href="#recreating-the-column-key"></a>
 </h3>
-<p>To make this into a plate, we also need a column key. What’s changed is that, each sample needs to refer both to a condition and to a biological replicate. If we kept <code>colkey12</code> from above, then the variable <code>sample_id</code> would no longer point uniquely to a single sample.</p>
+<p>To make this into a plate, we also need a column key. What’s changed
+is that, each sample needs to refer both to a condition and to a
+biological replicate. If we kept <code>colkey12</code> from above, then
+the variable <code>sample_id</code> would no longer point uniquely to a
+single sample.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">biol_rep_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rep1"</span>, <span class="st">"rep2"</span>, <span class="st">"rep3"</span><span class="op">)</span>
 
@@ -405,12 +518,17 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> A9    A        9        rep3     +RT       ACT1      Ctrl     </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> A10   A        10       rep1     -RT       ACT1      Ctrl     </span>
 <span class="co">## <span style="color: #949494;"># … with 86 more rows</span></span></code></pre>
-<p>Here we had to change the <code>create_blank_plate</code> call to include all 8 rows.</p>
+<p>Here we had to change the <code>create_blank_plate</code> call to
+include all 8 rows.</p>
 </div>
 <div class="section level3">
 <h3 id="making-sure-sample-names-are-present-and-unique">Making sure sample names are present and unique<a class="anchor" aria-label="anchor" href="#making-sure-sample-names-are-present-and-unique"></a>
 </h3>
-<p>This plate plan lacks a <code>sample_id</code> column, however. In fact in this example some of the sample_id information is in the rowkey (the condition) and some comes from the column key (the biological replicate). To unite this information, we will conveniently use the <code>unite</code> function from the tidyr package:</p>
+<p>This plate plan lacks a <code>sample_id</code> column, however. In
+fact in this example some of the sample_id information is in the rowkey
+(the condition) and some comes from the column key (the biological
+replicate). To unite this information, we will conveniently use the
+<code>unite</code> function from the tidyr package:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate_plan96</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/label_plate_rowcol.html">label_plate_rowcol</a></span><span class="op">(</span>
   plate <span class="op">=</span> <span class="fu"><a href="../reference/create_blank_plate.html">create_blank_plate</a></span><span class="op">(</span>well_row <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, well_col <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>,
@@ -434,18 +552,27 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> A9    A        9        Ctrl_rep3 rep3     +RT       ACT1      Ctrl     </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> A10   A        10       Ctrl_rep1 rep1     -RT       ACT1      Ctrl     </span>
 <span class="co">## <span style="color: #949494;"># … with 86 more rows</span></span></code></pre>
-<p>Again, check the help file with <code><a href="https://tidyr.tidyverse.org/reference/unite.html" class="external-link">?unite</a></code>. The line <code>unite(sample_id, condition, biol_rep, remove = FALSE)</code> means that we create a new variable <code>sample_id</code> from existing variables <code>condition</code> and <code>biol_rep</code>, and <code>remove = FALSE</code> means that we keep the original variables in the table as well. The syntax <code>%&gt;%</code> from the magrittr package is a way to chain functions together.</p>
-<p>Now we display the plate to check that we have everything in place:</p>
+<p>Again, check the help file with <code><a href="https://tidyr.tidyverse.org/reference/unite.html" class="external-link">?unite</a></code>. The line
+<code>unite(sample_id, condition, biol_rep, remove = FALSE)</code> means
+that we create a new variable <code>sample_id</code> from existing
+variables <code>condition</code> and <code>biol_rep</code>, and
+<code>remove = FALSE</code> means that we keep the original variables in
+the table as well. The syntax <code>%&gt;%</code> from the magrittr
+package is a way to chain functions together.</p>
+<p>Now we display the plate to check that we have everything in
+place:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_qpcr.html">display_plate_qpcr</a></span><span class="op">(</span><span class="va">plate_plan96</span><span class="op">)</span></code></pre></div>
 <p><img src="platesetup_vignette_files/figure-html/twocondition_96_display-1.png" width="768"></p>
-<p>We could print this plate map and take it into the lab as a visual aid for plate loading.</p>
+<p>We could print this plate map and take it into the lab as a visual
+aid for plate loading.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="creating-plate-layouts-with-standard-designs">Creating plate layouts with standard designs<a class="anchor" aria-label="anchor" href="#creating-plate-layouts-with-standard-designs"></a>
 </h2>
-<p>Some tidyqpcr functions provide shortcuts to create plate layouts with standard designs:</p>
+<p>Some tidyqpcr functions provide shortcuts to create plate layouts
+with standard designs:</p>
 <ul>
 <li>create_colkey_6_in_24()</li>
 <li>create_colkey_4diln_2ctrl_in_24()</li>
@@ -453,12 +580,21 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 <li>create_rowkey_4_in_16()</li>
 <li>create_rowkey_8_in_16_plain()</li>
 </ul>
-<p>These focus on setting up column keys and row keys for 384-well plates where samples are repeated in blocks of 4, 6 or 8. Some are specialised for primer calibration, including serial dilution and control samples. These functions can be adapted for your own needs. For example, the default levels of <code>prep_type</code> are relevant for RT-qPCR, and you would want to change those for plain qPCR or ChIP-qPCR. Please consult the function documentation for details of the parameters and outputs, e.g. <code><a href="../reference/create_colkey_6_in_24.html">?create_colkey_6_in_24</a></code>.</p>
+<p>These focus on setting up column keys and row keys for 384-well
+plates where samples are repeated in blocks of 4, 6 or 8. Some are
+specialised for primer calibration, including serial dilution and
+control samples. These functions can be adapted for your own needs. For
+example, the default levels of <code>prep_type</code> are relevant for
+RT-qPCR, and you would want to change those for plain qPCR or ChIP-qPCR.
+Please consult the function documentation for details of the parameters
+and outputs, e.g. <code><a href="../reference/create_colkey_6_in_24.html">?create_colkey_6_in_24</a></code>.</p>
 <p>For examples of standard layouts in use, see the vignettes:</p>
 <ul>
-<li>Primers and Probes Calibration vignette, <code><a href="../articles/calibration_vignette.html">vignette("calibration_vignette", package = "tidyqpcr")</a></code>
+<li>Primers and Probes Calibration vignette,
+<code><a href="../articles/calibration_vignette.html">vignette("calibration_vignette", package = "tidyqpcr")</a></code>
 </li>
-<li>Multifactorial experiment vignette, <code><a href="../articles/multifactor_vignette.html">vignette("multifactor_vignette", package = "tidyqpcr")</a></code>
+<li>Multifactorial experiment vignette,
+<code><a href="../articles/multifactor_vignette.html">vignette("multifactor_vignette", package = "tidyqpcr")</a></code>
 </li>
 </ul>
 </div>
@@ -467,22 +603,66 @@ So, tidyqpcr expects that your plate plan has at a minimum three pieces of infor
 </h2>
 <p>The plate plan should contain:</p>
 <ul>
-<li>All the information you need to identify the sample and target/probe/primer set <em>uniquely</em>.</li>
+<li>All the information you need to identify the sample and
+target/probe/primer set <em>uniquely</em>.</li>
 <li>Everything you might want to plot and compare with outputs.</li>
 </ul>
-<p>For example, suppose you are testing multiple primer sets against the same target, your favourite gene <code>YFG1</code>, and you have primer sets A, B, and C. Then you might want a variable called <code>Gene</code> with value <code>YFG1</code> for all of these, in addition to the variable <code>target_id</code> with levels <code>YFG1_A</code>, <code>YFG1_B</code>, and <code>YFG1_C</code>.</p>
-<p>This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function <code>unite</code>. There’s also an inverse to that, <code>separate</code>: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify sample_id as <code>WT_25C_10min_rep1</code>, and then use <code>separate(col = sample_id, into = c("strain", "temperature", "time_min", "biol_rep"), remove = FALSE)</code> to create individual columns with copies of that information. The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly</p>
-<p>The functions <code>unite</code> and <code>separate</code> have visual descriptions on the <a href="https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf" class="external-link">RStudio data wrangling cheat sheat</a>. Another useful tidyr function is <code>crossing</code>, which creates a table with all combinations of the variables that you supply, say if you want to measure all strains in all conditions.</p>
+<p>For example, suppose you are testing multiple primer sets against the
+same target, your favourite gene <code>YFG1</code>, and you have primer
+sets A, B, and C. Then you might want a variable called
+<code>Gene</code> with value <code>YFG1</code> for all of these, in
+addition to the variable <code>target_id</code> with levels
+<code>YFG1_A</code>, <code>YFG1_B</code>, and <code>YFG1_C</code>.</p>
+<p>This package, tidyqpcr, builds on the flexible approaches available
+from the tidyverse family of packages. We presented above an example of
+specifying individual parts of information about a sample, then uniting
+them with the tidyr function <code>unite</code>. There’s also an inverse
+to that, <code>separate</code>: for example if you have samples from
+three strains grown in two temperatures in timepoints in multiple
+biological replicates, you might specify sample_id as
+<code>WT_25C_10min_rep1</code>, and then use
+<code>separate(col = sample_id, into = c("strain", "temperature", "time_min", "biol_rep"), remove = FALSE)</code>
+to create individual columns with copies of that information. The key is
+to be consistent and to make the descriptions both human-readable and
+also computer-readable: human-readable for your sanity,
+computer-readable so that your analysis runs automatically and
+correctly.</p>
+<p>The functions <code>unite</code> and <code>separate</code> have
+visual descriptions on the <a href="https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf" class="external-link">RStudio
+data wrangling cheat sheat</a>. Another useful tidyr function is
+<code>crossing</code>, which creates a table with all combinations of
+the variables that you supply, say if you want to measure all strains in
+all conditions.</p>
 </div>
 <div class="section level2">
 <h2 id="hints-and-tips-on-plate-setup">Hints and Tips on Plate setup<a class="anchor" aria-label="anchor" href="#hints-and-tips-on-plate-setup"></a>
 </h2>
 <ul>
-<li>In tidyqpcr we chose to give all variables snake_case names, such as <code>sample_id</code>, <code>prep_type</code>, following the <a href="https://style.tidyverse.org" class="external-link">tidyverse style guide</a>.</li>
-<li>What if you are loading a 384-well plate with a fixed-spacing multichannel pipette that loads every second row? If you want to set up the plate plan to load the same sample_id/target_id in two adjacent rows, using <code>rep(sample_id, each = 2)</code> might help.</li>
-<li>If your experiment spans multiple plates, it can be helpful to re-use <code>colkey</code> and <code>rowkey</code> in defining similar plate plans. You could re-use the entire plate plan if the plates are exact replicates, as long as you ensure the <code>sample_id</code> name includes replicate information and so is unique for the analysis.</li>
-<li>If you want to avoid certain rows or columns, change the <code>well_row</code> or <code>well_col</code> arguments in your blank plates, row keys, and column keys. For example <code>create_blank_plate(well_row = LETTERS[2:7], well_col = 2:11)</code> creates a blank 96-well plate with outside rows and columns empty.</li>
-<li>If you want your data to display in a preferred order, make it a factor. “Factor” is the name in R for data that has a fixed and known set of possible values. R calls these possible values, “levels”. A list of pets might have levels: “cat”, “dog”, and “hamster”. Then your pets might have the values <code>c("cat", "cat", "cat", "dog")</code>. The same goes for target genes, sample ids, and growth conditions. In this vignette we have tried to distinguish between “levels” and “values” in our code examples. To learn more about factors, see the <a href="https://r4ds.had.co.nz/factors.html" class="external-link">chapter on factors in R For Data Science (Wickham &amp; Grolemund)</a>
+<li>In tidyqpcr we chose to give all variables snake_case names, such as
+<code>sample_id</code>, <code>prep_type</code>, following the <a href="https://style.tidyverse.org" class="external-link">tidyverse style guide</a>.</li>
+<li>What if you are loading a 384-well plate with a fixed-spacing
+multichannel pipette that loads every second row? If you want to set up
+the plate plan to load the same sample_id/target_id in two adjacent
+rows, using <code>rep(sample_id, each = 2)</code> might help.</li>
+<li>If your experiment spans multiple plates, it can be helpful to
+re-use <code>colkey</code> and <code>rowkey</code> in defining similar
+plate plans. You could re-use the entire plate plan if the plates are
+exact replicates, as long as you ensure the <code>sample_id</code> name
+includes replicate information and so is unique for the analysis.</li>
+<li>If you want to avoid certain rows or columns, change the
+<code>well_row</code> or <code>well_col</code> arguments in your blank
+plates, row keys, and column keys. For example
+<code>create_blank_plate(well_row = LETTERS[2:7], well_col = 2:11)</code>
+creates a blank 96-well plate with outside rows and columns empty.</li>
+<li>If you want your data to display in a preferred order, make it a
+factor. “Factor” is the name in R for data that has a fixed and known
+set of possible values. R calls these possible values, “levels”. A list
+of pets might have levels: “cat”, “dog”, and “hamster”. Then your pets
+might have the values <code>c("cat", "cat", "cat", "dog")</code>. The
+same goes for target genes, sample ids, and growth conditions. In this
+vignette we have tried to distinguish between “levels” and “values” in
+our code examples. To learn more about factors, see the <a href="https://r4ds.had.co.nz/factors.html" class="external-link">chapter on factors in R For
+Data Science (Wickham &amp; Grolemund)</a>
 </li>
 </ul>
 </div>

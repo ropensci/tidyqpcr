@@ -84,8 +84,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Multifactorial multi-plate qPCR analysis example</h1>
-                        <h4 data-toc-skip class="author">Edward Wallace</h4>
+      <h1 data-toc-skip>Multifactorial multi-plate qPCR analysis
+example</h1>
+                        <h4 data-toc-skip class="author">Edward
+Wallace</h4>
             
             <h4 data-toc-skip class="date">April 2022</h4>
       
@@ -99,14 +101,27 @@
 <div class="section level2">
 <h2 id="summary-an-example-multifactorial-qpcr-experiment-">Summary: an example multifactorial qPCR experiment.<a class="anchor" aria-label="anchor" href="#summary-an-example-multifactorial-qpcr-experiment-"></a>
 </h2>
-<p>This vignette shows how to use tidyqpcr functions to normalize and plot data from multifactorial experiments: many primer sets, many conditions, two plates. This vignette is a more advanced example with complex data.</p>
-<p>This is real RT-qPCR data by Edward Wallace in June 2018, testing the effect of heat shock and transcription-targeting drugs in <em>Saccharomyces cerevisiae</em> yeast.</p>
+<p>This vignette shows how to use tidyqpcr functions to normalize and
+plot data from multifactorial experiments: many primer sets, many
+conditions, two plates. This vignette is a more advanced example with
+complex data.</p>
+<p>This is real RT-qPCR data by Edward Wallace in June 2018, testing the
+effect of heat shock and transcription-targeting drugs in
+<em>Saccharomyces cerevisiae</em> yeast.</p>
 <div class="section level3">
 <h3 id="pilot-experiment">Pilot experiment<a class="anchor" aria-label="anchor" href="#pilot-experiment"></a>
 </h3>
-<p>Do standard transcriptional inhibitors phenanthroline and thiolutin block the transcriptional heat shock response in yeast? This is a genuine question because some papers that argue that phenanthroline and thiolutin <strong>induce</strong> the transcriptional heat shock response.</p>
-<p>Measure 16 primer sets: HOR7, HSP12, HSP26, HSP78, HSP104, RTC3, SSA4, PGK1, ALG9, HHT2, HTB2, RPS3, RPS13, RPS15, RPS30A, RPL39.</p>
-<p>Test 6 conditions. That’s 3 transcriptional inhibitors (no drug control, 150ug/mL 1,10-phenanthroline, 3ug/mL thiolutin) in each of 2 conditions (- heat shock control, + heat shock 42C 10min), 2 biol reps each:</p>
+<p>Do standard transcriptional inhibitors phenanthroline and thiolutin
+block the transcriptional heat shock response in yeast? This is a
+genuine question because some papers that argue that phenanthroline and
+thiolutin <strong>induce</strong> the transcriptional heat shock
+response.</p>
+<p>Measure 16 primer sets: HOR7, HSP12, HSP26, HSP78, HSP104, RTC3,
+SSA4, PGK1, ALG9, HHT2, HTB2, RPS3, RPS13, RPS15, RPS30A, RPL39.</p>
+<p>Test 6 conditions. That’s 3 transcriptional inhibitors (no drug
+control, 150ug/mL 1,10-phenanthroline, 3ug/mL thiolutin) in each of 2
+conditions (- heat shock control, + heat shock 42C 10min), 2 biol reps
+each:</p>
 <pre><code>- *C-* Control -heat
 - *P-* Phenanthroline -heat
 - *T-* Thiolutin -heat
@@ -178,7 +193,14 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_qpcr.html">display_plate_qpcr</a></span><span class="op">(</span><span class="va">plateplan</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>sample_id <span class="op">=</span> <span class="va">condition</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="multifactor_vignette_files/figure-html/display_plates-1.png" width="960"></p>
-<p>Note that display_plate_qpcr requires a column called <code>sample_id</code>, which here we had to make from the <code>condition</code> variable using <code>mutate(sample_id=condition)</code>. The reason for doing this is that we have replicate samples of the same condition in different plates, and so we assign the unique sample name for each replicate after loading the plates together using <code>unite</code> in the next code chunk.</p>
+<p>Note that display_plate_qpcr requires a column called
+<code>sample_id</code>, which here we had to make from the
+<code>condition</code> variable using
+<code>mutate(sample_id=condition)</code>. The reason for doing this is
+that we have replicate samples of the same condition in different
+plates, and so we assign the unique sample name for each replicate after
+loading the plates together using <code>unite</code> in the next code
+chunk.</p>
 </div>
 <div class="section level3">
 <h3 id="load-and-summarize-data">Load and summarize data<a class="anchor" aria-label="anchor" href="#load-and-summarize-data"></a>
@@ -197,7 +219,7 @@
 
 <span class="va">plate1</span> <span class="op">&lt;-</span> <span class="va">file_path_cq_plate1</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/read_lightcycler_1colour_cq.html">read_lightcycler_1colour_cq</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>biol_rep <span class="op">=</span> <span class="st">"1"</span>, plate <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span>
 
 <span class="va">file_path_cq_plate2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,
@@ -206,7 +228,7 @@
 
 <span class="va">plate2</span> <span class="op">&lt;-</span> <span class="va">file_path_cq_plate2</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/read_lightcycler_1colour_cq.html">read_lightcycler_1colour_cq</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>biol_rep <span class="op">=</span> <span class="st">"2"</span>, plate <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>
 
 <span class="co"># combine data from both plates into a single data frame</span>
@@ -336,7 +358,8 @@
 <div class="section level4">
 <h4 id="all-on-same-axes">All on same axes<a class="anchor" aria-label="anchor" href="#all-on-same-axes"></a>
 </h4>
-<p>This plot shows all the summarized data on the same axes, but it is hard to pick out the different conditions by eye.</p>
+<p>This plot shows all the summarized data on the same axes, but it is
+hard to pick out the different conditions by eye.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">platesmed</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>,
@@ -346,14 +369,17 @@
     position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_jitter.html" class="external-link">position_jitter</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.2</span>, height <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_shape_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span><span class="op">:</span><span class="fl">18</span>, <span class="fl">5</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/log_plot_helpers.html">scale_y_log10nice</a></span><span class="op">(</span><span class="st">"mRNA relative detection"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="st">"mRNA relative detection"</span>,
+                labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="multifactor_vignette_files/figure-html/plot_normalizedsummarized1-1.png" width="384"></p>
 </div>
 <div class="section level4">
 <h4 id="faceted-by-drug-treatment">Faceted by drug treatment<a class="anchor" aria-label="anchor" href="#faceted-by-drug-treatment"></a>
 </h4>
-<p>This plot shows all the summarized data “faceted” on different axes for different drug treatments. It highlights that, for example, SSA4 detection increases in response to heat in all drug treatments.</p>
+<p>This plot shows all the summarized data “faceted” on different axes
+for different drug treatments. It highlights that, for example, SSA4
+detection increases in response to heat in all drug treatments.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">platesmed</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>, y <span class="op">=</span> <span class="va">rel_abund</span>, shape <span class="op">=</span> <span class="va">biol_rep</span>, colour <span class="op">=</span> <span class="va">heat</span><span class="op">)</span>,
@@ -361,21 +387,25 @@
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">drug</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span> <span class="op">=</span> <span class="st">"grey50"</span>, <span class="st">"+"</span> <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/log_plot_helpers.html">scale_y_log10nice</a></span><span class="op">(</span><span class="st">"mRNA relative detection"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="st">"mRNA relative detection"</span>,
+                labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="multifactor_vignette_files/figure-html/plot_normalizedsummarizedbyheat-1.png" width="864"></p>
 </div>
 <div class="section level4">
 <h4 id="faceted-by-heat-shock-condition">Faceted by heat shock condition<a class="anchor" aria-label="anchor" href="#faceted-by-heat-shock-condition"></a>
 </h4>
-<p>By contrast, this plot shows all the summarized data “faceted” on different axes for different conditions. This shows that there is no clear response to the drug treatments in either condition.</p>
+<p>By contrast, this plot shows all the summarized data “faceted” on
+different axes for different conditions. This shows that there is no
+clear response to the drug treatments in either condition.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">platesmed</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>, y <span class="op">=</span> <span class="va">rel_abund</span>, shape <span class="op">=</span> <span class="va">biol_rep</span>, colour <span class="op">=</span> <span class="va">drug</span><span class="op">)</span>,
     position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_jitter.html" class="external-link">position_jitter</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.2</span>, height <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">heat</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/log_plot_helpers.html">scale_y_log10nice</a></span><span class="op">(</span><span class="st">"mRNA relative detection"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="st">"mRNA relative detection"</span>,
+                labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="multifactor_vignette_files/figure-html/plot_normalizedsummarizedbydrug-1.png" width="864"></p>
 </div>
@@ -396,7 +426,7 @@
 <span class="va">plate1curve</span> <span class="op">&lt;-</span> <span class="va">file_path_raw_plate1</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="../reference/read_lightcycler_1colour_raw.html">read_lightcycler_1colour_raw</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="../reference/debaseline.html">debaseline</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>biol_rep <span class="op">=</span> <span class="fl">1</span>, plate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 
 <span class="va">file_path_raw_plate2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Edward_qPCR_TxnInhibitors_HS_2018-06-15_plate2.txt.gz"</span>,
@@ -405,7 +435,7 @@
 <span class="va">plate2curve</span> <span class="op">&lt;-</span> <span class="va">file_path_raw_plate2</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="../reference/read_lightcycler_1colour_raw.html">read_lightcycler_1colour_raw</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="../reference/debaseline.html">debaseline</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plateplan</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>biol_rep <span class="op">=</span> <span class="fl">2</span>, plate <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 <span class="va">platesamp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">plate1curve</span>, <span class="va">plate2curve</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>

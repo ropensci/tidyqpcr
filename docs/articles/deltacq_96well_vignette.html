@@ -84,8 +84,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Delta Cq 96-well plate qPCR analysis example</h1>
-                        <h4 data-toc-skip class="author">Stuart McKellar and Edward Wallace</h4>
+      <h1 data-toc-skip>Delta Cq 96-well plate qPCR analysis
+example</h1>
+                        <h4 data-toc-skip class="author">Stuart McKellar
+and Edward Wallace</h4>
             
             <h4 data-toc-skip class="date">April 2022</h4>
       
@@ -99,12 +101,21 @@
 <div class="section level2">
 <h2 id="summary-an-example-96-well-qpcr-experiment-">Summary: an example 96-well qPCR experiment.<a class="anchor" aria-label="anchor" href="#summary-an-example-96-well-qpcr-experiment-"></a>
 </h2>
-<p>This vignette shows how to use tidyqpcr functions to normalize and plot data from a single RT-qPCR experiment on a 96-well plate. We include relative quantification, calculations of delta Cq (within-sample normalization) and delta delta Cq (between-sample normalization), with some example plots.</p>
+<p>This vignette shows how to use tidyqpcr functions to normalize and
+plot data from a single RT-qPCR experiment on a 96-well plate. We
+include relative quantification, calculations of delta Cq (within-sample
+normalization) and delta delta Cq (between-sample normalization), with
+some example plots.</p>
 <p>This is real RT-qPCR data by Stuart McKellar:</p>
-<p>Aim: to measure expression of two mRNAs and one reference control in two strains of bacteria at various growth stages (measured by OD: 0.5, 1.5, 3, 6, and overnight culture, ‘ODON’).</p>
+<p>Aim: to measure expression of two mRNAs and one reference control in
+two strains of bacteria at various growth stages (measured by OD: 0.5,
+1.5, 3, 6, and overnight culture, ‘ODON’).</p>
 <p>mRNAs: GlyS and SpoVG with 5S rRNA used as a reference control.</p>
 <p>Bacterial strains: wild-type (WT) and mutant (dAgr).</p>
-<p>Equipment: Data were collected on a Roche LightCycler 480, and LightCycler software used to estimate Cq/Ct values and export that as a text-format table. The sample information is specified in this input data file.</p>
+<p>Equipment: Data were collected on a Roche LightCycler 480, and
+LightCycler software used to estimate Cq/Ct values and export that as a
+text-format table. The sample information is specified in this input
+data file.</p>
 <div class="section level3">
 <h3 id="setup-knitr-options-and-load-packages">Setup knitr options and load packages<a class="anchor" aria-label="anchor" href="#setup-knitr-options-and-load-packages"></a>
 </h3>
@@ -136,7 +147,9 @@
 <div class="section level3">
 <h3 id="load-data-from-machine-output-file">Load data from machine output file<a class="anchor" aria-label="anchor" href="#load-data-from-machine-output-file"></a>
 </h3>
-<p>We start by loading data from the experiment. We print the data to screen here, it is always a good idea to look at the data to find out if it has loaded correctly and behaves as expected, or not.</p>
+<p>We start by loading data from the experiment. We print the data to
+screen here, it is always a good idea to look at the data to find out if
+it has loaded correctly and behaves as expected, or not.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># NOTE: system.file() accesses data from this R package</span>
 <span class="co"># To use your own data, remove the call to system.file(),</span>
@@ -165,21 +178,56 @@
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> A9    WT OD3 glyS    15.5</span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> A10   WT OD6 glyS    12.8</span>
 <span class="co">## <span style="color: #949494;"># … with 80 more rows</span></span></code></pre>
-<p>Printing the data here shows that the <code>sample_info</code> column contains information on the sample. We still need to organize this information that is already associated with the data.</p>
-<p>The <a href="platesetup_vignette.html">plate setup vignette</a> describes how to “set up” a plate plan to put sample information in, if your input data does not already contain sample information.</p>
-<p>Note that we “cleaned up” the data file for this vignette, to remove irrelevant rows and columns. For information about how to load Cq data directly from LightCycler outputs, see <code><a href="../reference/read_lightcycler_1colour_cq.html">?read_lightcycler_1colour_cq</a></code>.</p>
+<p>Printing the data here shows that the <code>sample_info</code> column
+contains information on the sample. We still need to organize this
+information that is already associated with the data.</p>
+<p>The <a href="platesetup_vignette.html">plate setup vignette</a>
+describes how to “set up” a plate plan to put sample information in, if
+your input data does not already contain sample information.</p>
+<p>Note that we “cleaned up” the data file for this vignette, to remove
+irrelevant rows and columns. For information about how to load Cq data
+directly from LightCycler outputs, see
+<code><a href="../reference/read_lightcycler_1colour_cq.html">?read_lightcycler_1colour_cq</a></code>.</p>
 </div>
 <div class="section level3">
 <h3 id="organize-sample-and-target-data-on-the-plate">Organize sample and target data on the plate<a class="anchor" aria-label="anchor" href="#organize-sample-and-target-data-on-the-plate"></a>
 </h3>
-<p>The <code>sample_info</code> column contains values like <code>WT OD0.5 glyS</code>, where <code>WT</code> describes the strain, <code>OD0.5</code> describes the growth stage (optical density), and <code>glyS</code> describes the target gene that is detected. These three pieces of information are delimited by spaces. We use the <code>separate</code> function, from the <code>tidyr</code> package, to separate the three pieces of information in <code>sample_info</code> into three columns, (<code>strain</code>, <code>OD</code>, <code>target_id</code>), each of which contains a single piece of information. Note that tidyqpcr insistently refers to the targets detected in a qPCR experiment as <code>target_id</code>, as they could be primer sets or hydrolysis probes targeting distinct gene regions, RNA isoforms, SNPs, or chromosomal locations for ChIP studies. In this experiment we have three amplicons, each from a different RNA.</p>
-<p>However, tidyqpcr expects a column called <code>sample_id</code> that identifies the unique sample - here, that would be identified by a strain (e.g. <code>WT</code>) and growth stage (e.g. <code>OD0.5</code>). So we use the <code>unite</code> function, from the <code>tidyr</code> package, to create a new column <code>sample_id</code> that unites strain and OD. Note that key tidyqpcr variables: <code>sample_id</code> and <code>target_id</code>, can be defined manually, as done in the <a href="platesetup_vignette.html">plate setup vignette</a>, if your data does not contain a complete and correct <code>sample_info</code> column.</p>
-<p>Before these, we have to do a little organization. We add row and column labels for each well, so that we can later draw the plate plan and check the description. We use the tidyqpcr function <code>create_blank_plate_96well</code> to make a “blank” plate plan, then join that information to the data. The join function <code>inner_join</code> is in the <code>dplyr</code> package.</p>
-<p>We use the tidyverse pipe operator <code>%&gt;%</code> to do all these transformations in a row, with one on each line.</p>
+<p>The <code>sample_info</code> column contains values like
+<code>WT OD0.5 glyS</code>, where <code>WT</code> describes the strain,
+<code>OD0.5</code> describes the growth stage (optical density), and
+<code>glyS</code> describes the target gene that is detected. These
+three pieces of information are delimited by spaces. We use the
+<code>separate</code> function, from the <code>tidyr</code> package, to
+separate the three pieces of information in <code>sample_info</code>
+into three columns, (<code>strain</code>, <code>OD</code>,
+<code>target_id</code>), each of which contains a single piece of
+information. Note that tidyqpcr insistently refers to the targets
+detected in a qPCR experiment as <code>target_id</code>, as they could
+be primer sets or hydrolysis probes targeting distinct gene regions, RNA
+isoforms, SNPs, or chromosomal locations for ChIP studies. In this
+experiment we have three amplicons, each from a different RNA.</p>
+<p>However, tidyqpcr expects a column called <code>sample_id</code> that
+identifies the unique sample - here, that would be identified by a
+strain (e.g. <code>WT</code>) and growth stage
+(e.g. <code>OD0.5</code>). So we use the <code>unite</code> function,
+from the <code>tidyr</code> package, to create a new column
+<code>sample_id</code> that unites strain and OD. Note that key tidyqpcr
+variables: <code>sample_id</code> and <code>target_id</code>, can be
+defined manually, as done in the <a href="platesetup_vignette.html">plate setup vignette</a>, if your data
+does not contain a complete and correct <code>sample_info</code>
+column.</p>
+<p>Before these, we have to do a little organization. We add row and
+column labels for each well, so that we can later draw the plate plan
+and check the description. We use the tidyqpcr function
+<code>create_blank_plate_96well</code> to make a “blank” plate plan,
+then join that information to the data. The join function
+<code>inner_join</code> is in the <code>dplyr</code> package.</p>
+<p>We use the tidyverse pipe operator <code>%&gt;%</code> to do all
+these transformations in a row, with one on each line.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate_cq_data</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="../reference/create_blank_plate.html">create_blank_plate_96well</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># row and column labels for each well</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">plate_cq_extdata</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># join that info to loaded data</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">plate_cq_extdata</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># join that info to loaded data</span>
   <span class="co"># next separate the sample and target information for future data analysis</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">separate</a></span><span class="op">(</span><span class="va">sample_info</span>,
            into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"strain"</span>,<span class="st">"OD"</span>,<span class="st">"target_id"</span><span class="op">)</span>, 
@@ -203,22 +251,39 @@
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> A9    A        9        WT OD3 glyS   WT_OD3    WT     OD3   glyS       15.5</span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> A10   A        10       WT OD6 glyS   WT_OD6    WT     OD6   glyS       12.8</span>
 <span class="co">## <span style="color: #949494;"># … with 80 more rows, and 1 more variable: prep_type &lt;chr&gt;</span></span></code></pre>
-<p>Again, we print the table to check that the columns and data are correct.</p>
+<p>Again, we print the table to check that the columns and data are
+correct.</p>
 </div>
 <div class="section level3">
 <h3 id="display-the-plate-layout">Display the plate layout<a class="anchor" aria-label="anchor" href="#display-the-plate-layout"></a>
 </h3>
-<p>It is easier to understand pictures than tables of text. To display the layout of samples within a microplate, tidyqpcr has a function <code>display_plate_qpcr</code>. We use that here to show how the samples are laid out within the plate.</p>
+<p>It is easier to understand pictures than tables of text. To display
+the layout of samples within a microplate, tidyqpcr has a function
+<code>display_plate_qpcr</code>. We use that here to show how the
+samples are laid out within the plate.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_qpcr.html">display_plate_qpcr</a></span><span class="op">(</span><span class="va">plate_cq_data</span><span class="op">)</span></code></pre></div>
 <p><img src="deltacq_96well_vignette_files/figure-html/display_plates-1.png" width="864"></p>
-<p>Here, the different colours indicate different <code>target_ids</code>, which is default behaviour of <code>display_plate_qpcr</code>. This display makes it possible to see that there are three identically-labeled wells - technical replicates - in a row.</p>
+<p>Here, the different colours indicate different
+<code>target_ids</code>, which is default behaviour of
+<code>display_plate_qpcr</code>. This display makes it possible to see
+that there are three identically-labeled wells - technical replicates -
+in a row.</p>
 </div>
 <div class="section level3">
 <h3 id="plot-unnormalized-cq-data">Plot unnormalized Cq data<a class="anchor" aria-label="anchor" href="#plot-unnormalized-cq-data"></a>
 </h3>
-<p>Next we plot all the data to visualise the unnormalised data points. These visual explorations are a crucial sanity check, both on the data itself, and also on any possible mistakes made when loading the data and assigning labels.</p>
-<p>Here we use functions from <code>ggplot</code> to plot the data. The interesting output is Cq values, which go on the y axis. The data measures three target genes in two strains in five different growth conditions. So the first plot we make has one plot panel or facet for each growth condition. Each facet shows values for all three targets and two strains, with the targets on the x-axis and strains indicated by colour and shape.</p>
+<p>Next we plot all the data to visualise the unnormalised data points.
+These visual explorations are a crucial sanity check, both on the data
+itself, and also on any possible mistakes made when loading the data and
+assigning labels.</p>
+<p>Here we use functions from <code>ggplot</code> to plot the data. The
+interesting output is Cq values, which go on the y axis. The data
+measures three target genes in two strains in five different growth
+conditions. So the first plot we make has one plot panel or facet for
+each growth condition. Each facet shows values for all three targets and
+two strains, with the targets on the x-axis and strains indicated by
+colour and shape.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">plate_cq_data</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>, y <span class="op">=</span> <span class="va">cq</span>, shape <span class="op">=</span> <span class="va">strain</span>, colour <span class="op">=</span> <span class="va">strain</span><span class="op">)</span>,
@@ -231,8 +296,13 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">OD</span>,ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="deltacq_96well_vignette_files/figure-html/plot_unnormalized-1.png" width="384"></p>
-<p>The plot shows that Cq values for 5S are reproducible and very low (Cq about 5) for all samples. That makes biological sense as 5S ribosomal rRNA is extremely abundant.</p>
-<p>More generally, the plot shows that the technical replicates are very close together. Technical replicates are expected to be close to each other, so this observation visually confirms that we have labeled the wells correctly.</p>
+<p>The plot shows that Cq values for 5S are reproducible and very low
+(Cq about 5) for all samples. That makes biological sense as 5S
+ribosomal rRNA is extremely abundant.</p>
+<p>More generally, the plot shows that the technical replicates are very
+close together. Technical replicates are expected to be close to each
+other, so this observation visually confirms that we have labeled the
+wells correctly.</p>
 </div>
 </div>
 <div class="section level2">
@@ -241,14 +311,30 @@
 <div class="section level3">
 <h3 id="normalize-cq-to-5s-rrna-within-sample-only">Normalize Cq to 5S rRNA, within Sample only<a class="anchor" aria-label="anchor" href="#normalize-cq-to-5s-rrna-within-sample-only"></a>
 </h3>
-<p>Next we “normalize” by calculating delta Cq () for each target in each sample. We treat the 5S rRNA as a reference gene, and for other mRNA targets estimate a <code>delta_cq</code> value of the difference against the median value for 5S rRNA within the same sample. This normalisation is performed by the <code>calculate_deltacq_bysampleid</code> function. This function works as follows:</p>
+<p>Next we “normalize” by calculating delta Cq () for each target in
+each sample. We treat the 5S rRNA as a reference gene, and for other
+mRNA targets estimate a <code>delta_cq</code> value of the difference
+against the median value for 5S rRNA within the same sample. This
+normalisation is performed by the
+<code>calculate_deltacq_bysampleid</code> function. This function works
+as follows:</p>
 <ul>
-<li>You provide the data and the name of the reference gene (i.e. <code>ref_target_ids = "5S"</code>)</li>
-<li>The function will calculate the median Cq of the reference gene separately for each sample</li>
-<li>Then the function will subtract that value from the Cq for every other measured gene, again separately for each sample, adding a <code>delta_cq</code> column to its output data</li>
-<li>The function also calculates relative abundance or normalized ratio to the reference targets, , adding a <code>rel_abund</code> column to its output data.</li>
+<li>You provide the data and the name of the reference gene
+(i.e. <code>ref_target_ids = "5S"</code>)</li>
+<li>The function will calculate the median Cq of the reference gene
+separately for each sample</li>
+<li>Then the function will subtract that value from the Cq for every
+other measured gene, again separately for each sample, adding a
+<code>delta_cq</code> column to its output data</li>
+<li>The function also calculates relative abundance or normalized ratio
+to the reference targets, , adding a <code>rel_abund</code> column to
+its output data.</li>
 </ul>
-<p>If you use <em>multiple</em> reference target ids, the function will take the median across Cq values of <em>all</em> the reference target ids. You can also ask the function to use a different summary, e.g. mean instead of median. See the help file <code><a href="../reference/calculate_deltacq_bysampleid.html">?calculate_deltacq_bysampleid</a></code> for more details.</p>
+<p>If you use <em>multiple</em> reference target ids, the function will
+take the median across Cq values of <em>all</em> the reference target
+ids. You can also ask the function to use a different summary, e.g. mean
+instead of median. See the help file
+<code><a href="../reference/calculate_deltacq_bysampleid.html">?calculate_deltacq_bysampleid</a></code> for more details.</p>
 <p>As ever, we print the data to screen as a sanity check.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate_norm</span> <span class="op">&lt;-</span> <span class="va">plate_cq_data</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -274,7 +360,8 @@
 <div class="section level3">
 <h3 id="plot-normalized-data-all-reps">Plot normalized data, all reps<a class="anchor" aria-label="anchor" href="#plot-normalized-data-all-reps"></a>
 </h3>
-<p>Similar to above, we plot all the replicates of the normalised data.</p>
+<p>Similar to above, we plot all the replicates of the normalised
+data.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">plate_norm</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>, y <span class="op">=</span> <span class="va">delta_cq</span>, shape <span class="op">=</span> <span class="va">strain</span>, colour <span class="op">=</span> <span class="va">strain</span><span class="op">)</span>,
@@ -284,12 +371,20 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">OD</span>,ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="deltacq_96well_vignette_files/figure-html/plot_normalized-1.png" width="384"></p>
-<p>This looks quite similar to the unnormalized data plot, except as expected the reference gene samples are all now deltaCq = 0, and there are small movements in the other points reflecting the normalization process.</p>
+<p>This looks quite similar to the unnormalized data plot, except as
+expected the reference gene samples are all now deltaCq = 0, and there
+are small movements in the other points reflecting the normalization
+process.</p>
 </div>
 <div class="section level3">
 <h3 id="calculate-a-summary-value-for-each-sample-target-combination">Calculate a summary value for each sample-target combination<a class="anchor" aria-label="anchor" href="#calculate-a-summary-value-for-each-sample-target-combination"></a>
 </h3>
-<p>Having made normalized values, we use <code>group_by</code> and <code>summarize</code> from the <code>dplyr</code> package to calculate the median values of <code>delta_cq</code> and <code>rel_abund</code> for each sample. This makes a smaller table by collapsing 3 technical replicates into a single summary value for each <code>sample_id</code>-<code>target_id</code> combination.</p>
+<p>Having made normalized values, we use <code>group_by</code> and
+<code>summarize</code> from the <code>dplyr</code> package to calculate
+the median values of <code>delta_cq</code> and <code>rel_abund</code>
+for each sample. This makes a smaller table by collapsing 3 technical
+replicates into a single summary value for each
+<code>sample_id</code>-<code>target_id</code> combination.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate_med</span> <span class="op">&lt;-</span> <span class="va">plate_norm</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">strain</span>, <span class="va">OD</span>, <span class="va">target_id</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -314,7 +409,8 @@
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> dAgr_OD3   dAgr   OD3   spoVG         7.93  0.004<span style="text-decoration: underline;">10</span> </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> dAgr_OD6   dAgr   OD6   5S            0     1       </span>
 <span class="co">## <span style="color: #949494;"># … with 20 more rows</span></span></code></pre>
-<p>It can be easier to focus on a smaller subset of the data. Here we print just the data for a single target, <code>glyS</code>:</p>
+<p>It can be easier to focus on a smaller subset of the data. Here we
+print just the data for a single target, <code>glyS</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">plate_med</span>, <span class="va">target_id</span> <span class="op">==</span> <span class="st">"glyS"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 6</span></span>
@@ -331,12 +427,19 @@
 <span class="co">## <span style="color: #BCBCBC;"> 8</span> WT_OD3     WT     OD3   glyS         10.7  0.000<span style="text-decoration: underline;">585</span> </span>
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> WT_OD6     WT     OD6   glyS          8.46 0.002<span style="text-decoration: underline;">84</span>  </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> WT_ODON    WT     ODON  glyS         14.3  0.000<span style="text-decoration: underline;">048</span>9</span></code></pre>
-<p>This table confirms that <code>glyS</code> summary Cq values are similar for both strains at a given OD value, and higher at <code>ODON</code>.</p>
+<p>This table confirms that <code>glyS</code> summary Cq values are
+similar for both strains at a given OD value, and higher at
+<code>ODON</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="plot-delta-cq-for-each-od-separately-across-genes">Plot delta Cq for each OD separately across genes<a class="anchor" aria-label="anchor" href="#plot-delta-cq-for-each-od-separately-across-genes"></a>
 </h3>
-<p>Here we plot the summarized delta Cq, which now has a single point for each <code>sample_id</code>-<code>target_id</code> combination (representing the summary of the three technical replicates). As above, we plot OD on a separate facet panel to emphasizes comparisons between target genes at the same OD. We exclude the reference target gene, 5S, because for that delta Cq is always zero.</p>
+<p>Here we plot the summarized delta Cq, which now has a single point
+for each <code>sample_id</code>-<code>target_id</code> combination
+(representing the summary of the three technical replicates). As above,
+we plot OD on a separate facet panel to emphasizes comparisons between
+target genes at the same OD. We exclude the reference target gene, 5S,
+because for that delta Cq is always zero.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">plate_med</span>, <span class="va">target_id</span> <span class="op">!=</span> <span class="st">"5S"</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>, y <span class="op">=</span> <span class="va">delta_cq</span>, shape <span class="op">=</span> <span class="va">strain</span>, colour <span class="op">=</span> <span class="va">strain</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
@@ -350,7 +453,11 @@
 <div class="section level3">
 <h3 id="plot-relative-abundance-for-each-od-separately-across-genes">Plot relative abundance for each OD separately across genes<a class="anchor" aria-label="anchor" href="#plot-relative-abundance-for-each-od-separately-across-genes"></a>
 </h3>
-<p>The <code>calculate_deltacq_bysampleid</code> function also reports abundance relative to reference target, 5S rRNA. Precisely, this is . Now we plot the relative abundance, again with each OD on a separate facet panel, which emphasizes comparisons between target genes at the same OD.</p>
+<p>The <code>calculate_deltacq_bysampleid</code> function also reports
+abundance relative to reference target, 5S rRNA. Precisely, this is .
+Now we plot the relative abundance, again with each OD on a separate
+facet panel, which emphasizes comparisons between target genes at the
+same OD.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">plate_med</span>, <span class="va">target_id</span> <span class="op">!=</span> <span class="st">"5S"</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>, y <span class="op">=</span> <span class="va">rel_abund</span>, shape <span class="op">=</span> <span class="va">strain</span>, colour <span class="op">=</span> <span class="va">strain</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
@@ -364,7 +471,9 @@
 <div class="section level3">
 <h3 id="plot-relative-abundance-for-each-gene-separately-across-ods">Plot relative abundance for each gene separately across ODs<a class="anchor" aria-label="anchor" href="#plot-relative-abundance-for-each-gene-separately-across-ods"></a>
 </h3>
-<p>Here we plot the summarized relative abundance a different way: each target gene on a separate facet panel. This emphasizes changes in each target genes across ODs.</p>
+<p>Here we plot the summarized relative abundance a different way: each
+target gene on a separate facet panel. This emphasizes changes in each
+target genes across ODs.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">plate_med</span>, <span class="va">target_id</span> <span class="op">!=</span> <span class="st">"5S"</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">OD</span>, y <span class="op">=</span> <span class="va">rel_abund</span>, colour <span class="op">=</span> <span class="va">strain</span>, group <span class="op">=</span> <span class="va">strain</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
@@ -375,7 +484,9 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">target_id</span>,ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="deltacq_96well_vignette_files/figure-html/plot_relabund_vs_OD-1.png" width="384"></p>
-<p>We included this alternate plot to emphasize that the flexibility of ggplot enables trying of many different plotting strategies, to find one that is most appropriate for your data.</p>
+<p>We included this alternate plot to emphasize that the flexibility of
+ggplot enables trying of many different plotting strategies, to find one
+that is most appropriate for your data.</p>
 </div>
 </div>
 <div class="section level2">
@@ -384,15 +495,32 @@
 <div class="section level3">
 <h3 id="calculate-delta-delta-cq-against-a-chosen-reference-sample">Calculate delta delta cq against a chosen reference sample<a class="anchor" aria-label="anchor" href="#calculate-delta-delta-cq-against-a-chosen-reference-sample"></a>
 </h3>
-<p>Our goal here is to compare the normalized levels of glyS and spoVG in one growth condition to another growth condition, i.e. delta delta Cq (). This is an estimate of log2 fold change. In this case, the reference growth condition is the wild-type strain at OD 0.5.</p>
-<p>This relies on a function in tidyqpcr, <code>calculate_deltadeltacq_bytargetid</code>.</p>
+<p>Our goal here is to compare the normalized levels of glyS and spoVG
+in one growth condition to another growth condition, i.e. delta delta Cq
+(). This is an estimate of log2 fold change. In this case, the reference
+growth condition is the wild-type strain at OD 0.5.</p>
+<p>This relies on a function in tidyqpcr,
+<code>calculate_deltadeltacq_bytargetid</code>.</p>
 <ul>
-<li>You provide data with <code>delta_cq</code> already calculated, and the name of the reference samples (i.e. <code>ref_sample_ids = "WT_OD0.5"</code>)</li>
-<li>The function will calculate the median delta_cq of the reference samples separately for each target.</li>
-<li>Then the function will subtract that value from the <code>delta_cq</code> for every other measured gene, again separately for each sample, adding a <code>deltadelta_cq</code> column to its output data</li>
-<li>The function also calculates fold change of targets with respect to the reference samples, , adding a <code>fold_change</code> column to its output data.</li>
+<li>You provide data with <code>delta_cq</code> already calculated, and
+the name of the reference samples
+(i.e. <code>ref_sample_ids = "WT_OD0.5"</code>)</li>
+<li>The function will calculate the median delta_cq of the reference
+samples separately for each target.</li>
+<li>Then the function will subtract that value from the
+<code>delta_cq</code> for every other measured gene, again separately
+for each sample, adding a <code>deltadelta_cq</code> column to its
+output data</li>
+<li>The function also calculates fold change of targets with respect to
+the reference samples, , adding a <code>fold_change</code> column to its
+output data.</li>
 </ul>
-<p>If you use <em>multiple</em> reference sample ids, the function will take the median across Cq values of <em>all</em> the reference target ids. For example, you might use multiple biological replicate samples of a single set of conditions. You can also ask the function to use a different summary, e.g. mean instead of median. See the help file <code><a href="../reference/calculate_deltadeltacq_bytargetid.html">?calculate_deltadeltacq_bytargetid</a></code> for more details.</p>
+<p>If you use <em>multiple</em> reference sample ids, the function will
+take the median across Cq values of <em>all</em> the reference target
+ids. For example, you might use multiple biological replicate samples of
+a single set of conditions. You can also ask the function to use a
+different summary, e.g. mean instead of median. See the help file
+<code><a href="../reference/calculate_deltadeltacq_bytargetid.html">?calculate_deltadeltacq_bytargetid</a></code> for more details.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate_deltanorm</span> <span class="op">&lt;-</span> <span class="va">plate_norm</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/calculate_deltadeltacq_bytargetid.html">calculate_deltadeltacq_bytargetid</a></span><span class="op">(</span>ref_sample_ids <span class="op">=</span> <span class="st">"WT_OD0.5"</span><span class="op">)</span>
@@ -438,12 +566,16 @@
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> dAgr_OD3   dAgr   OD3   spoVG             0.700       1.62 </span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> dAgr_OD6   dAgr   OD6   5S                0           1    </span>
 <span class="co">## <span style="color: #949494;"># … with 20 more rows</span></span></code></pre>
-<p>Note that in the summarised table <code>plate_deltanorm_med</code>, the reference target <code>5S</code> has <code>deltadelta_cq = 0</code> and <code>fold_change = 1</code> for all entries, because these values were used for normalization.</p>
+<p>Note that in the summarised table <code>plate_deltanorm_med</code>,
+the reference target <code>5S</code> has <code>deltadelta_cq = 0</code>
+and <code>fold_change = 1</code> for all entries, because these values
+were used for normalization.</p>
 </div>
 <div class="section level3">
 <h3 id="plot-delta-delta-cq-log2-fold-change-for-each-target-gene">Plot delta delta Cq (log2-fold change) for each target gene<a class="anchor" aria-label="anchor" href="#plot-delta-delta-cq-log2-fold-change-for-each-target-gene"></a>
 </h3>
-<p>Here, delta delta Cq is positive when a target is more highly detected in the relevant sample, compared to reference samples.</p>
+<p>Here, delta delta Cq is positive when a target is more highly
+detected in the relevant sample, compared to reference samples.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">plate_deltanorm_med</span>, <span class="va">target_id</span> <span class="op">!=</span> <span class="st">"5S"</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">OD</span>, y <span class="op">=</span> <span class="va">deltadelta_cq</span>, colour <span class="op">=</span> <span class="va">strain</span>, group <span class="op">=</span> <span class="va">strain</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
@@ -458,7 +590,8 @@
 <div class="section level3">
 <h3 id="plot-fold-change-for-each-target-gene">Plot fold change for each target gene<a class="anchor" aria-label="anchor" href="#plot-fold-change-for-each-target-gene"></a>
 </h3>
-<p>Here we plot the fold change for each target gene, time-course style against OD.</p>
+<p>Here we plot the fold change for each target gene, time-course style
+against OD.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">plate_deltanorm_med</span>, <span class="va">target_id</span> <span class="op">!=</span> <span class="st">"5S"</span><span class="op">)</span> <span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">OD</span>, y <span class="op">=</span> <span class="va">fold_change</span>, colour <span class="op">=</span> <span class="va">strain</span>, group <span class="op">=</span> <span class="va">strain</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
@@ -474,24 +607,70 @@
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
-<p>In this vignette, you have learned the basic workflow for analysing Cq values from qPCR data:</p>
+<p>In this vignette, you have learned the basic workflow for analysing
+Cq values from qPCR data:</p>
 <ul>
-<li>Create the <code>sample_id</code> column to uniquely identify each biological sample.</li>
-<li>Create the <code>target_id</code> column to uniquely identify each target amplicon, e.g. detecting one gene.</li>
-<li>Calculate delta Cq and relative abundance using <code>calculate_deltacq_bysampleid</code>. This process normalizes values for each target to the values of one or more reference targets within each sample.</li>
-<li>Calculate delta delta Cq and fold change using <code>calculate_deltadeltacq_bytargetid</code>. This process normalizes the value for each target in each sample to values of the same target in one or more reference samples.</li>
+<li>Create the <code>sample_id</code> column to uniquely identify each
+biological sample.</li>
+<li>Create the <code>target_id</code> column to uniquely identify each
+target amplicon, e.g. detecting one gene.</li>
+<li>Calculate delta Cq and relative abundance using
+<code>calculate_deltacq_bysampleid</code>. This process normalizes
+values for each target to the values of one or more reference targets
+within each sample.</li>
+<li>Calculate delta delta Cq and fold change using
+<code>calculate_deltadeltacq_bytargetid</code>. This process normalizes
+the value for each target in each sample to values of the same target in
+one or more reference samples.</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="notes-on-normalization-reference-targets-and-reference-samples">Notes on normalization, reference targets, and reference samples<a class="anchor" aria-label="anchor" href="#notes-on-normalization-reference-targets-and-reference-samples"></a>
+<h2 id="notes-on-normalization-reference-targets-and-reference-samples">Notes on normalization, reference targets, and reference
+samples<a class="anchor" aria-label="anchor" href="#notes-on-normalization-reference-targets-and-reference-samples"></a>
 </h2>
-<p>In this section, we discuss the process of normalization and the choices of reference genes and samples in greater detail.</p>
-<p>Normalization is a tool for making specific comparisons in specific experimental designs.</p>
-<p>Tidyqpcr automatically implements one common approach, the <code>delta Cq</code> method, in <code>calculate_deltacq_bysampleid</code>. The user picks one or more reference targets, and then within each sample the function calculates the median Cq of the reference targets from all other Cqs. The user can also choose a different summary function such as mean. If a single target id is chosen as reference, then it will be given summary delta Cq of zero; this might be sensible if there is external evidence that this target id genuinely has stable abundance in the conditions being tested. The <a href="https://academic.oup.com/clinchem/article/55/4/611/5631762" class="external-link">MIQE guidelines</a> are clear, and correct, that reliable quantification usually requires at least three carefully chosen reference targets.</p>
-<p>The next step is to calculate the delta delta Cq, normalising each sample to a control sample. Specifically, <code>calculate_deltadeltacq_bytargetid</code> estimates the relative change in individual target id delta Cq values, compared to their values in one of more reference sample ids. If a single sample id were chosen as reference, then values in that sample will be given summary delta delta Cq of zero. Usually, an experiment would have multiple biological replicates, and all the replicates for a single condition would be chosen as reference sample ids. In that case the delta delta Cq values for each replicate of the reference condition would not be zero, but only the average over these would be zero.</p>
-<p>However, the tidyverse and tidyqpcr have the flexibility to do normalization any way that your experiment requires. For example, you might want to use all samples as reference, so that delta delta Cq reports the difference in value between one sample and the average over all samples. Alternatively, for a time course with multiple strains and multiple timepoints, it might be important to compare delta Cq values against a reference strain at <em>each time point</em> instead of globally. These comparisons can be done with a little work using generic data-manipulation functions in the tidyverse, for example <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::group_by</a></code>.</p>
-<p>There is more information on the help pages for the functions, <code><a href="../reference/calculate_deltacq_bysampleid.html">?calculate_deltacq_bysampleid</a></code> and <code><a href="../reference/calculate_deltadeltacq_bytargetid.html">?calculate_deltadeltacq_bytargetid</a></code>.</p>
-<p>If you have a specific question about a design that isn’t covered by the functions we have, you’re welcome to ask by creating a new issue on the tidyqpcr github site: <a href="https://github.com/ewallace/tidyqpcr/issues/" class="external-link">https://github.com/ewallace/tidyqpcr/issues/</a>.</p>
+<p>In this section, we discuss the process of normalization and the
+choices of reference genes and samples in greater detail.</p>
+<p>Normalization is a tool for making specific comparisons in specific
+experimental designs.</p>
+<p>Tidyqpcr automatically implements one common approach, the
+<code>delta Cq</code> method, in
+<code>calculate_deltacq_bysampleid</code>. The user picks one or more
+reference targets, and then within each sample the function calculates
+the median Cq of the reference targets from all other Cqs. The user can
+also choose a different summary function such as mean. If a single
+target id is chosen as reference, then it will be given summary delta Cq
+of zero; this might be sensible if there is external evidence that this
+target id genuinely has stable abundance in the conditions being tested.
+The <a href="https://academic.oup.com/clinchem/article/55/4/611/5631762" class="external-link">MIQE
+guidelines</a> are clear, and correct, that reliable quantification
+usually requires at least three carefully chosen reference targets.</p>
+<p>The next step is to calculate the delta delta Cq, normalising each
+sample to a control sample. Specifically,
+<code>calculate_deltadeltacq_bytargetid</code> estimates the relative
+change in individual target id delta Cq values, compared to their values
+in one of more reference sample ids. If a single sample id were chosen
+as reference, then values in that sample will be given summary delta
+delta Cq of zero. Usually, an experiment would have multiple biological
+replicates, and all the replicates for a single condition would be
+chosen as reference sample ids. In that case the delta delta Cq values
+for each replicate of the reference condition would not be zero, but
+only the average over these would be zero.</p>
+<p>However, the tidyverse and tidyqpcr have the flexibility to do
+normalization any way that your experiment requires. For example, you
+might want to use all samples as reference, so that delta delta Cq
+reports the difference in value between one sample and the average over
+all samples. Alternatively, for a time course with multiple strains and
+multiple timepoints, it might be important to compare delta Cq values
+against a reference strain at <em>each time point</em> instead of
+globally. These comparisons can be done with a little work using generic
+data-manipulation functions in the tidyverse, for example
+<code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::group_by</a></code>.</p>
+<p>There is more information on the help pages for the functions,
+<code><a href="../reference/calculate_deltacq_bysampleid.html">?calculate_deltacq_bysampleid</a></code> and
+<code><a href="../reference/calculate_deltadeltacq_bytargetid.html">?calculate_deltadeltacq_bytargetid</a></code>.</p>
+<p>If you have a specific question about a design that isn’t covered by
+the functions we have, you’re welcome to ask by creating a new issue on
+the tidyqpcr github site: <a href="https://github.com/ewallace/tidyqpcr/issues/" class="external-link">https://github.com/ewallace/tidyqpcr/issues/</a>.</p>
 </div>
   </div>
 

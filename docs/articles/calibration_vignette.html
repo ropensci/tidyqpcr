@@ -85,7 +85,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Primers and probes calibration vignette</h1>
-                        <h4 data-toc-skip class="author">Edward Wallace</h4>
+                        <h4 data-toc-skip class="author">Edward
+Wallace</h4>
             
             <h4 data-toc-skip class="date">April 2022</h4>
       
@@ -99,8 +100,11 @@
 <div class="section level2">
 <h2 id="summary-calibrating-primer-sets-from-a-real-experimental-test">Summary: calibrating primer sets from a real experimental test<a class="anchor" aria-label="anchor" href="#summary-calibrating-primer-sets-from-a-real-experimental-test"></a>
 </h2>
-<p>This vignette shows how to use tidyqpcr functions to calibrate qPCR probes.</p>
-<p>This is real qPCR data by Edward Wallace in Feb 2019, testing new RT-qPCR primer sets against <em>S. cerevisiae</em> genes. We took exponential-phase total RNA previously extracted by Jamie Auxillos.</p>
+<p>This vignette shows how to use tidyqpcr functions to calibrate qPCR
+probes.</p>
+<p>This is real qPCR data by Edward Wallace in Feb 2019, testing new
+RT-qPCR primer sets against <em>S. cerevisiae</em> genes. We took
+exponential-phase total RNA previously extracted by Jamie Auxillos.</p>
 <p>We tested 2-3 primer sets each for 7 genes:</p>
 <ul>
 <li>ECM38/YLR299W (3 primer sets)</li>
@@ -111,8 +115,14 @@
 <li>RDL1/YOR285W</li>
 <li>TFS1/YLR178C</li>
 </ul>
-<p>We started with two biological replicate RNA samples, treated with DNase and then split for a test sample with reverse transcriptase (RT) and negative control without reverse transcriptase (-RT). We also took a no template (NT) negative control. For each RT reaction we do serial 5x dilutions down to 125x to form a quantitative calibration curve.</p>
-<p>The data were measured on a Roche LC480 instrument in a single 384-well plate. Quantification was performed in the Roche LightCycler software prior to exporting the data.</p>
+<p>We started with two biological replicate RNA samples, treated with
+DNase and then split for a test sample with reverse transcriptase (RT)
+and negative control without reverse transcriptase (-RT). We also took a
+no template (NT) negative control. For each RT reaction we do serial 5x
+dilutions down to 125x to form a quantitative calibration curve.</p>
+<p>The data were measured on a Roche LC480 instrument in a single
+384-well plate. Quantification was performed in the Roche LightCycler
+software prior to exporting the data.</p>
 <div class="section level3">
 <h3 id="setup-knitr-options-and-load-packages">Setup knitr options and load packages<a class="anchor" aria-label="anchor" href="#setup-knitr-options-and-load-packages"></a>
 </h3>
@@ -143,8 +153,15 @@
 <div class="section level3">
 <h3 id="describe-which-primer-set-we-put-in-which-well-using-a-row-key">Describe which primer set we put in which well using a row key<a class="anchor" aria-label="anchor" href="#describe-which-primer-set-we-put-in-which-well-using-a-row-key"></a>
 </h3>
-<p>In this experiment, each primer set was in a different row of the 384-well plate. We describe this by creating a row key, a data frame describing the rows of the plate, the primer sets, and the genes that they detect.</p>
-<p>We refer to each primer set as a <code>target_id</code>, because each primer set has a different target amplicon, on a different location in a gene. tidyqpcr insists on having a variable called <code>target_id</code> that uniquely identifies each different target that you detect.</p>
+<p>In this experiment, each primer set was in a different row of the
+384-well plate. We describe this by creating a row key, a data frame
+describing the rows of the plate, the primer sets, and the genes that
+they detect.</p>
+<p>We refer to each primer set as a <code>target_id</code>, because each
+primer set has a different target amplicon, on a different location in a
+gene. tidyqpcr insists on having a variable called
+<code>target_id</code> that uniquely identifies each different target
+that you detect.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Names of target genes</span>
 <span class="va">gene_name_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ECM38"</span>, <span class="st">"FET5"</span>, <span class="st">"GPT2"</span>, <span class="st">"ILV5"</span>, <span class="st">"NRD1"</span>, <span class="st">"RDL1"</span>, <span class="st">"TFS1"</span><span class="op">)</span>
@@ -188,9 +205,11 @@
 <span class="co">## <span style="color: #BCBCBC;">16</span> P        TFS1      TFS1_5</span></code></pre>
 </div>
 <div class="section level3">
-<h3 id="combine-the-row-key-describing-primer-sets-with-column-key-describing-on-samples-and-dilutions-">Combine the row key describing primer sets with column key describing on samples and dilutions.<a class="anchor" aria-label="anchor" href="#combine-the-row-key-describing-primer-sets-with-column-key-describing-on-samples-and-dilutions-"></a>
+<h3 id="combine-the-row-key-describing-primer-sets-with-column-key-describing-on-samples-and-dilutions-">Combine the row key describing primer sets with column key
+describing on samples and dilutions.<a class="anchor" aria-label="anchor" href="#combine-the-row-key-describing-primer-sets-with-column-key-describing-on-samples-and-dilutions-"></a>
 </h3>
-<p>We use a default design built in to tidyqpcr, <code>create_colkey_4diln_2ctrl_in_24</code>.</p>
+<p>We use a default design built in to tidyqpcr,
+<code>create_colkey_4diln_2ctrl_in_24</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate1plan</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/label_plate_rowcol.html">label_plate_rowcol</a></span><span class="op">(</span>
@@ -203,7 +222,8 @@
 <div class="section level3">
 <h3 id="spot-check-the-plate-plan">Spot-check the plate plan<a class="anchor" aria-label="anchor" href="#spot-check-the-plate-plan"></a>
 </h3>
-<p>Checks that for selected technical replicate/probe/dilution combinations, the plate contains the right number of replicates.</p>
+<p>Checks that for selected technical replicate/probe/dilution
+combinations, the plate contains the right number of replicates.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plate1plan</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tech_rep</span> <span class="op">==</span> <span class="st">"1"</span>,
@@ -239,7 +259,8 @@
 <div class="section level3">
 <h3 id="display-the-plate-plan">Display the plate plan<a class="anchor" aria-label="anchor" href="#display-the-plate-plan"></a>
 </h3>
-<p>This can be printed out to facilitate loading the plate correctly.</p>
+<p>This can be printed out to facilitate loading the plate
+correctly.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_qpcr.html">display_plate_qpcr</a></span><span class="op">(</span><span class="va">plate1plan</span><span class="op">)</span></code></pre></div>
 <p><img src="calibration_vignette_files/figure-html/display_plates-1.png" width="1152"></p>
@@ -263,7 +284,7 @@
 <span class="va">plates</span> <span class="op">&lt;-</span> 
   <span class="va">file_path_cq</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/read_lightcycler_1colour_cq.html">read_lightcycler_1colour_cq</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">plate1plan</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join</a></span><span class="op">(</span><span class="va">plate1plan</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plates</span></code></pre></div>
 <pre><code><span class="co">## <span style="color: #949494;"># A tibble: 384 × 18</span></span>
@@ -320,17 +341,28 @@
 <div class="section level3">
 <h3 id="visualise-cq-values-for-each-well-">Visualise Cq values for each well.<a class="anchor" aria-label="anchor" href="#visualise-cq-values-for-each-well-"></a>
 </h3>
-<p>Visualising the Cq values shows that the Cq value is different for each primer set in each row. Within each section of a row for a single replicate of dilutions, Cq consistently increases with dilutions as expected. The grey tiles for most -RT and NT columns mean that the value is <code>NA</code>, i.e. no Cq value was reported. This is good.</p>
+<p>Visualising the Cq values shows that the Cq value is different for
+each primer set in each row. Within each section of a row for a single
+replicate of dilutions, Cq consistently increases with dilutions as
+expected. The grey tiles for most -RT and NT columns mean that the value
+is <code>NA</code>, i.e. no Cq value was reported. This is good.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/display_plate_value.html">display_plate_value</a></span><span class="op">(</span><span class="va">plates</span><span class="op">)</span></code></pre></div>
 <p><img src="calibration_vignette_files/figure-html/check_edge_effects-1.png" width="576"></p>
-<p>Visualisation might also help to identify unwanted positional effects. For example, a PCR machine is broken, wells close to an edge of the plate can have different behaviour from central wells.</p>
+<p>Visualisation might also help to identify unwanted positional
+effects. For example, a PCR machine is broken, wells close to an edge of
+the plate can have different behaviour from central wells.</p>
 </div>
 <div class="section level3">
 <h3 id="plot-unnormalized-data-shows-that--rt-and-nt-controls-are-low">Plot unnormalized data shows that -RT and NT controls are low<a class="anchor" aria-label="anchor" href="#plot-unnormalized-data-shows-that--rt-and-nt-controls-are-low"></a>
 </h3>
-<p>This plot visualises the Cq data in a way that highlights the meaning instead of the position on the plate. Again, it shows that the Cq value is different for each primer set, and that for each primer st Cq consistently increases with dilutions as expected.</p>
-<p>Again, we detect no signal in NT (no template) negative control so those points are mostly missing. There is a very weak signal with high Cq in some -RT (no reverse transcriptase) negative controls.</p>
+<p>This plot visualises the Cq data in a way that highlights the meaning
+instead of the position on the plate. Again, it shows that the Cq value
+is different for each primer set, and that for each primer st Cq
+consistently increases with dilutions as expected.</p>
+<p>Again, we detect no signal in NT (no template) negative control so
+those points are mostly missing. There is a very weak signal with high
+Cq in some -RT (no reverse transcriptase) negative controls.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">plates</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">target_id</span>,
@@ -378,7 +410,8 @@
 <div class="section level3">
 <h3 id="calculate-primer-efficiencies-for-all-probes">Calculate primer efficiencies for all probes<a class="anchor" aria-label="anchor" href="#calculate-primer-efficiencies-for-all-probes"></a>
 </h3>
-<p>Use regression to estimate linearity of cq with log(dilution), including the slope or efficiency.</p>
+<p>Use regression to estimate linearity of cq with log(dilution),
+including the slope or efficiency.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/calculate_efficiency_bytargetid.html">calculate_efficiency_bytargetid</a></span><span class="op">(</span><span class="va">plates</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## <span style="color: #949494;"># A tibble: 16 × 4</span></span>
@@ -456,7 +489,7 @@
 <span class="va">plate1curve</span> <span class="op">&lt;-</span> <span class="va">file_path_raw</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="../reference/read_lightcycler_1colour_raw.html">read_lightcycler_1colour_raw</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="../reference/debaseline.html">debaseline</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plate1plan</span><span class="op">)</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">plate1plan</span>, by <span class="op">=</span> <span class="st">"well"</span><span class="op">)</span>
 
 <span class="co"># amplification curve is program 2</span>
 <span class="va">platesamp</span> <span class="op">&lt;-</span> <span class="va">plate1curve</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -650,7 +683,8 @@
 <div class="section level2">
 <h2 id="conclude-acceptable-primer-sets">Conclude acceptable primer sets<a class="anchor" aria-label="anchor" href="#conclude-acceptable-primer-sets"></a>
 </h2>
-<p>These probes have sensible standard curves, amplification curves, melt curves. In tie-breakers we pick the more highly detected probe.</p>
+<p>These probes have sensible standard curves, amplification curves,
+melt curves. In tie-breakers we pick the more highly detected probe.</p>
 <ul>
 <li>ECM38 set 3</li>
 <li>FET5 set 1 or 4</li>
