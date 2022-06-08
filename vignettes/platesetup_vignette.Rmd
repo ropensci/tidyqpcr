@@ -30,7 +30,8 @@ This vignette builds from a 12-well "practice plate" up to a 96 well plate for a
 The key idea is to design one replicate of your experiment in a small rectangle on the plate, then make copies of this small rectangle across the plate for more replicates or more complicated designs.
 The goal is that after working through this vignette, the plate setup in the Multifactorial vignette will be easier to follow.
 
-This vignette focuses on one primer set per well (for SYBR data), and doesn't discuss more than one probe per well (for TaqMan data). Please create [an issue on the github](https://github.com/ewallace/tidyqpcr/issue) if your data needs aren't covered here, and we will try to respond to it.
+This vignette focuses on one primer set per well (for SYBR data), and doesn't discuss more than one probe per well (for TaqMan data).
+Please create [an issue on tidyqpcr github repository](https://github.com/ewallace/tidyqpcr/issues) if your data needs aren't covered here, and we will try to respond to it.
 
 ## Setup knitr options and load packages
 
@@ -327,9 +328,10 @@ The plate plan should contain:
 For example, suppose you are testing multiple primer sets against the same target, your favourite gene `YFG1`, and you have primer sets A, B, and C. Then you might want a variable called `Gene` with value `YFG1` for all of these, in addition to the variable `target_id` with levels `YFG1_A`, `YFG1_B`, and `YFG1_C`.
 
 This package, tidyqpcr, builds on the flexible approaches available from the tidyverse family of packages. We presented above an example of specifying individual parts of information about a sample, then uniting them with the tidyr function `unite`. There's also an inverse to that, `separate`: for example if you have samples from three strains grown in two temperatures in timepoints in multiple biological replicates, you might specify sample_id as `WT_25C_10min_rep1`, and then use `separate(col = sample_id, into = c("strain", "temperature", "time_min", "biol_rep"), remove = FALSE)` to create individual columns with copies of that information. 
-The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly
+The key is to be consistent and to make the descriptions both human-readable and also computer-readable: human-readable for your sanity, computer-readable so that your analysis runs automatically and correctly.
 
-The functions `unite` and `separate` have visual descriptions on the [RStudio data wrangling cheat sheat](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Another useful tidyr function is `crossing`, which creates a table with all combinations of the variables that you supply, say if you want to measure all strains in all conditions.
+The functions `unite` and `separate` have visual descriptions on the [RStudio data wrangling cheat sheat](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf).
+Another useful tidyr function is `crossing`, which creates a table with all combinations of the variables that you supply, say if you want to measure all strains in all conditions.
 
 
 # Hints and Tips on Plate setup
