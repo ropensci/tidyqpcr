@@ -219,7 +219,8 @@ We would be delighted to work with you to answer questions, add features, and fi
 
 ## Code of conduct
 
-We follow the [rOpensci code of conduct](https://ropensci.org/code-of-conduct/).
+This package is released with a [Contributor Code of Conduct](https://ropensci.org/code-of-conduct/). 
+By contributing to this project, you agree to abide by its terms.
 
 ## How to contribute code: style, checking, development cycle
 
