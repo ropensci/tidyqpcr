@@ -4,11 +4,11 @@
   "identifier": "tidyqpcr",
   "description": "This package is for reproducible quantitative PCR (qPCR) analysis using packages from the tidyverse, notably dplyr and ggplot2. It normalizes (by ddCq), summarizes, and plots pre-calculated Cq data, and plots raw amplification and melt curves from Roche lightcycler machines. It does NOT (yet) calculate Cq data from amplification curves.",
   "name": "tidyqpcr: Quantitative PCR Analysis with the Tidyverse",
-  "codeRepository": "https://github.com/ewallace/tidyqpcr",
-  "relatedLink": "https://ewallace.github.io/tidyqpcr/",
-  "issueTracker": "https://github.com/ewallace/tidyqpcr/issues",
+  "codeRepository": "https://github.com/ropensci/tidyqpcr",
+  "relatedLink": "https://docs.ropensci.org/tidyqpcr/",
+  "issueTracker": "https://github.com/ropensci/tidyqpcr/issues",
   "license": "https://spdx.org/licenses/Apache-2.0",
-  "version": "0.2",
+  "version": "1.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -219,9 +219,9 @@
       "sameAs": "https://CRAN.R-project.org/package=lifecycle"
     }
   ],
-  "readme": "https://github.com/ewallace/tidyqpcr/blob/main/README.md",
+  "readme": "https://github.com/ropensci/tidyqpcr/blob/main/README.md",
   "fileSize": "15428.734KB",
-  "contIntegration": "https://codecov.io/gh/DimmestP/tidyqpcr/branch/function-tests-50",
+  "contIntegration": "https://codecov.io/gh/ropensci/tidyqpcr/",
   "developmentStatus": "https://www.repostatus.org/#active",
   "keywords": ["qpcr-analysis", "tidyverse", "r", "rstats", "r-package", "miqe", "qpcr"]
 }
