@@ -40,7 +40,7 @@ If you’ve found a bug, please file an issue that illustrates the bug with a mi
 
 ## Code of Conduct
 
-Please note that the tidyqpcr  project follows the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).  
-By contributing to this project you agree to abide by its terms.
+Please note that the tidyqpcr package is released with a [Contributor Code of Conduct from rOpensci](https://ropensci.org/code-of-conduct/). 
+By contributing to this project, you agree to abide by its terms.
 
 This contributing guide is adapted from the tidyverse contributing guide available at https://raw.githubusercontent.com/r-lib/usethis/master/inst/templates/tidy-contributing.md
