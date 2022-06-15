@@ -22,7 +22,7 @@
 	* [Installing tidyqpcr](#Installing-tidyqpcr)
 	* [Using tidyqpcr](#Using-tidyqpcr)
 * [Status](#Status)
-    * [News](#News)
+    * [News - see NEWS.md](NEWS.md)
 * [Features](#Features)
 	* [Current features](#Current-features)
 	* [Future priorities](#Future-priorities)
@@ -152,9 +152,7 @@ It is particularly good at designing qPCR experiments in microwell plates (96-we
 
 If there is a feature that you need for your work, please ask us! 
 
-## News
-
-See [News.md](News.md).
+## News - see [NEWS.md](NEWS.md).
 
 # Features 
 
