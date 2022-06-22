@@ -1,10 +1,10 @@
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Codecov test coverage](https://codecov.io/gh/DimmestP/tidyqpcr/branch/main/graph/badge.svg)](https://codecov.io/gh/DimmestP/tidyqpcr/branch/main)
+[![Codecov test coverage](https://codecov.io/gh/ropensci/tidyqpcr/branch/main/graph/badge.svg)](https://codecov.io/gh/ropensci/tidyqpcr/branch/main)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5287/badge)](https://bestpractices.coreinfrastructure.org/projects/5287)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/tidyqpcr)](https://cran.r-project.org/package=tidyqpcr)
-[![R-CMD-check](https://github.com/ewallace/tidyqpcr/workflows/R-CMD-check/badge.svg)](https://github.com/ewallace/tidyqpcr/actions)
+[![R-CMD-check](https://github.com/ropensci/tidyqpcr/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/tidyqpcr/actions)
 <!-- badges: end -->
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
@@ -22,7 +22,7 @@
 	* [Installing tidyqpcr](#Installing-tidyqpcr)
 	* [Using tidyqpcr](#Using-tidyqpcr)
 * [Status](#Status)
-    * [News](#News)
+    * [News - see NEWS.md](NEWS.md)
 * [Features](#Features)
 	* [Current features](#Current-features)
 	* [Future priorities](#Future-priorities)
@@ -73,17 +73,17 @@ Next, you need a working installation of [Rtools](https://cran.r-project.org/bin
 
 Jeffrey Leek made [slides on installation and testing of Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/).
 
-### For all R users
+### Install via devtools (for all R users)
 
 Install the devtools R package, see [devtools installation instructions](https://www.r-project.org/nosvn/pandoc/devtools.html). 
 
 ```
 library(devtools)
-devtools::install_github("ewallace/tidyqpcr",build_vignettes = TRUE) ## Vignettes require cowplot package
+devtools::install_github("ropensci/tidyqpcr", build_vignettes = TRUE)
 
-## Alternatively, install without building the vignetttes to remove cowplot dependency 
+## Alternatively, install without building the vignettes 
 ## (Not recommended as vignettes contain the tutorials on using tidyqpcr)
-devtools::install_github("ewallace/tidyqpcr")
+devtools::install_github("ropensci/tidyqpcr")
 ```
 
 **Note**
@@ -95,6 +95,7 @@ Then load tidyqpcr as a standard package:
 ```
 library(tidyqpcr)
 ```
+
 **Note**
 tidyqpcr automatically imports and loads several external packages for basic functionality, including; tidy, dplyr and ggplot2.
 This allows tidyqpcr to be used immediately but may cause NAMESPACE clashes if the user already has many other package libraries loaded.
@@ -102,20 +103,20 @@ Restarting the R session and loading tidyqpcr separately may solve such issues.
 
 ## Using tidyqpcr
 
-The best place to start is by viewing the articles on the [tidyqpcr website](https://ewallace.github.io/tidyqpcr/index.html).
+The best place to start is by viewing the articles on the [tidyqpcr website](https://docs.ropensci.org/tidyqpcr/index.html).
 Here you will find the vignettes, which offer tutorials and example data analyses including figures.
 Currently there are 4 vignettes:
 
-* [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
-* [DeltaCq96wellExample](https://ewallace.github.io/tidyqpcr/articles/deltacq_96well_vignette.html) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
-* [MultifactorialExample](https://ewallace.github.io/tidyqpcr/articles/multifactor_vignette.html) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
-* [PrimerCalibration](https://ewallace.github.io/tidyqpcr/articles/calibration_vignette.html) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
+* [IntroDesignPlatesetup](https://docs.ropensci.org/tidyqpcr/articles/platesetup_vignette.html) - Introduction to designing an experiment and setting up a plate plan in tidyqpcr.
+* [DeltaCq96wellExample](https://docs.ropensci.org/tidyqpcr/articles/deltacq_96well_vignette.html) - Example analysis of 96-well RT-qPCR data including relative quantification with delta Cq, from a real experiment.
+* [MultifactorialExample](https://docs.ropensci.org/tidyqpcr/articles/multifactor_vignette.html) - Example design and analysis of a (real) multifactorial RT-qPCR experiment.
+* [PrimerCalibration](https://docs.ropensci.org/tidyqpcr/articles/calibration_vignette.html) - Example design and analysis of calibrating qPCR primer sets from a (real) experimental test
 
 To find these from your R session, enter `browseVignettes(package="tidyqpcr")`. 
 
 Individual R functions are also documented, use R's standard help system after loading the package, e.g. `?create_blank_plate`. To see a list of all the functions and links to their help pages use `help(package="tidyqpcr")`.
 
-A basic use case for designing a 12 well plate is given below, see [IntroDesignPlatesetup](https://ewallace.github.io/tidyqpcr/articles/platesetup_vignette.html) for more details.
+A basic use case for designing a 12 well plate is given below, see [IntroDesignPlatesetup](https://docs.ropensci.org/tidyqpcr/articles/platesetup_vignette.html) for more details.
 
 ```
 rowkey4 <- tibble(
@@ -143,27 +144,15 @@ display_plate_qpcr(plate_plan12)
 
 # Status
 
-As of May 2022, this software is fully useable, while still being in development.
+As of June 2022, this software is fully useable, and under active development.
 It is particularly good at designing qPCR experiments in microwell plates (96-well and 384-well), and at relative quantification by the delta Cq method.
 
-[Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), and is making them freely available.
+[Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), then started building them into an R package.
 [Sam Haynes](https://github.com/dimmestp) is actively developing, initially as part of the [eLife Open Innovation Leaders programme 2020](https://elifesciences.org/labs/fdcb6588/innovation-leaders-2020-introducing-the-cohort).
 
 If there is a feature that you need for your work, please ask us! 
 
-## News
-
-* June 2022, removed plot helper functions `scale_..._nice` and `scale_loglog` from tidyqpcr, because those capabilities are now available in the [scales package](https://scales.r-lib.org) using `label_log` and similar functions. Older code may need to change `scale_y_log10nice` to `scale_y_log10(labels = scales::label_log())`, for example.
-* May 2022, Improvements in documentation and testing. Reorganized `display_plate` function to be more flexible, so older code will need to use `display_plate_qpcr` to ensure that `sample_id` and `target_id` info displays. Updated to v0.5.
-* January 2022, Improvements in documentation and argument-checking for v0.4.
-* October 2021, Unit tests now cover over 75% of tidyqpcr code.
-* June 2021, [tidyqpcr blogpost in eLife labs](https://elifesciences.org/labs/f23e268f/tidyqpcr-quantitative-pcr-analysis-in-the-tidyverse)
-* August 2020, relative quantification (delta delta Cq) added with function `calculate_deltadeltacq_bytargetid`, and a vignette illustrating this with a small data set from a 96-well plate.
-* June 2020, upgrades that break previous code. All function and variable names have been changed to snake case, i.e. lower case with underscore. Commits up to #ee6d192 change variable and function names. tidyqpcr now uses `sample_id` for nucleic acid sample (replaces Sample or SampleID), `target_id` for primer set/ probe (replaces TargetID or Probe), `prep_type` for nucleic acid preparation type (replaces Type), and `cq` for quantification cycle (replaces Cq or Ct). 
-It should be possible to upgrade old analysis code by (case-sensitive) search and replace. 
-
-Alternatively, pre-April 2020 analysis code should run from release v0.1-alpha, see [releases](https://github.com/ewallace/tidyqpcr/releases).
-
+## News - see [NEWS.md](NEWS.md).
 
 # Features 
 
@@ -226,11 +215,12 @@ Note:
 
 # Contribute
 
-We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ewallace/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
+We would be delighted to work with you to answer questions, add features, and fix problems. Please [file an issue](https://github.com/ropensci/tidyqpcr/issues) or email Edward dot Wallace at his University email address, (ed.ac.uk).
 
 ## Code of conduct
 
-We will be following the [code of conduct from the tidyverse](https://dplyr.tidyverse.org/CODE_OF_CONDUCT).
+This package is released with a [Contributor Code of Conduct](https://ropensci.org/code-of-conduct/). 
+By contributing to this project, you agree to abide by its terms.
 
 ## How to contribute code: style, checking, development cycle
 
