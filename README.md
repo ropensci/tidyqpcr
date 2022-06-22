@@ -144,7 +144,7 @@ display_plate_qpcr(plate_plan12)
 
 # Status
 
-As of June 2022, this software is fully useable, and under active development development.
+As of June 2022, this software is fully useable, and under active development.
 It is particularly good at designing qPCR experiments in microwell plates (96-well and 384-well), and at relative quantification by the delta Cq method.
 
 [Edward Wallace](https://github.com/ewallace) wrote basic functions and documentation needed to do qPCR analysis in [the Wallace lab](https://ewallace.github.io/), then started building them into an R package.
