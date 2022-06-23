@@ -5,6 +5,7 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5287/badge)](https://bestpractices.coreinfrastructure.org/projects/5287)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/tidyqpcr)](https://cran.r-project.org/package=tidyqpcr)
 [![R-CMD-check](https://github.com/ropensci/tidyqpcr/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/tidyqpcr/actions)
+[![rOpenSci peer-review](https://badges.ropensci.org/470_status.svg)](https://github.com/ropensci/software-review/issues/470)
 <!-- badges: end -->
 
 # tidyqpcr - Quantitative PCR analysis in the tidyverse.
