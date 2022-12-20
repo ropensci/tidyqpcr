@@ -18,8 +18,6 @@ affiliations:
    index: 1
 date: 30 May 2022
 bibliography: paper.bib
-header-includes:
-   - \usepackage{draftwatermark}
 ---
 
 # Summary
